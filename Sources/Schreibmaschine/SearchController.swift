@@ -132,7 +132,7 @@ final class SearchController: FindBarDelegate {
         } catch SearchQuery.Failure.invalidPattern(let message) {
             matches = []
             bar.setError(true)
-            bar.setStatus(String(localized: "Ungültiger Ausdruck"), isError: true, detail: message)
+            bar.setStatus(String(localized: "Ungültig"), isError: true, detail: message)
             bar.setPreview(nil)
             return
         } catch {
@@ -194,7 +194,7 @@ final class SearchController: FindBarDelegate {
         if isVisible {
             updateStatus()
             if wrapped {
-                bar.setStatus(backwards ? String(localized: "Vom Ende an weiter") : String(localized: "Vom Anfang an weiter"))
+                bar.setStatus(backwards ? String(localized: "Vom Ende") : String(localized: "Von vorn"))
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in self?.updateStatus() }
             }
         }
@@ -325,7 +325,7 @@ final class SearchController: FindBarDelegate {
         textView.undoManager?.setActionName(String(localized: "Alle ersetzen"))
         let count = replacements.count
         search(selectingFirst: false)
-        bar.setStatus(count == 1 ? String(localized: "1 Treffer ersetzt") : String(localized: "\(count.formatted()) Treffer ersetzt"))
+        bar.setStatus(count == 1 ? String(localized: "1 ersetzt") : String(localized: "\(count.formatted()) ersetzt"))
     }
 
     /// Selects every match; typing at all of them follows with multiple insertion points.
@@ -402,7 +402,7 @@ final class SearchController: FindBarDelegate {
         if bar.searchesInSelection {
             guard selection.length > 0 else {
                 bar.searchesInSelection = false
-                bar.setStatus(String(localized: "Erst Text auswählen, dann darin suchen"), isError: true)
+                bar.setStatus(String(localized: "Keine Auswahl"), isError: true)
                 return
             }
             scope = selection

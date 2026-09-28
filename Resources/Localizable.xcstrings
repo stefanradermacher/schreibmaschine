@@ -61,6 +61,16 @@
         }
       }
     },
+    "%@ ersetzt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ replaced"
+          }
+        }
+      }
+    },
     "%@ von %@": {
       "localizations": {
         "en": {
@@ -147,6 +157,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 match replaced"
+          }
+        }
+      }
+    },
+    "1 ersetzt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 replaced"
           }
         }
       }
@@ -641,6 +661,16 @@
         }
       }
     },
+    "Fertig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
     "Format": {
       "localizations": {
         "en": {
@@ -787,6 +817,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "In the session (not restored when starting without a file):"
+          }
+        }
+      }
+    },
+    "Keine Auswahl": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No selection"
           }
         }
       }
@@ -947,6 +987,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Search only in the selection"
+          }
+        }
+      }
+    },
+    "Nächster Treffer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next match"
           }
         }
       }
@@ -1181,6 +1231,16 @@
         }
       }
     },
+    "Suchleiste schließen (Esc)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close the find bar (Esc)"
+          }
+        }
+      }
+    },
     "Tabbreite:": {
       "localizations": {
         "en": {
@@ -1221,6 +1281,16 @@
         }
       }
     },
+    "Ungültig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid"
+          }
+        }
+      }
+    },
     "Ungültiger Ausdruck": {
       "localizations": {
         "en": {
@@ -1247,6 +1317,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Invisible Characters"
+          }
+        }
+      }
+    },
+    "Verlauf löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear Recent Searches"
           }
         }
       }
@@ -1281,12 +1361,42 @@
         }
       }
     },
+    "Vom Ende": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the end"
+          }
+        }
+      }
+    },
     "Vom Ende an weiter": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Continued from the end"
+          }
+        }
+      }
+    },
+    "Von vorn": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the start"
+          }
+        }
+      }
+    },
+    "Vorheriger Treffer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous match"
           }
         }
       }

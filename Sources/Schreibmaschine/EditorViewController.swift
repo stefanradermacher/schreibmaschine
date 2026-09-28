@@ -182,6 +182,17 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
             pendingViewState = nil
             apply(state)
         }
+        #if DEBUG
+        // For looking at the find bar without a keyboard: -DebugFindBar find|replace|goto
+        // and -DebugFindText <text>.
+        if let mode = UserDefaults.standard.string(forKey: "DebugFindBar") {
+            search.show(mode == "replace" ? .replace : mode == "goto" ? .goToLine : .find)
+            if let text = UserDefaults.standard.string(forKey: "DebugFindText") {
+                search.bar.setSearchText(text)
+                search.findBarQueryDidChange(search.bar)
+            }
+        }
+        #endif
     }
 
     // MARK: - View state
