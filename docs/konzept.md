@@ -109,6 +109,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 - **Markdown-Vorschau:** neben dem Text oder in einem eigenen Tab, sie wird live aktualisiert und scrollt mit dem Text mit. Bilder werden relativ zur Datei gezeigt, externe Inhalte nicht geladen.
 - **Schreibmaschinen-Modus:** Die aktuelle Zeile bleibt in der Mitte des Fensters stehen.
 - **Ablenkungsfreier Modus:** Vollbild ohne Toolbar, Statusleiste und Seitenleisten, mit schmaler Textspalte. Auf Wunsch wird alles außer dem aktuellen Absatz abgedunkelt.
+- **Idee für später, noch nicht entschieden: Schreibmaschinengeräusche** im ablenkungsfreien Modus, standardmäßig aus. Jeder Tastenschlag klingt wie eine echte Schreibmaschine, idealerweise jede Type etwas anders; die Glocke klingelt einige Zeichen vor der Umbruchspalte, ↩ löst den Wagenrücklauf aus. Wählbar zwischen mechanischer und elektrischer Maschine. Die Klänge kommen entweder aus eigener Synthese (`scripts/make_sounds.swift` erzeugt Hörproben nach `Klangproben/`) oder aus Aufnahmen unter CC0; dann wäre „keine Fremdkomponenten“ ehrlich einzuschränken. Abgespielt mit `AVAudioEngine` und vorgeladenen Puffern, damit schnelles Tippen nicht verzögert.
 - Rechtschreibprüfung (vom System), Zählung von Wörtern, Zeichen und Zeilen in der Statusleiste, für die Auswahl getrennt.
 
 ## 6. Dateien

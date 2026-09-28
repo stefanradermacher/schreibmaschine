@@ -15,3 +15,4 @@ Config/Local.xcconfig
 
 # Eigene Testbilder, nicht im Repository
 /Testdateien/
+/Klangproben/
