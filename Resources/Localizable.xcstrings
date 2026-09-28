@@ -191,6 +191,26 @@
         }
       }
     },
+    "Absätze": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paragraphs"
+          }
+        }
+      }
+    },
+    "Absätze umbrechen bei:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrap paragraphs at:"
+          }
+        }
+      }
+    },
     "Aktuelle Zeile hervorheben": {
       "localizations": {
         "en": {
@@ -281,12 +301,62 @@
         }
       }
     },
+    "Als Zitat markieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quote"
+          }
+        }
+      }
+    },
+    "An Zeichen ausrichten …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Align at Character…"
+          }
+        }
+      }
+    },
     "Andere ausblenden": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Hide Others"
+          }
+        }
+      }
+    },
+    "Ausführen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run"
+          }
+        }
+      }
+    },
+    "Ausrichten am ersten:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Align at the first:"
+          }
+        }
+      }
+    },
+    "Ausrücken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outdent"
           }
         }
       }
@@ -311,12 +381,32 @@
         }
       }
     },
+    "Auswahl erweitern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expand Selection"
+          }
+        }
+      }
+    },
     "Auswahl suchen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Use Selection for Find"
+          }
+        }
+      }
+    },
+    "Auswahl verkleinern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shrink Selection"
           }
         }
       }
@@ -331,12 +421,52 @@
         }
       }
     },
+    "Base64 dekodieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base64-Decode"
+          }
+        }
+      }
+    },
+    "Base64-kodieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base64-Encode"
+          }
+        }
+      }
+    },
     "Bearbeiten": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Edit"
+          }
+        }
+      }
+    },
+    "Befehl suchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search for a command"
+          }
+        }
+      }
+    },
+    "Befehlspalette …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command Palette…"
           }
         }
       }
@@ -381,6 +511,16 @@
         }
       }
     },
+    "Bitte eine Spaltenzahl angeben, zum Beispiel 72.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please enter a column, for example 72."
+          }
+        }
+      }
+    },
     "Byte Order Mark (BOM) schreiben": {
       "localizations": {
         "en": {
@@ -417,6 +557,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "View"
+          }
+        }
+      }
+    },
+    "Der Text enthält ungültige %-Folgen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The text contains invalid %-sequences."
+          }
+        }
+      }
+    },
+    "Der Text ist kein gültiges Base64.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The text is not valid Base64."
           }
         }
       }
@@ -481,6 +641,16 @@
         }
       }
     },
+    "Die dekodierten Daten sind kein UTF-8-Text.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The decoded data is not UTF-8 text."
+          }
+        }
+      }
+    },
     "Dienste": {
       "localizations": {
         "en": {
@@ -541,12 +711,42 @@
         }
       }
     },
+    "Dubletten entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Duplicates"
+          }
+        }
+      }
+    },
+    "Duplizieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duplicate"
+          }
+        }
+      }
+    },
     "Editor": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Editor"
+          }
+        }
+      }
+    },
+    "Einrücken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indent"
           }
         }
       }
@@ -567,6 +767,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keep the indentation of the previous line"
+          }
+        }
+      }
+    },
+    "Einrückung in Tabs umwandeln": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convert Indentation to Tabs"
           }
         }
       }
@@ -607,6 +817,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear Menu"
+          }
+        }
+      }
+    },
+    "Erneut ausführen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run Again"
+          }
+        }
+      }
+    },
+    "Erneut ausführen: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run Again: %@"
           }
         }
       }
@@ -701,6 +931,16 @@
         }
       }
     },
+    "Für Text → Absätze → Umbrechen. Mit „Umbrechen bei Spalte …“ lässt sich jedes Mal eine andere Breite wählen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For Text → Paragraphs → Wrap. “Wrap at Column…” asks for a width each time."
+          }
+        }
+      }
+    },
     "Für neue Dokumente": {
       "localizations": {
         "en": {
@@ -717,6 +957,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "For New Windows"
+          }
+        }
+      }
+    },
+    "GROSSBUCHSTABEN": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UPPERCASE"
           }
         }
       }
@@ -757,6 +1007,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Match case"
+          }
+        }
+      }
+    },
+    "HTML-Entitäten auflösen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resolve HTML Entities"
+          }
+        }
+      }
+    },
+    "HTML-Zeichen maskieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escape HTML Characters"
           }
         }
       }
@@ -831,6 +1101,36 @@
         }
       }
     },
+    "JSON formatieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format JSON"
+          }
+        }
+      }
+    },
+    "JSON verkleinern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minify JSON"
+          }
+        }
+      }
+    },
+    "Kein gültiges JSON: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not valid JSON: %@"
+          }
+        }
+      }
+    },
     "Keine Auswahl": {
       "localizations": {
         "en": {
@@ -857,6 +1157,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No matches"
+          }
+        }
+      }
+    },
+    "Kodieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encode"
           }
         }
       }
@@ -891,6 +1201,36 @@
         }
       }
     },
+    "Leere Zeilen entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Empty Lines"
+          }
+        }
+      }
+    },
+    "Leerraum": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "White Space"
+          }
+        }
+      }
+    },
+    "Leerzeichen am Zeilenende entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Trailing Spaces"
+          }
+        }
+      }
+    },
     "Letzte Suchbegriffe": {
       "localizations": {
         "en": {
@@ -911,12 +1251,72 @@
         }
       }
     },
+    "Markdown-Tabelle formatieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format Markdown Table"
+          }
+        }
+      }
+    },
+    "Mehrfache Leerzeichen zusammenfassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collapse Multiple Spaces"
+          }
+        }
+      }
+    },
+    "Mischen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffle"
+          }
+        }
+      }
+    },
     "Mit Leerzeichen statt Tabs einrücken": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Indent with spaces instead of tabs"
+          }
+        }
+      }
+    },
+    "Nach Zahlen sortieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort by Numbers"
+          }
+        }
+      }
+    },
+    "Nach oben verschieben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move Up"
+          }
+        }
+      }
+    },
+    "Nach unten verschieben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move Down"
           }
         }
       }
@@ -977,6 +1377,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No recent searches"
+          }
+        }
+      }
+    },
+    "Nummerieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Number"
           }
         }
       }
@@ -1091,6 +1501,16 @@
         }
       }
     },
+    "Reihenfolge umkehren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reverse Order"
+          }
+        }
+      }
+    },
     "Rückwärts suchen": {
       "localizations": {
         "en": {
@@ -1111,6 +1531,16 @@
         }
       }
     },
+    "Satzanfang groß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sentence case"
+          }
+        }
+      }
+    },
     "Schließen": {
       "localizations": {
         "en": {
@@ -1127,6 +1557,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Close (Esc)"
+          }
+        }
+      }
+    },
+    "Schreibweise": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Case"
           }
         }
       }
@@ -1211,6 +1651,36 @@
         }
       }
     },
+    "Sortieren (A–Z)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort (A–Z)"
+          }
+        }
+      }
+    },
+    "Sortieren (Z–A)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort (Z–A)"
+          }
+        }
+      }
+    },
+    "Spalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Columns"
+          }
+        }
+      }
+    },
     "Startet Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.": {
       "localizations": {
         "en": {
@@ -1271,6 +1741,26 @@
         }
       }
     },
+    "Tabs in Leerzeichen umwandeln": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convert Tabs to Spaces"
+          }
+        }
+      }
+    },
+    "Text": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
+          }
+        }
+      }
+    },
     "Trotzdem umstellen": {
       "localizations": {
         "en": {
@@ -1281,12 +1771,72 @@
         }
       }
     },
+    "URL-Kodierung auflösen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL-Decode"
+          }
+        }
+      }
+    },
+    "URL-kodieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL-Encode"
+          }
+        }
+      }
+    },
     "UTF-8 mit Byte Order Mark (BOM) sichern": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Save UTF-8 with byte order mark (BOM)"
+          }
+        }
+      }
+    },
+    "Umbrechen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrap"
+          }
+        }
+      }
+    },
+    "Umbrechen bei Spalte …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrap at Column…"
+          }
+        }
+      }
+    },
+    "Umbrechen bei Spalte:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrap at column:"
+          }
+        }
+      }
+    },
+    "Umbrüche entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unwrap"
           }
         }
       }
@@ -1521,6 +2071,16 @@
         }
       }
     },
+    "Wörter Groß": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title Case"
+          }
+        }
+      }
+    },
     "Zeichenkodierung": {
       "localizations": {
         "en": {
@@ -1571,6 +2131,16 @@
         }
       }
     },
+    "Zeilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lines"
+          }
+        }
+      }
+    },
     "Zeilen 1–%@": {
       "localizations": {
         "en": {
@@ -1581,12 +2151,72 @@
         }
       }
     },
+    "Zeilen löschen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete Lines"
+          }
+        }
+      }
+    },
+    "Zeilen teilen an …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split Lines At…"
+          }
+        }
+      }
+    },
+    "Zeilen teilen an:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split lines at:"
+          }
+        }
+      }
+    },
     "Zeilen umbrechen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Wrap Lines"
+          }
+        }
+      }
+    },
+    "Zeilen verbinden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join Lines"
+          }
+        }
+      }
+    },
+    "Zeilen verbinden mit …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join Lines With…"
+          }
+        }
+      }
+    },
+    "Zeilen verbinden mit:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join lines with:"
           }
         }
       }
@@ -1631,6 +2261,16 @@
         }
       }
     },
+    "Zitatzeichen entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unquote"
+          }
+        }
+      }
+    },
     "Zoomen": {
       "localizations": {
         "en": {
@@ -1651,6 +2291,16 @@
         }
       }
     },
+    "\\t steht für einen Tab, \\n für einen Zeilenumbruch.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\t stands for a tab, \\n for a line break."
+          }
+        }
+      }
+    },
     "als Tab im vorderen Fenster": {
       "localizations": {
         "en": {
@@ -1667,6 +2317,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "in a new window"
+          }
+        }
+      }
+    },
+    "kleinbuchstaben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lowercase"
           }
         }
       }
@@ -1717,6 +2377,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "About %@"
+          }
+        }
+      }
+    },
+    "„%@“ war nicht möglich.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” was not possible."
           }
         }
       }

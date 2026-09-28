@@ -88,6 +88,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.fontName) private var fontName = ""
     @AppStorage(Preferences.fontSize) private var fontSize = 13.0
     @AppStorage(Preferences.tabWidth) private var tabWidth = 4
+    @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
     @AppStorage(Preferences.autoIndents) private var autoIndents = true
     @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
@@ -110,6 +111,16 @@ private struct EditorSettings: View {
                 }
                 Toggle("Mit Leerzeichen statt Tabs einrücken", isOn: $indentsWithSpaces)
                 Toggle("Einrückung der vorigen Zeile übernehmen", isOn: $autoIndents)
+            }
+
+            Section {
+                Stepper(value: $wrapColumn, in: 20...200, step: 1) {
+                    LabeledContent("Absätze umbrechen bei:", value: String(localized: "\(wrapColumn) Zeichen"))
+                }
+            } footer: {
+                Text("Für Text → Absätze → Umbrechen. Mit „Umbrechen bei Spalte …“ lässt sich jedes Mal eine andere Breite wählen.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             Section {

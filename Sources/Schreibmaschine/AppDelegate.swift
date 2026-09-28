@@ -47,6 +47,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         FileStateStore.shared.save()
     }
 
+    @objc func showCommandPalette(_ sender: Any?) { CommandPalette.shared.show() }
+
     @objc func previousDocument(_ sender: Any?) { DocumentNavigation.step(by: -1) }
     @objc func nextDocument(_ sender: Any?) { DocumentNavigation.step(by: 1) }
 

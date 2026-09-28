@@ -9,6 +9,7 @@ enum MainMenu {
         main.addItem(submenu(fileMenu()))
         main.addItem(submenu(editMenu()))
         main.addItem(submenu(viewMenu()))
+        main.addItem(submenu(textMenu()))
         main.addItem(submenu(formatMenu()))
         let window = windowMenu()
         main.addItem(submenu(window))
@@ -100,6 +101,10 @@ enum MainMenu {
         find.addItem(item(String(localized: "Auswahl anzeigen"), #selector(NSText.centerSelectionInVisibleArea(_:)), "j"))
         menu.addItem(submenu(find))
         menu.addItem(item(String(localized: "Gehe zu Zeile …"), #selector(EditorViewController.showGoToLine(_:)), "l"))
+        menu.addItem(item(String(localized: "Auswahl erweitern"), #selector(EditorTextView.expandSelection(_:)), String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), [.option]))
+        menu.addItem(item(String(localized: "Auswahl verkleinern"), #selector(EditorTextView.shrinkSelection(_:)), String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), [.option]))
+        menu.addItem(.separator())
+        menu.addItem(item(String(localized: "Befehlspalette …"), #selector(AppDelegate.showCommandPalette(_:)), "p", [.command, .shift]))
 
         let spelling = NSMenu(title: String(localized: "Rechtschreibung und Grammatik"))
         spelling.addItem(item(String(localized: "Rechtschreibung und Grammatik einblenden"), #selector(NSText.showGuessPanel(_:)), ":"))
@@ -122,6 +127,27 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Originalgröße"), #selector(EditorViewController.resetZoom(_:)), "0"))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Vollbildmodus"), #selector(NSWindow.toggleFullScreen(_:)), "f", [.command, .control]))
+        return menu
+    }
+
+    /// Text: the commands of TextCommands, grouped, and running the last one again.
+    private static func textMenu() -> NSMenu {
+        let menu = NSMenu(title: String(localized: "Text"))
+        for group in TextCommands.groups {
+            let submenu = NSMenu(title: group.title)
+            for command in group.commands {
+                guard let command else {
+                    submenu.addItem(.separator())
+                    continue
+                }
+                let entry = item(command.title, #selector(EditorTextView.performTextCommand(_:)), command.key, command.modifiers)
+                entry.representedObject = command.id
+                submenu.addItem(entry)
+            }
+            menu.addItem(self.submenu(submenu))
+        }
+        menu.addItem(.separator())
+        menu.addItem(item(String(localized: "Erneut ausführen"), #selector(EditorTextView.repeatTextCommand(_:)), "r"))
         return menu
     }
 

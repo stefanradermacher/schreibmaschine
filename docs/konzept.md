@@ -73,7 +73,8 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 - **Spalten:** an einem Zeichen ausrichten (z. B. an `=` oder `|`), Markdown-Tabellen formatieren.
 - **Kodieren:** URL, Base64, HTML-Entitäten, JSON formatieren und verkleinern.
 - **Kommentare** umschalten (je nach Sprache).
-- **Wiederholen:** Der zuletzt ausgeführte Textbefehl lässt sich mit einem Kürzel erneut ausführen, auch mit denselben Parametern.
+- **Erneut ausführen** (⌘R): Der zuletzt ausgeführte Textbefehl lässt sich erneut ausführen, mit denselben Parametern.
+- **Einrücken und Ausrücken:** ⌘] und ⌘[, außerdem ⇥ und ⇧⇥ bei einer Auswahl über mehrere Zeilen.
 
 **Befehlspalette** (⇧⌘P): Man tippt ein paar Buchstaben und findet jeden Befehl, jede Sprache, jede Kodierung und jedes Benutzerskript. Zuletzt benutzte Befehle stehen oben.
 
@@ -85,9 +86,9 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 | ⌥⇧↑ / ⌥⇧↓ | Zeile oder Auswahl nach oben / unten verschieben |
 | ⌘⌫ | Zeile löschen (ohne Auswahl) |
 | ⌃⇧J | Zeilen verbinden |
-| ⌘/ | Kommentar umschalten |
+| ⌘/ | Kommentar umschalten (mit Meilenstein 5, braucht die Sprachen) |
 | ⌥↑ / ⌥↓ | Auswahl erweitern / verkleinern (Wort → Zeichenkette → Klammer → Zeile → Absatz) |
-| ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen |
+| ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen (mit Meilenstein 6) |
 | ⌃⌘G | alle Vorkommen auswählen |
 
 ⌘↑ und ⌘↓ bleiben beim macOS-Standard (Anfang und Ende des Dokuments), deshalb verschiebt ⌥⇧↑/↓ die Zeilen, wie in PhpStorm auf dem Mac. Alle Kürzel lassen sich über die Systemeinstellungen („Tastatur → Tastaturkurzbefehle → App-Tastaturkurzbefehle“) ändern, weil sie ganz normale Menübefehle sind.

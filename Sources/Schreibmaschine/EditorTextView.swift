@@ -41,6 +41,24 @@ final class EditorTextView: NSTextView {
     var highlightsCurrentLine = true { didSet { needsDisplay = true } }
     /// Esc in the text; returns true if it was used, for instance to close the find bar.
     var onCancel: (() -> Bool)?
+    /// The Text menu command being run, for the name of its undo step.
+    var currentCommandTitle: String?
+
+    override func validateMenuItem(_ item: NSMenuItem) -> Bool {
+        switch item.action {
+        case #selector(performTextCommand(_:)), #selector(expandSelection(_:)), #selector(shrinkSelection(_:)):
+            return isEditable || item.action != #selector(performTextCommand(_:))
+        case #selector(repeatTextCommand(_:)):
+            if let last = TextCommands.last {
+                item.title = String(localized: "Erneut ausführen: \(last.command.title.replacingOccurrences(of: " …", with: ""))")
+                return isEditable
+            }
+            item.title = String(localized: "Erneut ausführen")
+            return false
+        default:
+            return super.validateMenuItem(item)
+        }
+    }
 
     override func cancelOperation(_ sender: Any?) {
         if onCancel?() == true { return }
@@ -93,10 +111,25 @@ final class EditorTextView: NSTextView {
     // MARK: - Indentation
 
     override func insertTab(_ sender: Any?) {
+        // With a selection over several lines, ⇥ indents them, as in most editors.
+        let selection = selectedRange()
+        if selection.length > 0, (string as NSString).substring(with: selection).contains("\n") {
+            currentCommandTitle = String(localized: "Einrücken")
+            indentLines()
+            currentCommandTitle = nil
+            return
+        }
         guard Preferences.indentsWithSpacesValue, selectedRange().length == 0 else { return super.insertTab(sender) }
         let width = Preferences.tabWidthValue
         let count = width - column(at: selectedRange().location) % width
         insertText(String(repeating: " ", count: count), replacementRange: selectedRange())
+    }
+
+    /// ⇧⇥ outdents the current line or the lines of the selection.
+    override func insertBacktab(_ sender: Any?) {
+        currentCommandTitle = String(localized: "Ausrücken")
+        outdentLines()
+        currentCommandTitle = nil
     }
 
     override func insertNewline(_ sender: Any?) {
@@ -143,6 +176,112 @@ final class EditorTextView: NSTextView {
             column = text.character(at: index) == 0x09 ? (column / width + 1) * width : column + 1
         }
         return column
+    }
+
+    // MARK: - Expanding the selection
+
+    private var selectionHistory: [NSRange] = []
+    private var expandedSelection: NSRange?
+
+    /// ⌥↑: word, text in quotes, text in brackets, line, paragraph, document — each step the
+    /// next larger unit around the selection.
+    @objc func expandSelection(_ sender: Any?) {
+        let current = selectedRange()
+        if expandedSelection != current { selectionHistory = [] }
+        guard let next = enclosingRanges(of: current)
+            .filter({ NSEqualRanges(NSUnionRange($0, current), $0) && $0.length > current.length })
+            .min(by: { $0.length < $1.length })
+        else { return NSSound.beep() }
+        selectionHistory.append(current)
+        setSelectedRange(next)
+        expandedSelection = next
+    }
+
+    /// ⌥↓: back to the selection before the last ⌥↑.
+    @objc func shrinkSelection(_ sender: Any?) {
+        guard expandedSelection == selectedRange(), let previous = selectionHistory.popLast() else { return NSSound.beep() }
+        setSelectedRange(previous)
+        expandedSelection = previous
+    }
+
+    private func enclosingRanges(of selection: NSRange) -> [NSRange] {
+        let text = string as NSString
+        var ranges: [NSRange] = [wordRange(at: selection.location)]
+        let line = text.lineRange(for: selection)
+        var lineContent = line
+        while lineContent.length > 0, [0x0A, 0x0D].contains(text.character(at: lineContent.upperBound - 1)) { lineContent.length -= 1 }
+        var trimmed = lineContent
+        while trimmed.length > 0, [0x20, 0x09].contains(text.character(at: trimmed.location)) { trimmed.location += 1; trimmed.length -= 1 }
+        ranges += [trimmed, lineContent, line]
+
+        // Quotes on the same line around the selection.
+        for quote in [0x22, 0x27, 0x60] as [unichar] {
+            var positions: [Int] = []
+            for index in lineContent.location..<lineContent.upperBound where text.character(at: index) == quote {
+                if index > lineContent.location, text.character(at: index - 1) == 0x5C { continue }
+                positions.append(index)
+            }
+            for pair in stride(from: 0, to: positions.count - 1, by: 2) {
+                let open = positions[pair], close = positions[pair + 1]
+                ranges.append(NSRange(location: open + 1, length: close - open - 1))
+                ranges.append(NSRange(location: open, length: close - open + 1))
+            }
+        }
+
+        // Brackets around the selection, nested ones skipped.
+        let pairs: [unichar: unichar] = [0x28: 0x29, 0x5B: 0x5D, 0x7B: 0x7D]
+        var depth: [unichar: Int] = [:]
+        var index = selection.location - 1
+        let limit = max(0, selection.location - 200_000)
+        while index >= limit {
+            let character = text.character(at: index)
+            if let closer = pairs[character] {
+                if depth[closer, default: 0] == 0 {
+                    if let close = matchingClose(of: character, closer: closer, from: max(selection.upperBound, index + 1), in: text) {
+                        ranges.append(NSRange(location: index + 1, length: close - index - 1))
+                        ranges.append(NSRange(location: index, length: close - index + 1))
+                    }
+                } else {
+                    depth[closer]! -= 1
+                }
+            } else if pairs.values.contains(character) {
+                depth[character, default: 0] += 1
+            }
+            index -= 1
+        }
+
+        // The paragraph and the whole text.
+        var start = line.location
+        while start > 0 {
+            let previous = text.lineRange(for: NSRange(location: start - 1, length: 0))
+            if text.substring(with: previous).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { break }
+            start = previous.location
+        }
+        var end = line.upperBound
+        while end < text.length {
+            let next = text.lineRange(for: NSRange(location: end, length: 0))
+            if text.substring(with: next).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { break }
+            end = next.upperBound
+        }
+        ranges.append(NSRange(location: start, length: end - start))
+        ranges.append(NSRange(location: 0, length: text.length))
+        return ranges.filter { $0.location != NSNotFound && $0.length >= 0 }
+    }
+
+    private func matchingClose(of opener: unichar, closer: unichar, from start: Int, in text: NSString) -> Int? {
+        var depth = 0
+        var index = start
+        let limit = min(text.length, start + 200_000)
+        while index < limit {
+            let character = text.character(at: index)
+            if character == opener { depth += 1 }
+            else if character == closer {
+                if depth == 0 { return index }
+                depth -= 1
+            }
+            index += 1
+        }
+        return nil
     }
 
     // MARK: - Pasting

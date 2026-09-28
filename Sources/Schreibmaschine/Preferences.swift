@@ -12,6 +12,7 @@ enum Preferences {
     static let showsInvisibles = "showsInvisibles"
     static let highlightsCurrentLine = "highlightsCurrentLine"
     static let tabWidth = "tabWidth"
+    static let wrapColumn = "wrapColumn"
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
@@ -35,6 +36,7 @@ enum Preferences {
             showsInvisibles: false,
             highlightsCurrentLine: true,
             tabWidth: 4,
+            wrapColumn: 80,
             indentsWithSpaces: true,
             autoIndents: true,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
@@ -62,6 +64,7 @@ enum Preferences {
     }
 
     static var tabWidthValue: Int { defaults.integer(forKey: tabWidth).clamped(to: 1...16) }
+    static var wrapColumnValue: Int { defaults.integer(forKey: wrapColumn).clamped(to: 10...1000) }
     static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
     static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }

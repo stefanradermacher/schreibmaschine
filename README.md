@@ -10,7 +10,7 @@ Die Oberfläche gibt es auf Deutsch und Englisch. Die Texte liegen im String-Kat
 
 Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
-## Stand: Meilenstein 3
+## Stand: Meilenstein 4
 
 - **Dokumente:** Öffnen, Sichern, Sichern unter, Zurück zur gesicherten Version, Drucken. Gesichert wird nur mit ⌘S; die Datei ändert sich nie von selbst.
 - **Kodierung:** wird beim Öffnen erkannt (Byte Order Mark, UTF-16, UTF-8, dann die eingestellte Standardkodierung, bei anderen Schriften Foundations Schätzung, zuletzt Windows-1252 und ISO Latin 1) und beim Sichern beibehalten. Umstellen über Format → Zeichenkodierung oder die Statusleiste; lässt sich ein Zeichen in der neuen Kodierung nicht darstellen, nennt die App es vorher. Ablage → Erneut öffnen mit Kodierung liest die Datei in einer anderen Kodierung neu. Dateien mit Nullbytes gelten als Binärdateien und werden nicht geöffnet.
@@ -24,6 +24,9 @@ Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 - **Fehlende Dateien:** Ist eine Datei der Sitzung gelöscht oder verschoben, nennt die App sie beim Start. Hatte sie ungesicherte Änderungen, kommt der Text als neues Dokument unter ihrem Namen zurück.
 - **Zustand pro Datei:** Auswahl, oberste sichtbare Zeile, Umbruch, Zeilennummern, unsichtbare Zeichen und Schriftgröße merkt sich die App für jede Datei, ebenso eine Kodierung, die mit Erneut öffnen mit Kodierung gewählt wurde (`FileState.swift`, als JSON im Container, nach Pfad; die Datei selbst bleibt unberührt).
 - **Suchen und Ersetzen:** eine Leiste oben im Editor (⌘F, mit Ersetzen ⌥⌘F), kein eigenes Fenster. Gesucht wird beim Tippen; alle Treffer sind im Text gelb hinterlegt und am rechten Rand als Striche markiert, daneben steht „3 von 17“. ↩ und ⇧↩ (oder ⌘G und ⇧⌘G, auch bei geschlossener Leiste) springen weiter, am Ende geht es vorn weiter. Schalter für Groß-/Kleinschreibung, ganze Wörter, reguläre Ausdrücke und die Suche nur in der Auswahl; ein ungültiger Ausdruck wird rot gemeldet. ⌥↩ setzt einen Zeilenumbruch in den Suchbegriff, das Feld wächst mit. Eine Auswahl wird beim Öffnen zum Suchbegriff; der Begriff wird wie auf dem Mac üblich mit anderen Apps geteilt (⌘E), die letzten 20 stehen im Verlauf (Uhr-Symbol oder ↓). Ersetzen ersetzt den aktuellen Treffer und geht zum nächsten, Alle ersetzen lässt sich in einem Schritt widerrufen; bei regulären Ausdrücken zeigt eine Vorschau das Ergebnis, `$1` setzt Gruppen ein, `\n` und `\t` Zeilenumbruch und Tab. Esc schließt die Leiste, auch aus dem Text heraus. Alle Treffer auswählen: ⌃⌘G.
+- **Text umformen:** das Menü Text mit Zeilen (duplizieren ⌘D, löschen ⌘⌫, verschieben ⌥⇧↑/↓, verbinden ⌃⇧J oder mit wählbarem Trennzeichen, teilen, sortieren A–Z und Z–A mit natürlicher Zahlenfolge, nach Zahlen sortieren, Dubletten entfernen, umkehren, mischen, nummerieren, leere Zeilen entfernen), Absätze (umbrechen bei der eingestellten oder einer gewählten Spalte, Umbrüche entfernen, einrücken ⌘] und ausrücken ⌘[, als Zitat markieren), Leerraum, Schreibweise (auch camelCase, snake_case, kebab-case), Spalten (an einem Zeichen ausrichten, Markdown-Tabelle formatieren) und Kodieren (URL, Base64, HTML, JSON formatieren oder verkleinern, ohne die Reihenfolge der Schlüssel zu ändern). Die Befehle wirken auf die Auswahl; ohne Auswahl auf das, was sinnvoll ist: Sortieren und Kodieren auf das ganze Dokument, Verschieben und Einrücken auf die Zeile, Umbrechen auf den Absatz, die Schreibweise auf das Wort am Cursor. Leerraum und Zeilenumbrüche um eine Auswahl bleiben stehen. Jeder Befehl ist ein Widerrufen-Schritt mit seinem Namen; ⌘R führt den letzten noch einmal aus, mit demselben Wert. ⇥ und ⇧⇥ rücken eine mehrzeilige Auswahl ein und aus.
+- **Auswahl erweitern** (⌥↑): Wort, Text in Anführungszeichen, Text in Klammern, Zeile, Absatz, alles; ⌥↓ geht zurück.
+- **Befehlspalette** (⇧⌘P): jeder Menübefehl, gefunden mit ein paar Buchstaben („zverb“ für Zeilen verbinden), mit Menüpfad und Tastenkürzel; die zuletzt benutzten stehen oben. Sie liest die Menüs beim Öffnen, damit sind auch Kodierungen, Dokumente und Einstellungen dabei.
 - **Gehe zu Zeile** (⌘L) in derselben Leiste: `120`, `120:15` (mit Spalte), `+10`, `-10`.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Seitenleiste links mit den Treffern nach Dokument, jeweils mit Zeilennummer und Zeile; ein Klick holt das Dokument nach vorn und wählt den Treffer aus. Sie ist in allen Tabs dieselbe und bleibt sichtbar, wenn ein Klick in einen anderen Tab wechselt. Alle ersetzen gilt für alle offenen Dokumente, jedes kann es einzeln widerrufen. In Ordnern oder Projekten sucht Schreibmaschine bewusst nicht.
 
@@ -59,6 +62,8 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `Session.swift`, `FileState.swift`: die eigene Sitzung mit ungesicherten Texten, der Zustand pro Datei
   - `TextSearch.swift`, `FindBar.swift`, `SearchController.swift`: Suchen, Ersetzen und Gehe zu Zeile in der Leiste über dem Text
   - `AllDocumentsSearch.swift`: Suche in allen offenen Dokumenten mit der Seitenleiste
+  - `TextTransforms.swift`, `TextCommands.swift`: die Umformungen des Menüs Text als reine Funktionen und ihre Anwendung auf die Auswahl
+  - `CommandPalette.swift`: die Befehlspalette
   - `EditorTextView.swift`: Textansicht mit Einrückung und hervorgehobener Zeile
   - `LineNumberRuler.swift`, `InvisiblesLayoutFragment.swift`, `StatusBar.swift`: Zeilennummern, unsichtbare Zeichen, Statusleiste
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster
