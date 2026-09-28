@@ -19,7 +19,7 @@ Vorbereitete Texte und Angaben für den Eintrag in App Store Connect. Zeichenzah
 | Marketing-URL | https://stefanradermacher.com/projects/schreibmaschine |
 | Datenschutz-URL | https://stefanradermacher.com/projects/schreibmaschine/datenschutz |
 
-Die englischen Fassungen, USA und UK, heißen „Schreibmaschine – Text Editor“, passend zu „Leser – PDF Reader“ und „Motiv – Image Viewer“; auf dem Mac und im deutschen Eintrag bleibt es „Schreibmaschine“. Ob der Name in App Store Connect noch frei ist, zeigt sich beim Anlegen des Eintrags.
+Die englischen Fassungen, USA und UK, heißen „Schreibmaschine – Text Editor“, passend zu „Leser – PDF Reader“ und „Motiv – Image Viewer“; auf dem Mac und im deutschen Eintrag bleibt es „Schreibmaschine“. Beide Namen sind in App Store Connect eingetragen und damit reserviert.
 
 ## Werbetext (170)
 
@@ -147,8 +147,8 @@ Noch anzufertigen, 2880 × 1800 Pixel, in `docs/screenshots/` und `docs/screensh
 
 ## Vor dem Hochladen
 
-- [ ] Bundle-ID auf developer.apple.com unter „Identifiers“ registriert
-- [ ] App-Eintrag in App Store Connect angelegt (Name, primäre Sprache, Bundle-ID, SKU)
+- [x] Bundle-ID auf developer.apple.com unter „Identifiers“ registriert
+- [x] App-Eintrag in App Store Connect angelegt (Name, primäre Sprache, Bundle-ID, SKU), deutscher und englischer Name eingetragen
 - [ ] Drei Verbrauchsartikel angelegt
 - [ ] Homepage-Seiten mit Support und Datenschutz online
 - [ ] Build-Nummer höher als beim letzten Upload
