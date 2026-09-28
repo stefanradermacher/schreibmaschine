@@ -1,4 +1,4 @@
-# JavaScript und TypeScript. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# JavaScript und TypeScript. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: JavaScript
 extensions: [js, mjs, cjs, jsx, ts, tsx, mts, cts]
 interpreters: [node, deno, bun]

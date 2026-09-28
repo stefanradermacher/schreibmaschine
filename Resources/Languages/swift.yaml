@@ -1,4 +1,4 @@
-# Swift. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# Swift. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: Swift
 extensions: [swift]
 comment:

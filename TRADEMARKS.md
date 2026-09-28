@@ -1,6 +1,6 @@
-# Kennzeichen von Schreibmaschine
+# Kennzeichen der Schreibmaschine
 
-Der Quellcode von Schreibmaschine steht unter der Apache-Lizenz 2.0 (siehe `LICENSE`) und
+Der Quellcode der Schreibmaschine steht unter der Apache-Lizenz 2.0 (siehe `LICENSE`) und
 ist frei verwendbar. Die Kennzeichen des Projekts sind davon ausgenommen; diese
 Seite sagt, was mit ihnen erlaubt ist.
 
@@ -17,13 +17,13 @@ Werks.
 
 ## Erlaubt, ohne zu fragen
 
-- Schreibmaschine beim Namen zu nennen, um über Schreibmaschine zu sprechen: in Besprechungen,
+- die Schreibmaschine beim Namen zu nennen, um über sie zu sprechen: in Besprechungen,
   Anleitungen, Vergleichen, Vorträgen oder Verlinkungen
-- zu sagen, dass ein Programm mit Schreibmaschine zusammenarbeitet oder für Schreibmaschine
+- zu sagen, dass ein Programm mit der Schreibmaschine zusammenarbeitet oder für die Schreibmaschine
   gedacht ist
 - die unveränderte App weiterzugeben, so wie sie veröffentlicht ist, mit
   Namen und Symbolen
-- Bildschirmfotos von Schreibmaschine zu zeigen
+- Bildschirmfotos der Schreibmaschine zu zeigen
 
 ## Was einen eigenen Namen braucht
 
@@ -33,7 +33,7 @@ abgewandelter oder nachgezeichneter Form, und nicht als Teil eines eigenen
 Namens oder Logos.
 
 Der Code selbst bleibt dabei frei verwendbar — die Einschränkung betrifft nur
-die Kennzeichen. Wer Schreibmaschine abspaltet, tauscht also Name und Symbole aus und ist
+die Kennzeichen. Wer die Schreibmaschine abspaltet, tauscht also Name und Symbole aus und ist
 fertig.
 
 ## Alles Übrige

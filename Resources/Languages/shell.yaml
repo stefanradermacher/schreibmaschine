@@ -1,4 +1,4 @@
-# Shell (sh, bash, zsh). Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# Shell (sh, bash, zsh). Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: Shell
 extensions: [sh, bash, zsh, ksh, command]
 filenames: [.bashrc, .bash_profile, .bash_aliases, .bash_logout, .zshrc, .zprofile, .zshenv, .zlogin, .profile]

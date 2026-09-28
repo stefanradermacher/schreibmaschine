@@ -1,4 +1,4 @@
-# SQL. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# SQL. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: SQL
 extensions: [sql, ddl, dml]
 comment:

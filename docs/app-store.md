@@ -27,7 +27,7 @@ Texteditor für Text und Code. Kein IDE-Ersatz, sondern ein Werkzeug zum Schreib
 
 ## Beschreibung (4000)
 
-Schreibmaschine ist ein Texteditor für den Mac: für einfachen Text, den man oft umformt, und genauso für Code. Kein IDE-Ersatz, sondern ein Werkzeug zum Schreiben. Keine Anmeldung, keine Werbung.
+Die Schreibmaschine ist ein Texteditor für den Mac: für einfachen Text, den man oft umformt, und genauso für Code. Kein IDE-Ersatz, sondern ein Werkzeug zum Schreiben. Keine Anmeldung, keine Werbung.
 
 Schreiben und umformen
 • Menü „Text“ mit Befehlen für Zeilen, Absätze, Leerraum, Schreibweise, Spalten und Kodierungen: Zeilen verbinden, sortieren, Dubletten entfernen, Absätze umbrechen, Markdown-Tabellen formatieren, JSON formatieren und vieles mehr
@@ -55,8 +55,8 @@ Für Text und Code
 Ehrlich und offen
 • Kostenlos und quelloffen unter der Apache-Lizenz 2.0
 • Keine Werbung, kein Tracking, keine Analyse
-• Schreibmaschine baut selbst keine Verbindung ins Internet auf; nur das freiwillige Trinkgeld läuft über den App Store. Deine Texte und Einstellungen bleiben auf deinem Mac
-• Wer mag, kann die Entwicklung mit einem freiwilligen Trinkgeld unterstützen. Es schaltet nichts frei, Schreibmaschine bleibt vollständig kostenlos.
+• Die Schreibmaschine baut selbst keine Verbindung ins Internet auf; nur das freiwillige Trinkgeld läuft über den App Store. Deine Texte und Einstellungen bleiben auf deinem Mac
+• Wer mag, kann die Entwicklung mit einem freiwilligen Trinkgeld unterstützen. Es schaltet nichts frei, die Schreibmaschine bleibt vollständig kostenlos.
 
 ## Schlüsselwörter (100, mit Komma, ohne Leerzeichen)
 
@@ -123,21 +123,21 @@ Vorgesehen wie bei Leser und Motiv, noch nicht eingebaut. Typ für alle drei: Ve
 
 | Referenzname | Produkt-ID | Anzeigename | Beschreibung | Preis |
 |---|---|---|---|---|
-| Trinkgeld Kaffee | com.stefanradermacher.schreibmaschine.tip.coffee | Ein Kaffee | Ein kleines Trinkgeld für Schreibmaschine. | 1,99 € |
-| Trinkgeld Frühstück | com.stefanradermacher.schreibmaschine.tip.breakfast | Ein Frühstück | Ein mittleres Trinkgeld für Schreibmaschine. | 4,99 € |
-| Trinkgeld Abendessen | com.stefanradermacher.schreibmaschine.tip.dinner | Ein Abendessen | Ein großes Trinkgeld für Schreibmaschine. | 9,99 € |
+| Trinkgeld Kaffee | com.stefanradermacher.schreibmaschine.tip.coffee | Ein Kaffee | Kleines Trinkgeld für die Schreibmaschine. | 1,99 € |
+| Trinkgeld Frühstück | com.stefanradermacher.schreibmaschine.tip.breakfast | Ein Frühstück | Mittleres Trinkgeld für die Schreibmaschine. | 4,99 € |
+| Trinkgeld Abendessen | com.stefanradermacher.schreibmaschine.tip.dinner | Ein Abendessen | Großes Trinkgeld für die Schreibmaschine. | 9,99 € |
 
-Die Beschreibung darf in App Store Connect höchstens 45 Zeichen lang sein, der Anzeigename 30; wegen des langen Namens heißt es „ein großes“ statt „ein großzügiges“ Trinkgeld. Auf Englisch (USA und UK) heißen die Artikel „Coffee“, „Breakfast“ und „Dinner“ mit „A small/medium/generous tip for Schreibmaschine.“
+Die Beschreibung darf in App Store Connect höchstens 45 Zeichen lang sein, der Anzeigename 30; wegen des langen Namens mit Artikel fehlt vorn das „Ein“, und es heißt „Großes“ statt „Großzügiges“ Trinkgeld. Auf Englisch (USA und UK) heißen die Artikel „Coffee“, „Breakfast“ und „Dinner“ mit „A small/medium/generous tip for Schreibmaschine.“
 
 ## Datenschutzangaben im Fragebogen
 
-„Es werden keine Daten erfasst.“ Schreibmaschine sendet nichts an eigene oder fremde Server. Einstellungen, Sitzung, ungesicherte Texte und der Zustand pro Datei liegen ausschließlich lokal im Container der App. Käufe wickelt Apple ab.
+„Es werden keine Daten erfasst.“ Die Schreibmaschine sendet nichts an eigene oder fremde Server. Einstellungen, Sitzung, ungesicherte Texte und der Zustand pro Datei liegen ausschließlich lokal im Container der App. Käufe wickelt Apple ab.
 
 Dieselbe Aussage steht maschinenlesbar in `Resources/PrivacyInfo.xcprivacy`: kein Tracking, keine Tracking-Domains, keine erfassten Datentypen.
 
 ## Hinweise für die Prüfung
 
-Schreibmaschine ist ein Texteditor. Es gibt keine Anmeldung, kein Konto und keine Testzugangsdaten. Dateien ändert die App nur, wenn man sie ausdrücklich sichert (⌘S); ungesicherte Texte hält sie in ihrem Container, damit beim Beenden nichts verloren geht.
+Die Schreibmaschine ist ein Texteditor. Es gibt keine Anmeldung, kein Konto und keine Testzugangsdaten. Dateien ändert die App nur, wenn man sie ausdrücklich sichert (⌘S); ungesicherte Texte hält sie in ihrem Container, damit beim Beenden nichts verloren geht.
 
 Zum Testen eignet sich jede beliebige Textdatei.
 

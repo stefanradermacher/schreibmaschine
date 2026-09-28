@@ -1,4 +1,4 @@
-# JSON. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# JSON. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: JSON
 extensions: [json, jsonc, json5, geojson, webmanifest, jsonl]
 filenames: [.babelrc, .eslintrc, .prettierrc, composer.lock]

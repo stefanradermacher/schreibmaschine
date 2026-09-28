@@ -1,4 +1,4 @@
-# PHP. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# PHP. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: PHP
 extensions: [php, phtml, php3, php4, php5, phps]
 interpreters: [php]

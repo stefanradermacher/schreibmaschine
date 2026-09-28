@@ -70,8 +70,8 @@ if is_running; then
     osascript -e "quit app \"$target\"" >/dev/null 2>&1 || true
     for _ in {1..50}; do is_running || break; sleep 0.1; done
     if is_running; then
-        echo "Schreibmaschine lässt sich nicht beenden (vielleicht ist noch ein Dialog offen)." >&2
-        echo "Bitte Schreibmaschine von Hand beenden und erneut bauen. Gebaut ist die neue Version schon: $PWD/$app" >&2
+        echo "Die Schreibmaschine lässt sich nicht beenden (vielleicht ist noch ein Dialog offen)." >&2
+        echo "Bitte die Schreibmaschine von Hand beenden und erneut bauen. Gebaut ist die neue Version schon: $PWD/$app" >&2
         exit 1
     fi
 fi

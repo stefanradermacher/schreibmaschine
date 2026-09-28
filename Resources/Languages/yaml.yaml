@@ -1,4 +1,4 @@
-# YAML. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+# YAML. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode der Schreibmaschine.
 name: YAML
 extensions: [yaml, yml]
 comment:

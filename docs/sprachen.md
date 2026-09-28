@@ -1,6 +1,6 @@
 # Sprachdefinitionen
 
-Schreibmaschine färbt Text nach Sprachdefinitionen: kleinen YAML-Dateien mit regulären Ausdrücken. Die mitgelieferten liegen im Quellcode unter `Resources/Languages/`, eigene in einem Ordner im Container der App:
+Die Schreibmaschine färbt Text nach Sprachdefinitionen: kleinen YAML-Dateien mit regulären Ausdrücken. Die mitgelieferten liegen im Quellcode unter `Resources/Languages/`, eigene in einem Ordner im Container der App:
 
 ```
 ~/Library/Containers/com.stefanradermacher.schreibmaschine/Data/Library/Application Support/Schreibmaschine/Sprachen/

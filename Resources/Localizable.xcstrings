@@ -481,7 +481,7 @@
         }
       }
     },
-    "Beim Öffnen erkennt Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.": {
+    "Beim Öffnen erkennt die Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -1971,7 +1971,7 @@
         }
       }
     },
-    "Startet Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.": {
+    "Startet die Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.": {
       "localizations": {
         "en": {
           "stringUnit": {

@@ -48,7 +48,7 @@ private struct GeneralSettings: View {
                 }
                 .pickerStyle(.radioGroup)
             } footer: {
-                Text("Startet Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.")
+                Text("Startet die Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -75,7 +75,7 @@ private struct GeneralSettings: View {
             } header: {
                 Text("Für neue Dokumente")
             } footer: {
-                Text("Beim Öffnen erkennt Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.")
+                Text("Beim Öffnen erkennt die Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

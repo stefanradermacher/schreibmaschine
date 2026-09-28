@@ -2,7 +2,7 @@
 
 Schlichter Texteditor für macOS 15+, gebaut mit AppKit und TextKit 2. Vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Kein IDE-Ersatz; Vorbilder sind KWrite und CotEditor.
 
-Schreibmaschine ist quelloffen (Apache-Lizenz 2.0, siehe `LICENSE`), werbefrei und übermittelt keine Daten: kein Tracking, keine Analyse, keine eigenen Netzwerkverbindungen.
+Die Schreibmaschine ist quelloffen (Apache-Lizenz 2.0, siehe `LICENSE`), werbefrei und übermittelt keine Daten: kein Tracking, keine Analyse, keine eigenen Netzwerkverbindungen.
 
 Nicht Teil des lizenzierten Werks sind die Kennzeichen des Projekts: der Name „Schreibmaschine“, das App- und das Dokumentsymbol und `scripts/make_icon.swift`, das diese Symbole zeichnet. Was damit erlaubt ist, steht in `TRADEMARKS.md`. `NOTICE` hält den Umfang fest und ist nach Abschnitt 4(d) der Lizenz bei jeder Weitergabe mitzuführen.
 
@@ -35,7 +35,7 @@ Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
 ## Bauen
 
-Schreibmaschine ist ein Xcode-Projekt (`Schreibmaschine.xcodeproj`, Xcode 27 oder neuer, macOS 15+). In Xcode öffnen und mit ⌘R starten; für einen signierten Build unter „Signing & Capabilities“ das eigene Team eintragen.
+Die Schreibmaschine ist ein Xcode-Projekt (`Schreibmaschine.xcodeproj`, Xcode 27 oder neuer, macOS 15+). In Xcode öffnen und mit ⌘R starten; für einen signierten Build unter „Signing & Capabilities“ das eigene Team eintragen.
 
 Ohne Xcode-Oberfläche:
 
@@ -43,7 +43,7 @@ Ohne Xcode-Oberfläche:
 ./build.sh
 ```
 
-Das baut `build/Schreibmaschine.app` mit `xcodebuild` (mit derselben Sandbox wie im App Store) und installiert die App nach `/Applications`. Läuft Schreibmaschine gerade, wird es vorher beendet und danach wieder geöffnet. Stammt die installierte App aus dem App Store, lässt `build.sh` sie unangetastet und meldet nur den Build. Nur bauen, ohne zu installieren: `./build.sh --no-install`.
+Das baut `build/Schreibmaschine.app` mit `xcodebuild` (mit derselben Sandbox wie im App Store) und installiert die App nach `/Applications`. Läuft die Schreibmaschine gerade, wird sie vorher beendet und danach wieder geöffnet. Stammt die installierte App aus dem App Store, lässt `build.sh` sie unangetastet und meldet nur den Build. Nur bauen, ohne zu installieren: `./build.sh --no-install`.
 
 Nennt `Config/Local.xcconfig` eine Team-ID, signiert `build.sh` mit diesem Team; Xcode legt App-ID und Entwicklungsprofil bei Bedarf im Entwicklerkonto an. Ohne Team-ID, oder mit `--adhoc`, signiert es ad hoc; die App läuft dann genauso.
 

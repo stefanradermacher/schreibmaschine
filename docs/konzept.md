@@ -2,7 +2,7 @@
 
 Stand: 28. September 2026
 
-Schreibmaschine ist ein schlichter Texteditor für macOS: vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Er soll kein IDE-Ersatz und kein Alleskönner sein. Vorbilder sind KWrite und CotEditor. Von CotEditor übernimmt er den Funktionsumfang, macht aber Suchen, Fenster und Wiederherstellung anders.
+Die Schreibmaschine ist ein schlichter Texteditor für macOS: vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Er soll kein IDE-Ersatz und kein Alleskönner sein. Vorbilder sind KWrite und CotEditor. Von CotEditor übernimmt er den Funktionsumfang, macht aber Suchen, Fenster und Wiederherstellung anders.
 
 Englischer Name ebenfalls „Schreibmaschine“, im App Store mit erklärendem Zusatz (etwa „Schreibmaschine – Text Editor“).
 
@@ -37,7 +37,7 @@ Bei CotEditor wie bei den meisten Mac-Apps übernimmt die Fensterwiederherstellu
 
 ### Die Lösung: eine eigene, sichtbare Sitzung
 
-Schreibmaschine schaltet die Systemwiederherstellung ab und verwaltet ihre **Sitzung** selbst:
+Die Schreibmaschine schaltet die Systemwiederherstellung ab und verwaltet ihre **Sitzung** selbst:
 
 - Eine Sitzung ist: alle Fenster mit Position und Größe, darin die Tabs in ihrer Reihenfolge, je Tab eine Datei oder ein ungesicherter Text, und die geteilten Ansichten.
 - **Einstellung „Beim Start“**, ausdrücklich und mit drei Möglichkeiten:
