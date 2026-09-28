@@ -34,6 +34,7 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
             }
             contentViewController = editor
             window.setContentSize(size)
+
         }
     }
 

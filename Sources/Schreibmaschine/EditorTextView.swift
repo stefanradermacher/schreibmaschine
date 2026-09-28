@@ -39,6 +39,25 @@ enum EditorStyle {
 /// of the previous line, highlighting the line with the insertion point.
 final class EditorTextView: NSTextView {
     var highlightsCurrentLine = true { didSet { needsDisplay = true } }
+    /// Esc in the text; returns true if it was used, for instance to close the find bar.
+    var onCancel: (() -> Bool)?
+
+    override func cancelOperation(_ sender: Any?) {
+        if onCancel?() == true { return }
+        super.cancelOperation(sender)
+    }
+
+    /// Draws the laid-out paragraphs again without laying them out anew. TextKit 2 does not
+    /// redraw them by itself when rendering attributes or drawing options change, and a new
+    /// layout would make it estimate the heights again, so the view would jump.
+    func redrawFragments() {
+        func redraw(_ view: NSView) {
+            view.needsDisplay = true
+            view.layer?.sublayers?.forEach { $0.setNeedsDisplay() }
+            view.subviews.forEach(redraw)
+        }
+        redraw(self)
+    }
 
     // MARK: - Current line
 

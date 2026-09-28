@@ -19,6 +19,10 @@ enum Preferences {
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
     static let opensDocumentsInTabs = "opensDocumentsInTabs"
     static let startupAction = "startupAction"              // StartupAction.rawValue
+    static let searchCaseSensitive = "searchCaseSensitive"
+    static let searchWholeWords = "searchWholeWords"
+    static let searchRegularExpression = "searchRegularExpression"
+    static let searchHistory = "searchHistory"
     static let windowWidth = "windowWidth"
     static let windowHeight = "windowHeight"
 

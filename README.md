@@ -10,7 +10,7 @@ Die Oberfläche gibt es auf Deutsch und Englisch. Die Texte liegen im String-Kat
 
 Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
-## Stand: Meilenstein 2
+## Stand: Meilenstein 3
 
 - **Dokumente:** Öffnen, Sichern, Sichern unter, Zurück zur gesicherten Version, Drucken. Gesichert wird nur mit ⌘S; die Datei ändert sich nie von selbst.
 - **Kodierung:** wird beim Öffnen erkannt (Byte Order Mark, UTF-16, UTF-8, dann die eingestellte Standardkodierung, bei anderen Schriften Foundations Schätzung, zuletzt Windows-1252 und ISO Latin 1) und beim Sichern beibehalten. Umstellen über Format → Zeichenkodierung oder die Statusleiste; lässt sich ein Zeichen in der neuen Kodierung nicht darstellen, nennt die App es vorher. Ablage → Erneut öffnen mit Kodierung liest die Datei in einer anderen Kodierung neu. Dateien mit Nullbytes gelten als Binärdateien und werden nicht geöffnet.
@@ -22,7 +22,9 @@ Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 - **Start:** Ohne Datei gestartet, stellt die App die letzte Sitzung wieder her, öffnet ein neues Dokument oder nichts (Einstellung „Beim Start ohne Datei“); nach einem Absturz kommt die Sitzung in jedem Fall zurück. Mit einer Datei gestartet (Doppelklick, Öffnen mit, Dock, `open`), erscheint nur diese Datei. Die Sitzung davor wird zur vorigen Sitzung, die sich unter Fenster → Sitzung wiederherstellen oder verwerfen lässt; enthält sie ungesicherte Texte, wird sie nie stillschweigend ersetzt, sondern um die nächste ergänzt.
 - **Fehlende Dateien:** Ist eine Datei der Sitzung gelöscht oder verschoben, nennt die App sie beim Start. Hatte sie ungesicherte Änderungen, kommt der Text als neues Dokument unter ihrem Namen zurück.
 - **Zustand pro Datei:** Auswahl, oberste sichtbare Zeile, Umbruch, Zeilennummern, unsichtbare Zeichen und Schriftgröße merkt sich die App für jede Datei, ebenso eine Kodierung, die mit Erneut öffnen mit Kodierung gewählt wurde (`FileState.swift`, als JSON im Container, nach Pfad; die Datei selbst bleibt unberührt).
-- **Suchen:** vorerst die Suchleiste von macOS (⌘F, ⌥⌘F); die eigene Suchleiste folgt mit Meilenstein 3.
+- **Suchen und Ersetzen:** eine Leiste oben im Editor (⌘F, mit Ersetzen ⌥⌘F), kein eigenes Fenster. Gesucht wird beim Tippen; alle Treffer sind im Text gelb hinterlegt und am rechten Rand als Striche markiert, daneben steht „3 von 17“. ↩ und ⇧↩ (oder ⌘G und ⇧⌘G, auch bei geschlossener Leiste) springen weiter, am Ende geht es vorn weiter. Schalter für Groß-/Kleinschreibung, ganze Wörter, reguläre Ausdrücke und die Suche nur in der Auswahl; ein ungültiger Ausdruck wird rot gemeldet. ⌥↩ setzt einen Zeilenumbruch in den Suchbegriff, das Feld wächst mit. Eine Auswahl wird beim Öffnen zum Suchbegriff; der Begriff wird wie auf dem Mac üblich mit anderen Apps geteilt (⌘E), die letzten 20 stehen im Verlauf (Uhr-Symbol oder ↓). Ersetzen ersetzt den aktuellen Treffer und geht zum nächsten, Alle ersetzen lässt sich in einem Schritt widerrufen; bei regulären Ausdrücken zeigt eine Vorschau das Ergebnis, `$1` setzt Gruppen ein, `\n` und `\t` Zeilenumbruch und Tab. Esc schließt die Leiste, auch aus dem Text heraus. Alle Treffer auswählen: ⌃⌘G.
+- **Gehe zu Zeile** (⌘L) in derselben Leiste: `120`, `120:15` (mit Spalte), `+10`, `-10`.
+- **In allen offenen Dokumenten suchen** (⇧⌘F): eine Seitenleiste links mit den Treffern nach Dokument, jeweils mit Zeilennummer und Zeile; ein Klick holt das Dokument nach vorn und wählt den Treffer aus. Sie ist in allen Tabs dieselbe und bleibt sichtbar, wenn ein Klick in einen anderen Tab wechselt. Alle ersetzen gilt für alle offenen Dokumente, jedes kann es einzeln widerrufen. In Ordnern oder Projekten sucht Schreibmaschine bewusst nicht.
 
 ## Bauen
 
@@ -53,6 +55,8 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `LineIndex.swift`: Zeilenanfänge, bei jeder Änderung schrittweise nachgeführt
   - `DocumentWindowController.swift`, `EditorViewController.swift`: Fenster und Tabs, Editoransicht
   - `Session.swift`, `FileState.swift`: die eigene Sitzung mit ungesicherten Texten, der Zustand pro Datei
+  - `TextSearch.swift`, `FindBar.swift`, `SearchController.swift`: Suchen, Ersetzen und Gehe zu Zeile in der Leiste über dem Text
+  - `AllDocumentsSearch.swift`: Suche in allen offenen Dokumenten mit der Seitenleiste
   - `EditorTextView.swift`: Textansicht mit Einrückung und hervorgehobener Zeile
   - `LineNumberRuler.swift`, `InvisiblesLayoutFragment.swift`, `StatusBar.swift`: Zeilennummern, unsichtbare Zeichen, Statusleiste
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster

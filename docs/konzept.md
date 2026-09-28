@@ -23,8 +23,8 @@ Eine Leiste oben im Editor, wie in PhpStorm. Kein eigenes Fenster.
 - **↩** und **⇧↩** springen zum nächsten und vorigen Treffer, **⌘G** und **⇧⌘G** genauso bei geschlossener Leiste.
 - **Schalter** direkt im Feld: Groß-/Kleinschreibung (Aa), ganzes Wort (W), regulärer Ausdruck (.*), nur in der Auswahl. Der Zustand der Schalter ist immer sichtbar.
 - Ist ein regulärer Ausdruck ungültig, färbt sich das Feld rot und ein kurzer Hinweis erklärt den Fehler. Es gibt kein Dialogfenster.
-- **Ersetzen:** „Ersetzen“, „Ersetzen und weiter“, „Alle ersetzen“. Bei regulären Ausdrücken zeigt eine Vorschau, was aus dem aktuellen Treffer wird (`$1`, `\n`, `\t`). „Alle ersetzen“ lässt sich in einem Schritt widerrufen.
-- **Alle Treffer auswählen** (⌃⌘G): Aus jedem Treffer wird ein Cursor, dann bearbeitet man alle gleichzeitig.
+- **Ersetzen:** „Ersetzen“ ersetzt den aktuellen Treffer und geht zum nächsten (wie in PhpStorm, ↩ im Ersetzen-Feld), „Alle ersetzen“ ersetzt alle. Bei regulären Ausdrücken zeigt eine Vorschau, was aus dem aktuellen Treffer wird (`$1`, `\n`, `\t`). „Alle ersetzen“ lässt sich in einem Schritt widerrufen.
+- **Alle Treffer auswählen** (⌃⌘G): Aus jedem Treffer wird eine Auswahl; mit Meilenstein 6 wird daraus ein Cursor je Treffer, an dem man gleichzeitig tippt.
 - Mehrzeilige Suchbegriffe sind möglich, das Feld wächst dann mit. Ein Verlauf der letzten Begriffe ist über ↓ oder ein Menü am Feld erreichbar.
 - **Gehe zu Zeile** (⌘L) nutzt dieselbe Leiste: `120`, `120:15` (Spalte), `+10`, `-10`.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Trefferliste in einer Seitenleiste, gegliedert nach Dokument, jeweils mit Zeilennummer und Zeile. Ein Klick springt zum Treffer. „Alle ersetzen“ gilt für alle offenen Dokumente und lässt sich in jedem Dokument einzeln widerrufen. Eine Suche in Ordnern oder Projekten gibt es bewusst nicht.

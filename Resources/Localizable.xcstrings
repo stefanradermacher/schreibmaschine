@@ -11,6 +11,36 @@
         }
       }
     },
+    "%@ Treffer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ matches"
+          }
+        }
+      }
+    },
+    "%@ Treffer ersetzt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ matches replaced"
+          }
+        }
+      }
+    },
+    "%@ Treffer in %@ Dokumenten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ matches in %2$@ documents"
+          }
+        }
+      }
+    },
     "%@ ausblenden": {
       "localizations": {
         "en": {
@@ -27,6 +57,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quit %@"
+          }
+        }
+      }
+    },
+    "%@ von %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@"
           }
         }
       }
@@ -91,6 +131,26 @@
         }
       }
     },
+    "1 Treffer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 match"
+          }
+        }
+      }
+    },
+    "1 Treffer ersetzt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 match replaced"
+          }
+        }
+      }
+    },
     "Abbrechen": {
       "localizations": {
         "en": {
@@ -121,12 +181,42 @@
         }
       }
     },
+    "Aktuellen Treffer ersetzen und zum nächsten gehen (↩ im Ersetzen-Feld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace the current match and go to the next one (↩ in the replace field)"
+          }
+        }
+      }
+    },
+    "Alle Treffer auswählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select All Matches"
+          }
+        }
+      }
+    },
     "Alle einblenden": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Show All"
+          }
+        }
+      }
+    },
+    "Alle ersetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace All"
           }
         }
       }
@@ -501,6 +591,36 @@
         }
       }
     },
+    "Ersetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace"
+          }
+        }
+      }
+    },
+    "Ersetzen durch": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace with"
+          }
+        }
+      }
+    },
+    "Erst Text auswählen, dann darin suchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select text first, then search in it"
+          }
+        }
+      }
+    },
     "Fenster": {
       "localizations": {
         "en": {
@@ -561,6 +681,16 @@
         }
       }
     },
+    "Gehe zu Zeile …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to Line…"
+          }
+        }
+      }
+    },
     "Gemischt → %@": {
       "localizations": {
         "en": {
@@ -577,6 +707,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Check Grammar With Spelling"
+          }
+        }
+      }
+    },
+    "Groß- und Kleinschreibung beachten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Match case"
           }
         }
       }
@@ -611,6 +751,36 @@
         }
       }
     },
+    "In allen Dokumenten ersetzen; jedes Dokument kann es einzeln widerrufen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace in all documents; each document can undo it on its own"
+          }
+        }
+      }
+    },
+    "In allen Dokumenten suchen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find in All Documents…"
+          }
+        }
+      }
+    },
+    "In allen offenen Dokumenten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In All Open Documents"
+          }
+        }
+      }
+    },
     "In der Sitzung (beim Start ohne Datei nicht wiederhergestellt):": {
       "localizations": {
         "en": {
@@ -627,6 +797,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No documents"
+          }
+        }
+      }
+    },
+    "Keine Treffer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matches"
           }
         }
       }
@@ -657,6 +837,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "LF (macOS, Linux)"
+          }
+        }
+      }
+    },
+    "Letzte Suchbegriffe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent Searches"
           }
         }
       }
@@ -731,6 +921,46 @@
         }
       }
     },
+    "Noch keine Suchbegriffe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recent searches"
+          }
+        }
+      }
+    },
+    "Nur ganze Wörter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whole words only"
+          }
+        }
+      }
+    },
+    "Nur in der Auswahl suchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search only in the selection"
+          }
+        }
+      }
+    },
+    "Nächster Treffer (↩)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next match (↩)"
+          }
+        }
+      }
+    },
     "Originalgröße": {
       "localizations": {
         "en": {
@@ -781,6 +1011,16 @@
         }
       }
     },
+    "Regulärer Ausdruck": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular expression"
+          }
+        }
+      }
+    },
     "Rückwärts suchen": {
       "localizations": {
         "en": {
@@ -807,6 +1047,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Close"
+          }
+        }
+      }
+    },
+    "Schließen (Esc)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close (Esc)"
           }
         }
       }
@@ -971,6 +1221,26 @@
         }
       }
     },
+    "Ungültiger Ausdruck": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid expression"
+          }
+        }
+      }
+    },
+    "Ungültiger regulärer Ausdruck. Klammern paarweise setzen, Sonderzeichen wie . * + ? ( ) [ ] mit \\ davor suchen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid regular expression. Use parentheses in pairs, and put \\ before special characters such as . * + ? ( ) [ ] to search for them."
+          }
+        }
+      }
+    },
     "Unsichtbare Zeichen": {
       "localizations": {
         "en": {
@@ -997,6 +1267,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter Full Screen"
+          }
+        }
+      }
+    },
+    "Vom Anfang an weiter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continued from the start"
+          }
+        }
+      }
+    },
+    "Vom Ende an weiter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continued from the end"
+          }
+        }
+      }
+    },
+    "Vorheriger Treffer (⇧↩)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous match (⇧↩)"
           }
         }
       }
@@ -1061,6 +1361,16 @@
         }
       }
     },
+    "Wird zu: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Becomes: %@"
+          }
+        }
+      }
+    },
     "Wähle eine andere Kodierung unter Ablage → Erneut öffnen mit Kodierung.": {
       "localizations": {
         "en": {
@@ -1107,6 +1417,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Line %1$lld, Column %2$lld"
+          }
+        }
+      }
+    },
+    "Zeile, Zeile:Spalte, +Zeilen oder -Zeilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Line, line:column, +lines or -lines"
+          }
+        }
+      }
+    },
+    "Zeilen 1–%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lines 1–%@"
           }
         }
       }

@@ -11,6 +11,12 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     private var scrollView: NSScrollView!
     private var ruler: LineNumberRuler!
     private var statusBar: StatusBar!
+    private(set) var search: SearchController!
+    private var textAtTop: NSLayoutConstraint!
+    private let allDocumentsView = AllDocumentsSearchView()
+    private var editorAtLeft: NSLayoutConstraint!
+    private var editorBesideSidebar: NSLayoutConstraint!
+    private var textBelowBar: NSLayoutConstraint!
     private let invisibles = InvisiblesLayoutFragment.Options()
     private var observers: [NSObjectProtocol] = []
 
@@ -43,8 +49,7 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         textView.isRichText = false
         textView.importsGraphics = false
         textView.allowsUndo = true
-        textView.usesFindBar = true
-        textView.isIncrementalSearchingEnabled = true
+        textView.usesFindBar = false
         textView.smartInsertDeleteEnabled = false
         textView.isAutomaticQuoteSubstitutionEnabled = false
         textView.isAutomaticDashSubstitutionEnabled = false
@@ -79,28 +84,72 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         scrollView.rulersVisible = showsLineNumbers
 
         statusBar = StatusBar(document: document)
+        search = SearchController(textView: textView, layoutManager: layoutManager, document: document)
+        textView.onCancel = { [weak self] in
+            guard let search = self?.search, search.isVisible else { return false }
+            search.close()
+            return true
+        }
 
-        let container = NSView()
-        for view in [scrollView, statusBar!] as [NSView] {
+        let container = NSView()   // the editor: find bar, text, status bar
+        let bar = search.bar
+        let marks = search.marksView
+        for view in [bar, scrollView, statusBar!, marks] as [NSView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             container.addSubview(view)
         }
+        // The text starts below the find bar while it is shown, at the top otherwise.
+        textBelowBar = scrollView.topAnchor.constraint(equalTo: bar.bottomAnchor)
+        textAtTop = scrollView.topAnchor.constraint(equalTo: container.topAnchor)
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: container.topAnchor),
+            bar.topAnchor.constraint(equalTo: container.topAnchor),
+            bar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            bar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            textAtTop,
             scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             statusBar.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
             statusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             statusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             statusBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            marks.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 2),
+            marks.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -2),
+            marks.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -1),
+            marks.widthAnchor.constraint(equalToConstant: 7),
         ])
-        view = container
+        search.onVisibilityChange = { [weak self] visible in
+            guard let self else { return }
+            textAtTop.isActive = !visible
+            textBelowBar.isActive = visible
+        }
+
+        // The search in all documents shows its results in a sidebar on the left.
+        let root = NSView()
+        allDocumentsView.isHidden = true
+        for view in [allDocumentsView, container] {
+            view.translatesAutoresizingMaskIntoConstraints = false
+            root.addSubview(view)
+        }
+        editorAtLeft = container.leadingAnchor.constraint(equalTo: root.leadingAnchor)
+        editorBesideSidebar = container.leadingAnchor.constraint(equalTo: allDocumentsView.trailingAnchor)
+        NSLayoutConstraint.activate([
+            allDocumentsView.topAnchor.constraint(equalTo: root.topAnchor),
+            allDocumentsView.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            allDocumentsView.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            allDocumentsView.widthAnchor.constraint(equalToConstant: 300),
+            editorAtLeft,
+            container.topAnchor.constraint(equalTo: root.topAnchor),
+            container.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            container.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+        ])
+        view = root
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         applyFont()
         applyWrapping()
+        updateSidebar()
         textView.setSelectedRange(NSRange(location: 0, length: 0))
         updatePosition()
 
@@ -108,6 +157,9 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         observers = [
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 self?.preferencesDidChange()
+            },
+            center.addObserver(forName: AllDocumentsSearch.didChange, object: nil, queue: .main) { [weak self] _ in
+                self?.updateSidebar()
             },
             center.addObserver(forName: TextDocument.formatDidChange, object: document, queue: .main) { [weak self] _ in
                 self?.statusBar.updateFormat()
@@ -273,6 +325,39 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         return fragment
     }
 
+    // MARK: - Find menu
+
+    @objc func showFindBar(_ sender: Any?) { search.show(.find) }
+    @objc func showReplaceBar(_ sender: Any?) { search.show(.replace) }
+    @objc func showGoToLine(_ sender: Any?) { search.show(.goToLine) }
+    @objc func findNextMatch(_ sender: Any?) { search.findNext(backwards: false) }
+    @objc func findPreviousMatch(_ sender: Any?) { search.findNext(backwards: true) }
+    @objc func selectAllMatches(_ sender: Any?) { search.selectAll() }
+    @objc func useSelectionForFind(_ sender: Any?) { search.useSelection() }
+
+    @objc func showAllDocumentsSearch(_ sender: Any?) {
+        let selection = textView.selectedRange()
+        var text: String?
+        if selection.length > 0, selection.length < 2000 {
+            text = (textView.string as NSString).substring(with: selection)
+        } else if AllDocumentsSearch.shared.text.isEmpty {
+            text = search.bar.searchField.stringValue.isEmpty ? SearchController.findPasteboardText : search.bar.searchField.stringValue
+        }
+        AllDocumentsSearch.shared.activate(with: text)
+        allDocumentsView.focus()
+    }
+
+    private func updateSidebar() {
+        let active = AllDocumentsSearch.shared.isActive
+        guard allDocumentsView.isHidden == active else { return }
+        allDocumentsView.isHidden = !active
+        editorAtLeft.isActive = !active
+        editorBesideSidebar.isActive = active
+        if !active, view.window?.firstResponder is NSTextView, view.window?.firstResponder !== textView {
+            view.window?.makeFirstResponder(textView)
+        }
+    }
+
     // MARK: - View menu
 
     @objc func toggleLineNumbers(_ sender: Any?) {
@@ -288,15 +373,9 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     }
 
     @objc func toggleInvisibles(_ sender: Any?) {
+        // The fragments read the option when drawing, so they only need to draw again.
         invisibles.showsInvisibles.toggle()
-        // The fragments read the option when drawing, so they only need to draw again. A new
-        // layout would make TextKit estimate the heights anew, and the view would jump.
-        func redraw(_ view: NSView) {
-            view.needsDisplay = true
-            view.layer?.sublayers?.forEach { $0.setNeedsDisplay() }
-            view.subviews.forEach(redraw)
-        }
-        redraw(textView)
+        textView.redrawFragments()
     }
 
     @objc func zoomIn(_ sender: Any?) { setZoom(zoom + 1) }
