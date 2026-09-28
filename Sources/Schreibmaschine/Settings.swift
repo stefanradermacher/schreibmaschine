@@ -92,6 +92,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
     @AppStorage(Preferences.autoIndents) private var autoIndents = true
     @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
+    @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
     @AppStorage(Preferences.showsLineNumbers) private var showsLineNumbers = true
     @AppStorage(Preferences.wrapsLines) private var wrapsLines = true
     @AppStorage(Preferences.showsInvisibles) private var showsInvisibles = false
@@ -105,12 +106,18 @@ private struct EditorSettings: View {
                 Text(fontDescription)
             }
 
-            Section("Einrückung") {
+            Section {
                 Stepper(value: $tabWidth, in: 1...16) {
                     LabeledContent("Tabbreite:", value: String(localized: "\(tabWidth) Zeichen"))
                 }
                 Toggle("Mit Leerzeichen statt Tabs einrücken", isOn: $indentsWithSpaces)
                 Toggle("Einrückung der vorigen Zeile übernehmen", isOn: $autoIndents)
+            } header: {
+                Text("Einrückung")
+            } footer: {
+                Text("Gilt für neue Dokumente und Sprachen ohne eigene Vorgabe. Vorhandene Dateien behalten ihre Einrückung; unter Format → Einrückung lässt sie sich für jedes Dokument ändern.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             Section {
@@ -136,6 +143,7 @@ private struct EditorSettings: View {
             }
 
             Section {
+                Toggle("Syntax hervorheben", isOn: $highlightsSyntax)
                 Toggle("Aktuelle Zeile hervorheben", isOn: $highlightsCurrentLine)
             }
         }

@@ -1,0 +1,29 @@
+# YAML. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: YAML
+extensions: [yaml, yml]
+comment:
+  line: '#'
+indent:
+  width: 2
+rules:
+  - scope: string
+    match: '"(?:[^"\\]|\\.)*"'
+  - scope: string
+    match: "'(?:[^']|'')*'"
+  - scope: comment
+    match: '(?:(?<=\s)|^)#.*$'
+  - scope: keyword
+    match: '^(?:---|\.\.\.)\s*$'
+  - scope: property
+    match: '^\s*(?:-\s+)?([^\s#:"''-][^:#]*?)\s*:(?=\s|$)'
+    group: 1
+  - scope: keyword
+    match: '^\s*-(?=\s|$)'
+  - scope: attribute
+    match: '[&*][A-Za-z0-9_-]+'
+  - scope: tag
+    match: '!\S+'
+  - scope: constant
+    words: [true, false, yes, no, on, off, null]
+  - scope: number
+    match: '(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])'

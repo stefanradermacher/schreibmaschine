@@ -1,0 +1,40 @@
+# Lua. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: Lua
+extensions: [lua]
+interpreters: [lua, luajit]
+comment:
+  line: '--'
+  block: ['--[[', ']]']
+indent:
+  width: 4
+rules:
+  - scope: comment
+    begin: '--\[=*\['
+    end: '\]=*\]'
+  - scope: comment
+    match: '--.*$'
+  - scope: string
+    begin: '\[=*\['
+    end: '\]=*\]'
+  - scope: string
+    begin: '"'
+    end: '"'
+    escape: '\'
+    multiline: false
+  - scope: string
+    begin: "'"
+    end: "'"
+    escape: '\'
+    multiline: false
+  - scope: keyword
+    words: [and, break, do, else, elseif, end, for, function, goto, if, in, local, not, or, repeat, return, then,
+            until, while]
+  - scope: constant
+    words: [true, false, nil]
+  - scope: variable
+    words: [self]
+  - scope: number
+    match: '\b(?:0[xX][0-9A-Fa-f]+|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b'
+  - scope: function
+    match: '\b([A-Za-z_][A-Za-z0-9_]*)(?=\s*[({"])'
+    group: 1

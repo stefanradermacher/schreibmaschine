@@ -7,6 +7,13 @@ import UniformTypeIdentifiers
 final class TextDocument: NSDocument {
     let contentStorage = NSTextContentStorage()
     let lineIndex: LineIndex
+    let highlighter: SyntaxHighlighter
+
+    /// The language for coloring, comments and indentation; nil is plain text.
+    private(set) var language: LanguageDefinition?
+    /// The language was chosen by hand and is not recognized again, for example after "Save As".
+    private var languageChosenByUser = false
+    private(set) var indentation = Indentation.preferred
 
     private(set) var encoding: String.Encoding = Preferences.defaultEncodingValue
     private(set) var hasBOM = false
@@ -18,6 +25,12 @@ final class TextDocument: NSDocument {
     static let formatDidChange = Notification.Name("TextDocumentFormatDidChange")
     /// Posted when the text was read again from the file.
     static let textDidReload = Notification.Name("TextDocumentTextDidReload")
+    /// Posted when the language changes; the views color the text anew.
+    static let languageDidChange = Notification.Name("TextDocumentLanguageDidChange")
+    /// Posted after an edit: the coloring from the line in userInfo["line"] on is out of date.
+    static let coloringDidInvalidate = Notification.Name("TextDocumentColoringDidInvalidate")
+    /// Posted when the indentation changes.
+    static let indentationDidChange = Notification.Name("TextDocumentIndentationDidChange")
 
     var textStorage: NSTextStorage { contentStorage.textStorage! }
 
@@ -29,24 +42,36 @@ final class TextDocument: NSDocument {
     }
 
     override var fileURL: URL? {
-        // Once saved, the document is named after its file again.
-        didSet { if fileURL != nil, keptName != nil { keptName = nil } }
+        didSet {
+            // Once saved, the document is named after its file again.
+            if fileURL != nil, keptName != nil { keptName = nil }
+            // Saved under a new name, a text gets the language that name suggests.
+            if fileURL != oldValue, fileURL != nil, !languageChosenByUser {
+                setLanguage(detectedLanguage(), byUser: false)
+            }
+        }
     }
-    private var editObserver: NSObjectProtocol?
+    private var observers: [NSObjectProtocol] = []
 
     override init() {
-        lineIndex = LineIndex(storage: contentStorage.textStorage!)
+        let storage = contentStorage.textStorage!
+        lineIndex = LineIndex(storage: storage)
+        highlighter = SyntaxHighlighter(storage: storage, lineIndex: lineIndex)
         super.init()
         hasBOM = encoding == .utf8 ? UserDefaults.standard.bool(forKey: Preferences.writesUTF8BOM) : false
-        editObserver = NotificationCenter.default.addObserver(
-            forName: NSTextStorage.didProcessEditingNotification, object: textStorage, queue: nil
-        ) { [weak self] _ in
-            self?.textDidEdit()
-        }
+        let center = NotificationCenter.default
+        observers = [
+            center.addObserver(forName: NSTextStorage.didProcessEditingNotification, object: textStorage, queue: nil) { [weak self] _ in
+                self?.textDidEdit()
+            },
+            center.addObserver(forName: LanguageRegistry.didChange, object: nil, queue: .main) { [weak self] _ in
+                self?.languagesDidReload()
+            },
+        ]
     }
 
     deinit {
-        if let editObserver { NotificationCenter.default.removeObserver(editObserver) }
+        observers.forEach(NotificationCenter.default.removeObserver)
     }
 
     /// While the text is replaced by loading or restoring, edits are not the user's.
@@ -54,6 +79,12 @@ final class TextDocument: NSDocument {
 
     private func textDidEdit() {
         SessionStore.shared.setNeedsSave()
+        if textStorage.editedMask.contains(.editedCharacters) {
+            // The edited line may now end in a different state; the lines after it start anew.
+            let line = lineIndex.lineNumber(at: textStorage.editedRange.location)
+            highlighter.invalidate(fromLine: line)
+            NotificationCenter.default.post(name: Self.coloringDidInvalidate, object: self, userInfo: ["line": line])
+        }
         guard textStorage.editedMask.contains(.editedCharacters), !isReplacingText,
               undoManager?.isUndoing != true, undoManager?.isRedoing != true
         else { return }
@@ -91,8 +122,92 @@ final class TextDocument: NSDocument {
     override func read(from url: URL, ofType typeName: String) throws {
         let data = try Data(contentsOf: url)
         // An encoding chosen by hand for this file before is used again, as long as it fits.
-        if let chosen = FileStateStore.shared.encoding(for: url), (try? load(data, as: chosen)) != nil { return }
+        if let chosen = FileStateStore.shared.encoding(for: url), (try? load(data, as: chosen)) != nil {
+            setUpLanguageAndIndentation(for: url)
+            return
+        }
         try load(data, as: nil)
+        setUpLanguageAndIndentation(for: url)
+    }
+
+    // MARK: - Language and indentation
+
+    /// The language chosen for the file before, or the one its name and first line suggest;
+    /// the indentation chosen before, or the one the text uses, or the language's.
+    private func setUpLanguageAndIndentation(for url: URL) {
+        let store = FileStateStore.shared
+        if let id = store.language(for: url) {
+            languageChosenByUser = true
+            setLanguage(LanguageRegistry.shared.language(id: id), byUser: false)
+        } else {
+            setLanguage(detectedLanguage(name: url.lastPathComponent), byUser: false)
+        }
+        if let chosen = store.indentation(for: url) {
+            setIndentation(chosen, byUser: false)
+        } else {
+            detectIndentation(byUser: false)
+        }
+    }
+
+    private func detectedLanguage(name: String? = nil) -> LanguageDefinition? {
+        let text = textStorage.string as NSString
+        let firstLine = text.substring(with: text.lineRange(for: NSRange(location: 0, length: 0)))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return LanguageRegistry.shared.detect(fileName: name ?? fileURL?.lastPathComponent, firstLine: firstLine)
+    }
+
+    func setLanguage(_ language: LanguageDefinition?, byUser: Bool) {
+        if byUser {
+            languageChosenByUser = true
+            if let fileURL { FileStateStore.shared.recordLanguage(language?.id ?? "", for: fileURL) }
+        }
+        let changed = language?.id != self.language?.id
+        self.language = language
+        highlighter.setLanguage(language)
+        if changed || byUser {
+            NotificationCenter.default.post(name: Self.languageDidChange, object: self)
+        }
+    }
+
+    func setIndentation(_ indentation: Indentation, byUser: Bool) {
+        if byUser, let fileURL { FileStateStore.shared.recordIndentation(indentation, for: fileURL) }
+        guard indentation != self.indentation else { return }
+        self.indentation = indentation
+        NotificationCenter.default.post(name: Self.indentationDidChange, object: self)
+    }
+
+    /// The indentation the text uses; for a text without any, the language's or the settings'.
+    func detectIndentation(byUser: Bool) {
+        let fallback = language?.indentation ?? .preferred
+        let detected = Indentation.detect(in: textStorage.string, fallbackWidth: fallback.width) ?? fallback
+        if byUser, let fileURL { FileStateStore.shared.recordIndentation(nil, for: fileURL) }
+        setIndentation(detected, byUser: false)
+    }
+
+    /// Definitions were reloaded: the same language again, as now defined.
+    private func languagesDidReload() {
+        guard let id = language?.id else { return }
+        setLanguage(LanguageRegistry.shared.language(id: id), byUser: false)
+        NotificationCenter.default.post(name: Self.languageDidChange, object: self)
+    }
+
+    /// Saving a language definition from the folder of the user's own ones makes it take effect.
+    override func save(to url: URL, ofType typeName: String, for saveOperation: NSDocument.SaveOperationType,
+                       completionHandler: @escaping ((any Error)?) -> Void) {
+        super.save(to: url, ofType: typeName, for: saveOperation) { error in
+            completionHandler(error)
+            guard error == nil,
+                  url.deletingLastPathComponent().standardizedFileURL == LanguageRegistry.userFolder.standardizedFileURL
+            else { return }
+            let registry = LanguageRegistry.shared
+            registry.reload()
+            if let failure = registry.failures.first(where: { $0.hasPrefix(url.lastPathComponent) }) {
+                let alert = NSAlert()
+                alert.messageText = String(localized: "Die Sprachdefinition enthält einen Fehler.")
+                alert.informativeText = failure
+                if let window = self.windowForSheet { alert.beginSheetModal(for: window) } else { alert.runModal() }
+            }
+        }
     }
 
     override func read(from data: Data, ofType typeName: String) throws {
@@ -358,8 +473,55 @@ final class TextDocument: NSDocument {
         }
     }
 
+    @objc func chooseLanguage(_ sender: NSMenuItem) {
+        let id = sender.representedObject as? String ?? ""
+        setLanguage(LanguageRegistry.shared.language(id: id), byUser: true)
+    }
+
+    @objc func indentWithSpaces(_ sender: Any?) {
+        setIndentation(Indentation(width: indentation.width, usesSpaces: true), byUser: true)
+    }
+
+    @objc func indentWithTabs(_ sender: Any?) {
+        setIndentation(Indentation(width: indentation.width, usesSpaces: false), byUser: true)
+    }
+
+    @objc func changeIndentWidth(_ sender: NSMenuItem) {
+        setIndentation(Indentation(width: sender.tag, usesSpaces: indentation.usesSpaces), byUser: true)
+    }
+
+    @objc func redetectIndentation(_ sender: Any?) {
+        detectIndentation(byUser: true)
+    }
+
+    /// Opens the definition of the document's language for editing, as a copy in the folder of
+    /// the user's own definitions if it is a built-in one.
+    @objc func editLanguageDefinition(_ sender: Any?) {
+        guard let language else { return }
+        do {
+            let url = language.isBuiltIn ? try LanguageRegistry.shared.editableCopy(of: language) : language.url
+            NSDocumentController.shared.openDocument(withContentsOf: url, display: true) { _, _, _ in }
+        } catch {
+            presentError(error)
+        }
+    }
+
     override func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
+        case #selector(chooseLanguage(_:)):
+            item.state = (item.representedObject as? String ?? "") == (language?.id ?? "") ? .on : .off
+            return true
+        case #selector(indentWithSpaces(_:)):
+            item.state = indentation.usesSpaces ? .on : .off
+            return true
+        case #selector(indentWithTabs(_:)):
+            item.state = indentation.usesSpaces ? .off : .on
+            return true
+        case #selector(changeIndentWidth(_:)):
+            item.state = item.tag == indentation.width ? .on : .off
+            return true
+        case #selector(editLanguageDefinition(_:)):
+            return language != nil
         case #selector(changeEncoding(_:)):
             item.state = UInt(item.tag) == encoding.rawValue ? .on : .off
             return true

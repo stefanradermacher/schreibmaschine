@@ -79,7 +79,7 @@ enum TextCommands {
         Group(title: String(localized: "Absätze"), commands: [
             TextCommand(id: "wrap", title: String(localized: "Umbrechen")) { view, _ in
                 view.transformLines(scope: .selectionOrParagraph) {
-                    TextTransforms.wrap($0, column: Preferences.wrapColumnValue, tabWidth: Preferences.tabWidthValue)
+                    TextTransforms.wrap($0, column: Preferences.wrapColumnValue, tabWidth: view.indentation().width)
                 }
             },
             TextCommand(id: "wrapAt", title: String(localized: "Umbrechen bei Spalte …"),
@@ -88,7 +88,7 @@ enum TextCommands {
                     throw TextTransforms.Failure.notDecodable(String(localized: "Bitte eine Spaltenzahl angeben, zum Beispiel 72."))
                 }
                 view.transformLines(scope: .selectionOrParagraph) {
-                    TextTransforms.wrap($0, column: column, tabWidth: Preferences.tabWidthValue)
+                    TextTransforms.wrap($0, column: column, tabWidth: view.indentation().width)
                 }
             },
             TextCommand(id: "unwrap", title: String(localized: "Umbrüche entfernen")) { view, _ in
@@ -110,10 +110,10 @@ enum TextCommands {
                 view.transformLines(scope: .selectionOrDocument, TextTransforms.trimTrailing)
             },
             TextCommand(id: "tabsToSpaces", title: String(localized: "Tabs in Leerzeichen umwandeln")) { view, _ in
-                view.transformLines(scope: .selectionOrDocument) { TextTransforms.tabsToSpaces($0, tabWidth: Preferences.tabWidthValue) }
+                view.transformLines(scope: .selectionOrDocument) { TextTransforms.tabsToSpaces($0, tabWidth: view.indentation().width) }
             },
             TextCommand(id: "spacesToTabs", title: String(localized: "Einrückung in Tabs umwandeln")) { view, _ in
-                view.transformLines(scope: .selectionOrDocument) { TextTransforms.spacesToTabs($0, tabWidth: Preferences.tabWidthValue) }
+                view.transformLines(scope: .selectionOrDocument) { TextTransforms.spacesToTabs($0, tabWidth: view.indentation().width) }
             },
             TextCommand(id: "collapseSpaces", title: String(localized: "Mehrfache Leerzeichen zusammenfassen")) { view, _ in
                 view.transformLines(scope: .selectionOrDocument, TextTransforms.collapseSpaces)
@@ -132,7 +132,7 @@ enum TextCommands {
         Group(title: String(localized: "Spalten"), commands: [
             TextCommand(id: "align", title: String(localized: "An Zeichen ausrichten …"),
                         parameter: .init(prompt: String(localized: "Ausrichten am ersten:"), defaultValue: "=")) { view, separator in
-                view.transformLines(scope: .selectionOrParagraph) { TextTransforms.align($0, at: separator, tabWidth: Preferences.tabWidthValue) }
+                view.transformLines(scope: .selectionOrParagraph) { TextTransforms.align($0, at: separator, tabWidth: view.indentation().width) }
             },
             TextCommand(id: "table", title: String(localized: "Markdown-Tabelle formatieren")) { view, _ in
                 view.transformLines(scope: .selectionOrTable, TextTransforms.formatMarkdownTable)
@@ -149,7 +149,7 @@ enum TextCommands {
             textCommand("htmlDecode", String(localized: "HTML-Entitäten auflösen"), TextTransforms.htmlDecode),
             nil,
             TextCommand(id: "jsonFormat", title: String(localized: "JSON formatieren")) { view, _ in
-                let indent = Preferences.indentsWithSpacesValue ? String(repeating: " ", count: Preferences.tabWidthValue) : "\t"
+                let indent = view.indentation().unit
                 try view.transformText(scope: .selectionOrDocument) { try TextTransforms.formatJSON($0, indent: indent) }
             },
             throwingCommand("jsonMinify", String(localized: "JSON verkleinern"), TextTransforms.minifyJSON),
@@ -436,15 +436,13 @@ extension EditorTextView {
         }
     }
 
-    private var indentUnit: String {
-        Preferences.indentsWithSpacesValue ? String(repeating: " ", count: Preferences.tabWidthValue) : "\t"
-    }
+    private var indentUnit: String { indentation().unit }
 
     func indentLines() {
         transformLines(scope: .selectionOrLine) { TextTransforms.indent($0, unit: indentUnit) }
     }
 
     func outdentLines() {
-        transformLines(scope: .selectionOrLine) { TextTransforms.outdent($0, width: Preferences.tabWidthValue) }
+        transformLines(scope: .selectionOrLine) { TextTransforms.outdent($0, width: indentation().width) }
     }
 }

@@ -1,0 +1,35 @@
+# CSS. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: CSS
+extensions: [css]
+comment:
+  block: ['/*', '*/']
+indent:
+  width: 4
+rules:
+  - scope: comment
+    begin: '/\*'
+    end: '\*/'
+  - scope: string
+    begin: '"'
+    end: '"'
+    escape: '\'
+    multiline: false
+  - scope: string
+    begin: "'"
+    end: "'"
+    escape: '\'
+    multiline: false
+  - scope: keyword
+    match: '@[A-Za-z-]+|!important'
+  - scope: property
+    match: '(?<=[{;\s])(-?[A-Za-z][A-Za-z-]*)\s*:(?=\s)'
+    group: 1
+  - scope: constant
+    match: '#[0-9A-Fa-f]{3,8}\b'
+  - scope: number
+    match: '(?<![\w-])-?\d+(?:\.\d+)?(?:px|em|rem|%|vh|vw|vmin|vmax|s|ms|deg|pt|ch|ex|fr|dpi)?\b'
+  - scope: function
+    match: '\b([A-Za-z-]+)(?=\()'
+    group: 1
+  - scope: tag
+    match: '[.#][A-Za-z_-][A-Za-z0-9_-]*|::?[A-Za-z-]+'

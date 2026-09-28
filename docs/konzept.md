@@ -86,7 +86,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 | ⌥⇧↑ / ⌥⇧↓ | Zeile oder Auswahl nach oben / unten verschieben |
 | ⌘⌫ | Zeile löschen (ohne Auswahl) |
 | ⌃⇧J | Zeilen verbinden |
-| ⌘/ | Kommentar umschalten (mit Meilenstein 5, braucht die Sprachen) |
+| ⌘/ | Kommentar umschalten |
 | ⌥↑ / ⌥↓ | Auswahl erweitern / verkleinern (Wort → Zeichenkette → Klammer → Zeile → Absatz) |
 | ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen (mit Meilenstein 6) |
 | ⌃⌘G | alle Vorkommen auswählen |

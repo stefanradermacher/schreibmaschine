@@ -102,6 +102,7 @@ enum MainMenu {
         menu.addItem(submenu(find))
         menu.addItem(item(String(localized: "Gehe zu Zeile …"), #selector(EditorViewController.showGoToLine(_:)), "l"))
         menu.addItem(item(String(localized: "Auswahl erweitern"), #selector(EditorTextView.expandSelection(_:)), String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), [.option]))
+        menu.addItem(item(String(localized: "Zur passenden Klammer"), #selector(EditorTextView.jumpToMatchingBracket(_:)), "m", [.command, .shift]))
         menu.addItem(item(String(localized: "Auswahl verkleinern"), #selector(EditorTextView.shrinkSelection(_:)), String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), [.option]))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Befehlspalette …"), #selector(AppDelegate.showCommandPalette(_:)), "p", [.command, .shift]))
@@ -133,6 +134,8 @@ enum MainMenu {
     /// Text: the commands of TextCommands, grouped, and running the last one again.
     private static func textMenu() -> NSMenu {
         let menu = NSMenu(title: String(localized: "Text"))
+        menu.addItem(item(String(localized: "Kommentar umschalten"), #selector(EditorTextView.toggleComment(_:)), "/"))
+        menu.addItem(.separator())
         for group in TextCommands.groups {
             let submenu = NSMenu(title: group.title)
             for command in group.commands {
@@ -164,6 +167,20 @@ enum MainMenu {
         }
         menu.addItem(submenu(lineEndings))
         menu.addItem(item(String(localized: "Byte Order Mark (BOM) schreiben"), #selector(TextDocument.toggleBOM(_:))))
+        menu.addItem(.separator())
+        let languages = NSMenu(title: String(localized: "Sprache"))
+        languages.delegate = LanguageMenu.shared
+        menu.addItem(submenu(languages))
+        let indentation = NSMenu(title: String(localized: "Einrückung"))
+        indentation.addItem(item(String(localized: "Mit Leerzeichen"), #selector(TextDocument.indentWithSpaces(_:))))
+        indentation.addItem(item(String(localized: "Mit Tabs"), #selector(TextDocument.indentWithTabs(_:))))
+        indentation.addItem(.separator())
+        for width in [2, 3, 4, 8] {
+            indentation.addItem(item(String(localized: "Breite \(width)"), #selector(TextDocument.changeIndentWidth(_:)), tag: width))
+        }
+        indentation.addItem(.separator())
+        indentation.addItem(item(String(localized: "Einrückung der Datei erkennen"), #selector(TextDocument.redetectIndentation(_:))))
+        menu.addItem(submenu(indentation))
         return menu
     }
 
@@ -266,3 +283,29 @@ final class SessionMenu: NSObject, NSMenuDelegate {
     }
 }
 
+
+/// Format → Language: plain text, every known language, and the language definitions.
+final class LanguageMenu: NSObject, NSMenuDelegate {
+    static let shared = LanguageMenu()
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let plain = NSMenuItem(title: String(localized: "Reiner Text"), action: #selector(TextDocument.chooseLanguage(_:)), keyEquivalent: "")
+        plain.representedObject = ""
+        menu.addItem(plain)
+        menu.addItem(.separator())
+        for language in LanguageRegistry.shared.languages {
+            let item = NSMenuItem(title: language.name, action: #selector(TextDocument.chooseLanguage(_:)), keyEquivalent: "")
+            item.representedObject = language.id
+            if !language.isBuiltIn { item.toolTip = String(localized: "Eigene Sprachdefinition") }
+            menu.addItem(item)
+        }
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: String(localized: "Definition dieser Sprache bearbeiten"),
+                                action: #selector(TextDocument.editLanguageDefinition(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: String(localized: "Ordner mit eigenen Sprachen zeigen"),
+                                action: #selector(AppDelegate.showLanguageFolder(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: String(localized: "Sprachdefinitionen neu laden"),
+                                action: #selector(AppDelegate.reloadLanguages(_:)), keyEquivalent: ""))
+    }
+}

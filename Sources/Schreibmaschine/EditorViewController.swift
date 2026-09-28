@@ -40,6 +40,10 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
 
     override func loadView() {
         layoutManager.delegate = self
+        // Lines are colored when TextKit is about to show them.
+        layoutManager.renderingAttributesValidator = { [weak self] layoutManager, fragment in
+            self?.color(fragment, in: layoutManager)
+        }
         layoutManager.textContainer = textContainer
         document.contentStorage.addTextLayoutManager(layoutManager)
         document.contentStorage.primaryTextLayoutManager = layoutManager
@@ -69,6 +73,8 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         textView.minSize = NSSize(width: 0, height: 0)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
+        textView.indentation = { [weak document] in document?.indentation ?? .preferred }
+        textView.language = { [weak document] in document?.language }
         self.textView = textView
 
         let scrollView = NSScrollView()
@@ -172,6 +178,18 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
                 self?.ruler.updateThickness()
                 self?.ruler.needsDisplay = true
             },
+            center.addObserver(forName: TextDocument.coloringDidInvalidate, object: document, queue: .main) { [weak self] note in
+                self?.recolor(fromLine: note.userInfo?["line"] as? Int ?? 1)
+            },
+            center.addObserver(forName: TextDocument.languageDidChange, object: document, queue: .main) { [weak self] _ in
+                self?.recolor(fromLine: 1)
+                self?.statusBar.updateFormat()
+                self?.updateBrackets()
+            },
+            center.addObserver(forName: TextDocument.indentationDidChange, object: document, queue: .main) { [weak self] _ in
+                self?.applyFont()
+                self?.statusBar.updateFormat()
+            },
         ]
     }
 
@@ -249,14 +267,91 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     // MARK: - Applying settings
 
     private var lastFont: NSFont?
-    private var lastTabWidth = 0
+    private var lastHighlightsSyntax = Preferences.highlightsSyntaxValue
 
     private func preferencesDidChange() {
         textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
-        let font = currentFont
-        if font != lastFont || Preferences.tabWidthValue != lastTabWidth {
+        if currentFont != lastFont {
             applyFont()
         }
+        if Preferences.highlightsSyntaxValue != lastHighlightsSyntax {
+            lastHighlightsSyntax = Preferences.highlightsSyntaxValue
+            recolor(fromLine: 1)
+        }
+    }
+
+    // MARK: - Coloring
+
+    /// Colors one paragraph, that is one line, from the tokens of its language.
+    private func color(_ fragment: NSTextLayoutFragment, in layoutManager: NSTextLayoutManager) {
+        guard let content = layoutManager.textContentManager else { return }
+        let range = fragment.rangeInElement
+        layoutManager.removeRenderingAttribute(.foregroundColor, for: range)
+        layoutManager.removeRenderingAttribute(.underlineStyle, for: range)
+        guard Preferences.highlightsSyntaxValue, document.language != nil else { return }
+        let start = content.offset(from: content.documentRange.location, to: range.location)
+        let end = content.offset(from: content.documentRange.location, to: range.endLocation)
+        let line = document.lineIndex.lineNumber(at: start)
+        for token in document.highlighter.tokens(forLine: line) {
+            let from = max(token.range.location, start), to = min(token.range.upperBound, end)
+            guard from < to,
+                  let tokenStart = content.location(content.documentRange.location, offsetBy: from),
+                  let tokenEnd = content.location(tokenStart, offsetBy: to - from),
+                  let tokenRange = NSTextRange(location: tokenStart, end: tokenEnd)
+            else { continue }
+            layoutManager.addRenderingAttribute(.foregroundColor, value: token.scope.color, for: tokenRange)
+            if token.scope == .link {
+                layoutManager.addRenderingAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, for: tokenRange)
+            }
+        }
+    }
+
+    /// After an edit or a change of language: the lines from `line` on are colored again when
+    /// shown; the visible ones right away.
+    private func recolor(fromLine line: Int) {
+        // Edits are reported while TextKit is still processing them; its paragraphs are only
+        // up to date afterwards. Several edits in a row are handled together.
+        pendingRecolorLine = min(pendingRecolorLine ?? line, line)
+        guard !recolorScheduled else { return }
+        recolorScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            recolorScheduled = false
+            let line = pendingRecolorLine ?? 1
+            pendingRecolorLine = nil
+            recolorNow(fromLine: line)
+        }
+    }
+
+    private var recolorScheduled = false
+    private var pendingRecolorLine: Int?
+
+    private func recolorNow(fromLine line: Int) {
+        guard line <= document.lineIndex.lineCount, let content = layoutManager.textContentManager,
+              let start = content.location(content.documentRange.location, offsetBy: document.lineIndex.start(ofLine: line)),
+              let range = NSTextRange(location: start, end: content.documentRange.endLocation)
+        else { return }
+        // TextKit asks for colors only when it lays a paragraph out anew. The paragraphs on screen
+        // are colored here directly; the ones below are laid out again when they come into view.
+        let viewport = layoutManager.textViewportLayoutController.viewportRange
+        let visibleEnd = viewport?.endLocation ?? content.documentRange.endLocation
+        layoutManager.enumerateTextLayoutFragments(from: range.location, options: []) { fragment in
+            guard fragment.rangeInElement.location.compare(visibleEnd) == .orderedAscending else { return false }
+            color(fragment, in: layoutManager)
+            return true
+        }
+        if visibleEnd.compare(content.documentRange.endLocation) == .orderedAscending,
+           let below = NSTextRange(location: visibleEnd.compare(range.location) == .orderedDescending ? visibleEnd : range.location,
+                                   end: content.documentRange.endLocation) {
+            layoutManager.invalidateLayout(for: below)
+        }
+        textView.redrawFragments()
+    }
+
+    /// Marks the bracket next to the insertion point and its partner.
+    private func updateBrackets() {
+        let pairs = document.language?.brackets ?? [("(", ")"), ("[", "]"), ("{", "}")]
+        textView.bracketRanges = textView.matchingBrackets(pairs: pairs)
     }
 
     private var currentFont: NSFont {
@@ -267,8 +362,7 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     private func applyFont() {
         let font = currentFont
         lastFont = font
-        lastTabWidth = Preferences.tabWidthValue
-        let attributes = EditorStyle.attributes(font: font)
+        let attributes = EditorStyle.attributes(font: font, tabWidth: document.indentation.width)
         let storage = document.textStorage
         storage.beginEditing()
         storage.setAttributes(attributes, range: NSRange(location: 0, length: storage.length))
@@ -325,6 +419,7 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
 
     func textViewDidChangeSelection(_ notification: Notification) {
         updatePosition()
+        updateBrackets()
         ruler.needsDisplay = true
     }
 

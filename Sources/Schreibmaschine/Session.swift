@@ -40,6 +40,9 @@ struct TabData: Codable {
     var hasBOM: Bool
     var lineEnding: String
     var view: ViewState?
+    /// Missing in sessions written before languages existed.
+    var language: String?
+    var indentation: Indentation?
 }
 
 final class SessionStore {
@@ -182,7 +185,9 @@ final class SessionStore {
             encoding: document.encoding.rawValue,
             hasBOM: document.hasBOM,
             lineEnding: document.lineEnding.rawValue,
-            view: controller.editor?.viewState)
+            view: controller.editor?.viewState,
+            language: document.language?.id,
+            indentation: document.indentation)
     }
 
     // MARK: - At launch
@@ -328,6 +333,11 @@ final class SessionStore {
                              encoding: String.Encoding(rawValue: tab.encoding),
                              hasBOM: tab.hasBOM,
                              lineEnding: LineEnding(rawValue: tab.lineEnding) ?? .lf)
+        }
+        // A text without file keeps the language and indentation it had.
+        if document.fileURL == nil {
+            if let id = tab.language { document.setLanguage(LanguageRegistry.shared.language(id: id), byUser: false) }
+            if let indentation = tab.indentation { document.setIndentation(indentation, byUser: false) }
         }
         controller.addDocument(document)
         document.makeWindowControllers()

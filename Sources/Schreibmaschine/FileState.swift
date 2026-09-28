@@ -22,6 +22,10 @@ final class FileStateStore {
     struct Entry: Codable {
         var view: ViewState?
         var encoding: UInt?
+        /// Chosen by hand; otherwise the language is recognized again at every opening.
+        var language: String?
+        /// Chosen by hand; otherwise recognized from the text.
+        var indentation: Indentation?
         var lastUsed: Date
     }
 
@@ -42,6 +46,18 @@ final class FileStateStore {
 
     func viewState(for fileURL: URL) -> ViewState? { entries[key(fileURL)]?.view }
     func encoding(for fileURL: URL) -> String.Encoding? { entries[key(fileURL)]?.encoding.map(String.Encoding.init) }
+
+    func language(for fileURL: URL) -> String? { entries[key(fileURL)]?.language }
+    func indentation(for fileURL: URL) -> Indentation? { entries[key(fileURL)]?.indentation }
+
+    /// Remembers a language chosen by hand; "" stands for plain text.
+    func recordLanguage(_ id: String, for fileURL: URL) {
+        update(fileURL) { $0.language = id }
+    }
+
+    func recordIndentation(_ indentation: Indentation?, for fileURL: URL) {
+        update(fileURL) { $0.indentation = indentation }
+    }
 
     func record(_ view: ViewState, for fileURL: URL) {
         update(fileURL) { $0.view = view }

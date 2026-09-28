@@ -10,13 +10,13 @@ Die Oberfläche gibt es auf Deutsch und Englisch. Die Texte liegen im String-Kat
 
 Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
-## Stand: Meilenstein 4
+## Stand: Meilenstein 5
 
 - **Dokumente:** Öffnen, Sichern, Sichern unter, Zurück zur gesicherten Version, Drucken. Gesichert wird nur mit ⌘S; die Datei ändert sich nie von selbst.
 - **Kodierung:** wird beim Öffnen erkannt (Byte Order Mark, UTF-16, UTF-8, dann die eingestellte Standardkodierung, bei anderen Schriften Foundations Schätzung, zuletzt Windows-1252 und ISO Latin 1) und beim Sichern beibehalten. Umstellen über Format → Zeichenkodierung oder die Statusleiste; lässt sich ein Zeichen in der neuen Kodierung nicht darstellen, nennt die App es vorher. Ablage → Erneut öffnen mit Kodierung liest die Datei in einer anderen Kodierung neu. Dateien mit Nullbytes gelten als Binärdateien und werden nicht geöffnet.
 - **Zeilenenden:** Im Editor endet jede Zeile mit LF. Die Zeilenenden der Datei (LF, CRLF, CR) werden erkannt und beim Sichern wieder eingesetzt; gemischte Zeilenenden zeigt die Statusleiste an. Eingesetzter Text bekommt ebenfalls LF.
 - **Editor:** Zeilennummern, Zeilenumbruch, unsichtbare Zeichen (jeweils pro Fenster im Menü Darstellung), aktuelle Zeile hervorgehoben, Schrift vergrößern und verkleinern (⌘+, ⌘−, ⌘0). Einrücken mit Leerzeichen oder Tabs, Einrückung der vorigen Zeile übernehmen, die Rücktaste springt im Einzug zum vorigen Tabstopp.
-- **Statusleiste:** Zeile und Spalte, Größe der Auswahl, Kodierung und Zeilenenden zum Anklicken.
+- **Statusleiste:** Zeile und Spalte, Größe der Auswahl, Sprache, Einrückung, Kodierung und Zeilenenden zum Anklicken.
 - **Fenster:** Neue Dokumente öffnen als Tab im vorderen Fenster oder in einem eigenen Fenster (Einstellung), das erste Fenster mitten auf dem Bildschirm, weitere versetzt zum vorderen. Die Tab-Einstellung von macOS („Tabs bevorzugen: Immer“) greift nicht; ob ein Dokument als Tab kommt, entscheidet die Einstellung der App.
 - **Dokumente wechseln:** ⌥⌘→ und ⌥⌘← (Fenster → Nächstes/Vorheriges Dokument) gehen zum nächsten und vorigen Dokument, über alle Fenster hinweg, am Ende wieder von vorn. ⌘1 bis ⌘8 springen zu den ersten acht Dokumenten, ⌘9 zum letzten. Die Reihenfolge ist die unter Fenster → Dokumente: Fenster in der Reihenfolge, in der sie geöffnet wurden, darin die Tabs von links nach rechts. ⌃⇥ und ⌃⇧⇥ wechseln wie überall auf dem Mac zwischen den Tabs eines Fensters.
 - **Sitzung:** Die Fensterwiederherstellung von macOS ist abgeschaltet; die App führt eine eigene Sitzung aus Fenstern, Tabs und je Tab einer Datei oder einem ungesicherten Text (`Session.swift`). Sie wird wenige Sekunden nach jeder Änderung geschrieben und übersteht so auch einen Absturz. Beim Beenden fragt die App nie nach: Ungesicherte Texte und Änderungen bleiben als Pufferdateien im Container und kommen beim nächsten Mal wieder, als geändert markiert. Was zur Sitzung gehört, zeigt Fenster → Sitzung.
@@ -27,6 +27,9 @@ Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 - **Text umformen:** das Menü Text mit Zeilen (duplizieren ⌘D, löschen ⌘⌫, verschieben ⌥⇧↑/↓, verbinden ⌃⇧J oder mit wählbarem Trennzeichen, teilen, sortieren A–Z und Z–A mit natürlicher Zahlenfolge, nach Zahlen sortieren, Dubletten entfernen, umkehren, mischen, nummerieren, leere Zeilen entfernen), Absätze (umbrechen bei der eingestellten oder einer gewählten Spalte, Umbrüche entfernen, einrücken ⌘] und ausrücken ⌘[, als Zitat markieren), Leerraum, Schreibweise (auch camelCase, snake_case, kebab-case), Spalten (an einem Zeichen ausrichten, Markdown-Tabelle formatieren) und Kodieren (URL, Base64, HTML, JSON formatieren oder verkleinern, ohne die Reihenfolge der Schlüssel zu ändern). Die Befehle wirken auf die Auswahl; ohne Auswahl auf das, was sinnvoll ist: Sortieren und Kodieren auf das ganze Dokument, Verschieben und Einrücken auf die Zeile, Umbrechen auf den Absatz, die Schreibweise auf das Wort am Cursor. Leerraum und Zeilenumbrüche um eine Auswahl bleiben stehen. Jeder Befehl ist ein Widerrufen-Schritt mit seinem Namen; ⌘R führt den letzten noch einmal aus, mit demselben Wert. ⇥ und ⇧⇥ rücken eine mehrzeilige Auswahl ein und aus.
 - **Auswahl erweitern** (⌥↑): Wort, Text in Anführungszeichen, Text in Klammern, Zeile, Absatz, alles; ⌥↓ geht zurück.
 - **Befehlspalette** (⇧⌘P): jeder Menübefehl, gefunden mit ein paar Buchstaben („zverb“ für Zeilen verbinden), mit Menüpfad und Tastenkürzel; die zuletzt benutzten stehen oben. Sie liest die Menüs beim Öffnen, damit sind auch Kodierungen, Dokumente und Einstellungen dabei.
+- **Syntaxhervorhebung:** für Swift, Markdown, PHP, JavaScript/TypeScript, Python, JSON, YAML, INI/TOML, Shell, HTML, XML, CSS, SQL und Lua. Die Sprache wird am Dateinamen, an der Endung oder an der ersten Zeile (`#!`, `<?xml`, `<?php`) erkannt und lässt sich unter Format → Sprache oder in der Statusleiste wählen; eine selbst gewählte Sprache merkt sich die App pro Datei. Gefärbt wird Zeile für Zeile beim Anzeigen, sodass auch lange Dateien flüssig bleiben (`SyntaxHighlighter.swift`); abschalten lässt es sich in den Einstellungen. Sprachdefinitionen sind YAML-Dateien mit regulären Ausdrücken (`Resources/Languages/`); eigene und angepasste liegen in einem Ordner im Container und ersetzen gleichnamige mitgelieferte. Das Format beschreibt `docs/sprachen.md`.
+- **Einrückung pro Dokument:** Tabs oder Leerzeichen und die Breite erkennt die App aus dem Text, sonst gilt die Vorgabe der Sprache und zuletzt die Einstellung. Ändern unter Format → Einrückung oder in der Statusleiste; von Hand gewählt, merkt sie sich die App pro Datei.
+- **Kommentare und Klammern:** ⌘/ setzt oder entfernt Zeilenkommentare (bei Sprachen ohne Zeilenkommentar einen Blockkommentar um die Auswahl). Die Klammer neben der Einfügemarke und ihr Gegenstück werden hervorgehoben, ⇧⌘M springt zum Gegenstück.
 - **Gehe zu Zeile** (⌘L) in derselben Leiste: `120`, `120:15` (mit Spalte), `+10`, `-10`.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Seitenleiste links mit den Treffern nach Dokument, jeweils mit Zeilennummer und Zeile; ein Klick holt das Dokument nach vorn und wählt den Treffer aus. Sie ist in allen Tabs dieselbe und bleibt sichtbar, wenn ein Klick in einen anderen Tab wechselt. Alle ersetzen gilt für alle offenen Dokumente, jedes kann es einzeln widerrufen. In Ordnern oder Projekten sucht Schreibmaschine bewusst nicht.
 
@@ -64,9 +67,12 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `AllDocumentsSearch.swift`: Suche in allen offenen Dokumenten mit der Seitenleiste
   - `TextTransforms.swift`, `TextCommands.swift`: die Umformungen des Menüs Text als reine Funktionen und ihre Anwendung auf die Auswahl
   - `CommandPalette.swift`: die Befehlspalette
-  - `EditorTextView.swift`: Textansicht mit Einrückung und hervorgehobener Zeile
+  - `EditorTextView.swift`: Textansicht mit Einrückung, hervorgehobener Zeile, Kommentaren und Klammern
+  - `Languages.swift`, `YAML.swift`: Sprachdefinitionen aus YAML-Dateien, mitgeliefert und eigene
+  - `SyntaxHighlighter.swift`: Färben Zeile für Zeile, mit dem Zustand am Zeilenanfang
+  - `Indentation.swift`: Einrückung eines Dokuments und ihr Erkennen
   - `LineNumberRuler.swift`, `InvisiblesLayoutFragment.swift`, `StatusBar.swift`: Zeilennummern, unsichtbare Zeichen, Statusleiste
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster
-- `Resources/`: Asset-Katalog mit App-Icon und Akzentfarbe, Dokumentsymbol, Lokalisierung, `PrivacyInfo.xcprivacy`
+- `Resources/`: Asset-Katalog mit App-Icon und Akzentfarbe, Dokumentsymbol, Lokalisierung, `PrivacyInfo.xcprivacy`, die mitgelieferten Sprachen in `Languages/`
 - `Config/`: `Info.plist`, Entitlements, Build-Einstellungen
-- `docs/`: Konzept
+- `docs/`: Konzept, Format der Sprachdefinitionen (`sprachen.md`), App-Store-Unterlagen

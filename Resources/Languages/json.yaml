@@ -1,0 +1,21 @@
+# JSON. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: JSON
+extensions: [json, jsonc, json5, geojson, webmanifest, jsonl]
+filenames: [.babelrc, .eslintrc, .prettierrc, composer.lock]
+indent:
+  width: 2
+rules:
+  - scope: comment
+    begin: '/\*'
+    end: '\*/'
+  - scope: comment
+    match: '//.*$'
+  - scope: property
+    match: '("(?:[^"\\]|\\.)*")\s*:'
+    group: 1
+  - scope: string
+    match: '"(?:[^"\\]|\\.)*"'
+  - scope: constant
+    words: [true, false, null]
+  - scope: number
+    match: '-?\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b'

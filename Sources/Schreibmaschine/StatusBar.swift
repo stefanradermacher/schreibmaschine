@@ -2,8 +2,10 @@ import AppKit
 
 /// The bar below the text: position of the insertion point on the left, encoding and line
 /// ending on the right, each changeable with a click.
-final class StatusBar: NSView {
+final class StatusBar: NSView, NSMenuDelegate {
     private let position = NSTextField(labelWithString: "")
+    private let languageButton = NSPopUpButton(frame: .zero, pullsDown: true)
+    private let indentationButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private let encodingButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private let lineEndingButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private weak var document: TextDocument?
@@ -18,12 +20,14 @@ final class StatusBar: NSView {
         position.lineBreakMode = .byTruncatingTail
         position.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
-        for button in [encodingButton, lineEndingButton] {
+        for button in [languageButton, indentationButton, encodingButton, lineEndingButton] {
             button.isBordered = false
             button.font = font
             button.controlSize = .small
             (button.cell as? NSPopUpButtonCell)?.arrowPosition = .arrowAtBottom
         }
+        languageButton.toolTip = String(localized: "Sprache für Hervorhebung, Kommentare und Einrückung")
+        indentationButton.toolTip = String(localized: "Einrückung dieses Dokuments")
         encodingButton.toolTip = String(localized: "Zeichenkodierung beim Sichern")
         lineEndingButton.toolTip = String(localized: "Zeilenenden beim Sichern")
         buildMenus()
@@ -31,7 +35,7 @@ final class StatusBar: NSView {
         let separator = NSBox()
         separator.boxType = .separator
 
-        let stack = NSStackView(views: [position, NSView(), encodingButton, lineEndingButton])
+        let stack = NSStackView(views: [position, NSView(), languageButton, indentationButton, encodingButton, lineEndingButton])
         stack.orientation = .horizontal
         stack.spacing = 12
         stack.edgeInsets = NSEdgeInsets(top: 0, left: 10, bottom: 0, right: 6)
@@ -58,6 +62,36 @@ final class StatusBar: NSView {
 
     /// Pull-down menus: the first item is the button's title, the others are the choices.
     private func buildMenus() {
+        // The languages are listed when the menu opens, so newly added ones appear.
+        let languages = NSMenu()
+        languages.addItem(NSMenuItem())
+        languages.delegate = self
+        languageButton.menu = languages
+
+        let indentation = NSMenu()
+        indentation.addItem(NSMenuItem())
+        for (title, action, tag) in [
+            (String(localized: "Mit Leerzeichen"), #selector(TextDocument.indentWithSpaces(_:)), 0),
+            (String(localized: "Mit Tabs"), #selector(TextDocument.indentWithTabs(_:)), 0),
+            ("-", nil, 0),
+            (String(localized: "Breite 2"), #selector(TextDocument.changeIndentWidth(_:)), 2),
+            (String(localized: "Breite 3"), #selector(TextDocument.changeIndentWidth(_:)), 3),
+            (String(localized: "Breite 4"), #selector(TextDocument.changeIndentWidth(_:)), 4),
+            (String(localized: "Breite 8"), #selector(TextDocument.changeIndentWidth(_:)), 8),
+            ("-", nil, 0),
+            (String(localized: "Einrückung der Datei erkennen"), #selector(TextDocument.redetectIndentation(_:)), 0),
+        ] as [(String, Selector?, Int)] {
+            if action == nil {
+                indentation.addItem(.separator())
+                continue
+            }
+            let item = NSMenuItem(title: title, action: action, keyEquivalent: "")
+            item.tag = tag
+            item.target = document
+            indentation.addItem(item)
+        }
+        indentationButton.menu = indentation
+
         let encodings = NSMenu()
         encodings.addItem(NSMenuItem())
         for encoding in TextEncoding.menuItems {
@@ -83,9 +117,32 @@ final class StatusBar: NSView {
         lineEndingButton.menu = endings
     }
 
-    /// Shows the document's encoding and line ending.
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        guard menu === languageButton.menu else { return }
+        while menu.items.count > 1 { menu.removeItem(at: 1) }
+        let plain = NSMenuItem(title: String(localized: "Reiner Text"), action: #selector(TextDocument.chooseLanguage(_:)), keyEquivalent: "")
+        plain.representedObject = ""
+        plain.target = document
+        menu.addItem(plain)
+        menu.addItem(.separator())
+        for language in LanguageRegistry.shared.languages {
+            let item = NSMenuItem(title: language.name, action: #selector(TextDocument.chooseLanguage(_:)), keyEquivalent: "")
+            item.representedObject = language.id
+            item.target = document
+            menu.addItem(item)
+        }
+    }
+
+    /// Shows the document's language, indentation, encoding and line ending.
     func updateFormat() {
         guard let document else { return }
+        languageButton.menu?.items.first?.title = document.language?.name ?? String(localized: "Reiner Text")
+        let indentation = document.indentation
+        indentationButton.menu?.items.first?.title = indentation.usesSpaces
+            ? String(localized: "Leerzeichen: \(indentation.width)")
+            : String(localized: "Tabs: \(indentation.width)")
+        languageButton.synchronizeTitleAndSelectedItem()
+        indentationButton.synchronizeTitleAndSelectedItem()
         let bom = document.hasBOM ? String(localized: " mit BOM") : ""
         encodingButton.menu?.items.first?.title = TextEncoding.name(of: document.encoding) + bom
         for item in encodingButton.menu?.items.dropFirst() ?? [] {

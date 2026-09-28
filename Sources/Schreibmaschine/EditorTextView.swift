@@ -2,19 +2,24 @@ import AppKit
 
 /// Text attributes of the editor: one font, tab stops every `tabWidth` spaces.
 enum EditorStyle {
-    static func attributes(font: NSFont = Preferences.font) -> [NSAttributedString.Key: Any] {
+    static func attributes(font: NSFont = Preferences.font, tabWidth: Int = Preferences.tabWidthValue) -> [NSAttributedString.Key: Any] {
         [
             .font: font,
-            .paragraphStyle: paragraphStyle(font: font),
+            .paragraphStyle: paragraphStyle(font: font, tabWidth: tabWidth),
             .foregroundColor: NSColor.textColor,
         ]
     }
 
-    static func paragraphStyle(font: NSFont) -> NSParagraphStyle {
+    static func paragraphStyle(font: NSFont, tabWidth: Int) -> NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.tabStops = []
-        style.defaultTabInterval = spaceWidth(of: font) * CGFloat(Preferences.tabWidthValue)
+        style.defaultTabInterval = spaceWidth(of: font) * CGFloat(tabWidth)
         return style
+    }
+
+    /// Background of a bracket and its partner next to the insertion point.
+    static let bracketColor = NSColor(name: nil) { appearance in
+        NSColor.controlAccentColor.withAlphaComponent(appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? 0.35 : 0.22)
     }
 
     static func spaceWidth(of font: NSFont) -> CGFloat {
@@ -43,11 +48,22 @@ final class EditorTextView: NSTextView {
     var onCancel: (() -> Bool)?
     /// The Text menu command being run, for the name of its undo step.
     var currentCommandTitle: String?
+    /// The document's indentation and language, set by the editor.
+    var indentation: () -> Indentation = { .preferred }
+    var language: () -> LanguageDefinition? = { nil }
+    /// A bracket next to the insertion point and its partner, drawn with a background.
+    var bracketRanges: [NSRange] = [] {
+        didSet { if bracketRanges != oldValue { setNeedsDisplay(visibleRect) } }
+    }
 
     override func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
         case #selector(performTextCommand(_:)), #selector(expandSelection(_:)), #selector(shrinkSelection(_:)):
             return isEditable || item.action != #selector(performTextCommand(_:))
+        case #selector(toggleComment(_:)):
+            return isEditable && (language()?.lineComment != nil || language()?.blockComment != nil)
+        case #selector(jumpToMatchingBracket(_:)):
+            return bracketRanges.count == 2
         case #selector(repeatTextCommand(_:)):
             if let last = TextCommands.last {
                 item.title = String(localized: "Erneut ausführen: \(last.command.title.replacingOccurrences(of: " …", with: ""))")
@@ -81,9 +97,33 @@ final class EditorTextView: NSTextView {
 
     override func drawBackground(in rect: NSRect) {
         super.drawBackground(in: rect)
-        guard highlightsCurrentLine, let lineRect = currentLineRect() else { return }
-        EditorStyle.currentLineColor.setFill()
-        lineRect.intersection(rect).fill()
+        if highlightsCurrentLine, let lineRect = currentLineRect() {
+            EditorStyle.currentLineColor.setFill()
+            lineRect.intersection(rect).fill()
+        }
+        if !bracketRanges.isEmpty {
+            EditorStyle.bracketColor.setFill()
+            for range in bracketRanges {
+                for frame in segmentFrames(of: range) {
+                    NSBezierPath(roundedRect: frame.insetBy(dx: -1, dy: 0), xRadius: 3, yRadius: 3).fill()
+                }
+            }
+        }
+    }
+
+    /// The frames of a range of text, in view coordinates.
+    private func segmentFrames(of range: NSRange) -> [NSRect] {
+        guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+              let start = content.location(content.documentRange.location, offsetBy: range.location),
+              let end = content.location(start, offsetBy: range.length),
+              let textRange = NSTextRange(location: start, end: end)
+        else { return [] }
+        var frames: [NSRect] = []
+        layoutManager.enumerateTextSegments(in: textRange, type: .standard, options: []) { _, frame, _, _ in
+            frames.append(frame.offsetBy(dx: textContainerOrigin.x, dy: textContainerOrigin.y))
+            return true
+        }
+        return frames
     }
 
     /// The visual line with the insertion point, across the whole width.
@@ -119,8 +159,8 @@ final class EditorTextView: NSTextView {
             currentCommandTitle = nil
             return
         }
-        guard Preferences.indentsWithSpacesValue, selectedRange().length == 0 else { return super.insertTab(sender) }
-        let width = Preferences.tabWidthValue
+        guard indentation().usesSpaces, selectedRange().length == 0 else { return super.insertTab(sender) }
+        let width = indentation().width
         let count = width - column(at: selectedRange().location) % width
         insertText(String(repeating: " ", count: count), replacementRange: selectedRange())
     }
@@ -148,7 +188,7 @@ final class EditorTextView: NSTextView {
     /// With spaces as indentation, backspace in the indentation goes back to the previous tab stop.
     override func deleteBackward(_ sender: Any?) {
         let selection = selectedRange()
-        guard Preferences.indentsWithSpacesValue, selectedRanges.count == 1, selection.length == 0, selection.location > 0 else {
+        guard indentation().usesSpaces, selectedRanges.count == 1, selection.length == 0, selection.location > 0 else {
             return super.deleteBackward(sender)
         }
         let text = string as NSString
@@ -157,7 +197,7 @@ final class EditorTextView: NSTextView {
         guard before > 1, text.substring(with: NSRange(location: lineStart, length: before)).allSatisfy({ $0 == " " }) else {
             return super.deleteBackward(sender)
         }
-        let width = Preferences.tabWidthValue
+        let width = indentation().width
         let count = before % width == 0 ? width : before % width
         let range = NSRange(location: selection.location - count, length: count)
         if shouldChangeText(in: range, replacementString: "") {
@@ -170,12 +210,117 @@ final class EditorTextView: NSTextView {
     private func column(at location: Int) -> Int {
         let text = string as NSString
         let lineStart = text.lineRange(for: NSRange(location: location, length: 0)).location
-        let width = Preferences.tabWidthValue
+        let width = indentation().width
         var column = 0
         for index in lineStart..<location {
             column = text.character(at: index) == 0x09 ? (column / width + 1) * width : column + 1
         }
         return column
+    }
+
+    // MARK: - Comments and brackets
+
+    /// ⌘/: comments the lines of the selection out, or in again if all of them are comments.
+    /// Without a line comment in the language, the selection or line is wrapped in a block comment.
+    @objc func toggleComment(_ sender: Any?) {
+        guard let language = language() else { return NSSound.beep() }
+        currentCommandTitle = String(localized: "Kommentar umschalten")
+        defer { currentCommandTitle = nil }
+        if let marker = language.lineComment {
+            transformLines(scope: .selectionOrLine) { lines in
+                let filled = lines.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+                let commented = !filled.isEmpty && filled.allSatisfy {
+                    $0.drop { $0 == " " || $0 == "\t" }.hasPrefix(marker)
+                }
+                if commented {
+                    return lines.map { line in
+                        let indent = line.prefix { $0 == " " || $0 == "\t" }
+                        var rest = line.dropFirst(indent.count)
+                        guard rest.hasPrefix(marker) else { return line }
+                        rest = rest.dropFirst(marker.count)
+                        if rest.hasPrefix(" ") { rest = rest.dropFirst() }
+                        return String(indent + rest)
+                    }
+                }
+                // The marks go into one column, at the smallest indentation, as in Xcode.
+                let column = filled.map { $0.prefix { $0 == " " || $0 == "\t" }.count }.min() ?? 0
+                return lines.map { line in
+                    guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { return line }
+                    let index = line.index(line.startIndex, offsetBy: column)
+                    return String(line[..<index]) + marker + " " + String(line[index...])
+                }
+            }
+        } else if let (open, close) = language.blockComment {
+            let text = string as NSString
+            var range = selectedRange()
+            if range.length == 0 {
+                range = text.lineRange(for: range)
+                while range.length > 0, text.character(at: range.upperBound - 1) == 0x0A { range.length -= 1 }
+            }
+            let selected = text.substring(with: range)
+            let trimmed = selected.trimmingCharacters(in: .whitespaces)
+            if trimmed.hasPrefix(open) && trimmed.hasSuffix(close) && trimmed.count >= open.count + close.count {
+                var inner = String(trimmed.dropFirst(open.count).dropLast(close.count))
+                if inner.hasPrefix(" ") { inner.removeFirst() }
+                if inner.hasSuffix(" ") { inner.removeLast() }
+                let lead = selected.prefix { $0 == " " || $0 == "\t" }
+                replace(range, with: lead + inner)
+            } else {
+                replace(range, with: open + " " + selected + " " + close)
+            }
+        }
+    }
+
+    /// Goes to the partner of the bracket next to the insertion point.
+    @objc func jumpToMatchingBracket(_ sender: Any?) {
+        let caret = selectedRange().location
+        guard bracketRanges.count == 2 else { return NSSound.beep() }
+        // The bracket touching the insertion point is the one to leave.
+        let target = bracketRanges[0].location == caret || bracketRanges[0].upperBound == caret ? bracketRanges[1] : bracketRanges[0]
+        let isOpening = language()?.brackets.contains { String($0.0) == (string as NSString).substring(with: target) } ?? false
+        let location = isOpening ? target.location : target.upperBound
+        setSelectedRange(NSRange(location: location, length: 0))
+        scrollRangeToVisible(target)
+        showFindIndicator(for: target)
+    }
+
+    /// The bracket before or after the insertion point and its partner, skipping nested pairs.
+    func matchingBrackets(pairs: [(Character, Character)]) -> [NSRange] {
+        let selection = selectedRange()
+        guard selection.length == 0, !pairs.isEmpty else { return [] }
+        let text = string as NSString
+        let units = pairs.map { (open: $0.0.utf16.first!, close: $0.1.utf16.first!) }
+        for location in [selection.location - 1, selection.location] where location >= 0 && location < text.length {
+            let character = text.character(at: location)
+            if let pair = units.first(where: { $0.open == character }) {
+                var depth = 0
+                var index = location + 1
+                let limit = min(text.length, location + 100_000)
+                while index < limit {
+                    let current = text.character(at: index)
+                    if current == pair.open { depth += 1 }
+                    else if current == pair.close {
+                        if depth == 0 { return [NSRange(location: location, length: 1), NSRange(location: index, length: 1)] }
+                        depth -= 1
+                    }
+                    index += 1
+                }
+            } else if let pair = units.first(where: { $0.close == character }) {
+                var depth = 0
+                var index = location - 1
+                let limit = max(0, location - 100_000)
+                while index >= limit {
+                    let current = text.character(at: index)
+                    if current == pair.close { depth += 1 }
+                    else if current == pair.open {
+                        if depth == 0 { return [NSRange(location: index, length: 1), NSRange(location: location, length: 1)] }
+                        depth -= 1
+                    }
+                    index -= 1
+                }
+            }
+        }
+        return []
     }
 
     // MARK: - Expanding the selection

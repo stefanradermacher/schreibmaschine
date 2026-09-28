@@ -1,0 +1,47 @@
+# PHP. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: PHP
+extensions: [php, phtml, php3, php4, php5, phps]
+interpreters: [php]
+comment:
+  line: '//'
+  block: ['/*', '*/']
+indent:
+  width: 4
+rules:
+  - scope: comment
+    begin: '/\*'
+    end: '\*/'
+  - scope: comment
+    match: '(?://|#(?!\[)).*$'
+  - scope: string
+    begin: '"'
+    end: '"'
+    escape: '\'
+  - scope: string
+    begin: "'"
+    end: "'"
+    escape: '\'
+  - scope: attribute
+    match: '#\[[^\]]*\]'
+  - scope: tag
+    match: '<\?php|<\?=|\?>'
+  - scope: variable
+    match: '\$[A-Za-z_][A-Za-z0-9_]*'
+  - scope: keyword
+    ignoreCase: true
+    words: [abstract, and, array, as, break, callable, case, catch, class, clone, const, continue, declare, default,
+            do, echo, else, elseif, empty, enddeclare, endfor, endforeach, endif, endswitch, endwhile, enum, extends,
+            final, finally, fn, for, foreach, function, global, goto, if, implements, include, include_once,
+            instanceof, insteadof, interface, isset, list, match, namespace, new, or, print, private, protected,
+            public, readonly, require, require_once, return, static, switch, throw, trait, try, unset, use, var,
+            while, xor, yield, self, parent]
+  - scope: constant
+    ignoreCase: true
+    words: [true, false, null]
+  - scope: number
+    match: '\b(?:0x[0-9A-Fa-f_]+|0b[01_]+|\d[\d_]*(?:\.\d[\d_]*)?(?:[eE][+-]?\d+)?)\b'
+  - scope: type
+    match: '\b[A-Z][A-Za-z0-9_]*\b'
+  - scope: function
+    match: '\b([a-z_][A-Za-z0-9_]*)(?=\()'
+    group: 1

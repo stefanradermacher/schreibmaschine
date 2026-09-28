@@ -1,0 +1,35 @@
+# Markdown. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: Markdown
+extensions: [md, markdown, mdown, mkd, mdx]
+comment:
+  block: ['<!--', '-->']
+indent:
+  width: 4
+rules:
+  - scope: code
+    begin: '^\s*```'
+    end: '^\s*```\s*$'
+  - scope: code
+    begin: '^\s*~~~'
+    end: '^\s*~~~\s*$'
+  - scope: comment
+    begin: '<!--'
+    end: '-->'
+  - scope: heading
+    match: '^#{1,6}\s.*$'
+  - scope: heading
+    match: '^(?:={3,}|-{3,})\s*$'
+  - scope: quote
+    match: '^\s*>.*$'
+  - scope: code
+    match: '`[^`]+`'
+  - scope: keyword
+    match: '^\s*(?:[-*+]|\d+[.)])(?=\s)'
+  - scope: link
+    match: '!?\[[^\]]*\]\([^)]*\)'
+  - scope: link
+    match: '<https?://[^>\s]+>|https?://[^\s)>]+'
+  - scope: emphasis
+    match: '(\*\*|__)(?=\S).*?\S\1'
+  - scope: emphasis
+    match: '(?<![*\w])([*_])(?=\S)[^*_]*?\S\1(?![*\w])'

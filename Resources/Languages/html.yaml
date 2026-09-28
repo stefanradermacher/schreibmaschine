@@ -1,0 +1,26 @@
+# HTML. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: HTML
+extensions: [html, htm, xhtml, shtml]
+comment:
+  block: ['<!--', '-->']
+indent:
+  width: 2
+rules:
+  - scope: comment
+    begin: '<!--'
+    end: '-->'
+  - scope: keyword
+    ignoreCase: true
+    match: '<!DOCTYPE[^>]*>'
+  - scope: tag
+    match: '</?[A-Za-z][A-Za-z0-9:-]*'
+  - scope: tag
+    match: '/?>'
+  - scope: attribute
+    match: '\b([A-Za-z_:@][A-Za-z0-9_:.-]*)(?=\s*=)'
+    group: 1
+  - scope: string
+    match: '=\s*("[^"]*"|''[^'']*'')'
+    group: 1
+  - scope: constant
+    match: '&[A-Za-z0-9#]+;'

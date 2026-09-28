@@ -1,0 +1,25 @@
+# INI, TOML und ähnliche Einstellungsdateien. Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: INI / TOML
+extensions: [ini, cfg, conf, properties, toml, editorconfig, gitconfig, desktop]
+filenames: [.editorconfig, .gitconfig, .gitattributes, .npmrc, .env, .env.local]
+comment:
+  line: '#'
+indent:
+  width: 4
+rules:
+  - scope: comment
+    match: '^\s*[#;].*$'
+  - scope: heading
+    match: '^\s*\[[^\]]*\]'
+  - scope: property
+    match: '^\s*([^=:#;\s][^=:]*?)\s*(?=[=:])'
+    group: 1
+  - scope: string
+    match: '"(?:[^"\\]|\\.)*"'
+  - scope: string
+    match: "'[^']*'"
+  - scope: constant
+    ignoreCase: true
+    words: [true, false, yes, no, on, off, null]
+  - scope: number
+    match: '(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])'

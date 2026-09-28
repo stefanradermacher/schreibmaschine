@@ -49,6 +49,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showCommandPalette(_ sender: Any?) { CommandPalette.shared.show() }
 
+    @objc func showLanguageFolder(_ sender: Any?) {
+        NSWorkspace.shared.activateFileViewerSelecting([LanguageRegistry.userFolder])
+    }
+
+    /// Reads all language definitions again and reports the ones that have errors.
+    @objc func reloadLanguages(_ sender: Any?) {
+        let registry = LanguageRegistry.shared
+        registry.reload()
+        guard !registry.failures.isEmpty else { return }
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Nicht alle Sprachdefinitionen ließen sich lesen.")
+        alert.informativeText = registry.failures.joined(separator: "\n\n")
+        alert.runModal()
+    }
+
     @objc func previousDocument(_ sender: Any?) { DocumentNavigation.step(by: -1) }
     @objc func nextDocument(_ sender: Any?) { DocumentNavigation.step(by: 1) }
 

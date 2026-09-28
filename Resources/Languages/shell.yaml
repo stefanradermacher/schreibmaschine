@@ -1,0 +1,32 @@
+# Shell (sh, bash, zsh). Das Format der Sprachdefinitionen beschreibt docs/sprachen.md im Quellcode von Schreibmaschine.
+name: Shell
+extensions: [sh, bash, zsh, ksh, command]
+filenames: [.bashrc, .bash_profile, .bash_aliases, .bash_logout, .zshrc, .zprofile, .zshenv, .zlogin, .profile]
+interpreters: [sh, bash, zsh, ksh, dash]
+comment:
+  line: '#'
+indent:
+  width: 4
+rules:
+  - scope: comment
+    match: '(?:(?<=\s)|^)#.*$'
+  - scope: string
+    begin: '"'
+    end: '"'
+    escape: '\'
+  - scope: string
+    begin: "'"
+    end: "'"
+  - scope: variable
+    match: '\$(?:\{[^}]*\}|[A-Za-z_][A-Za-z0-9_]*|[0-9@#?$!*-])'
+  - scope: keyword
+    words: [if, then, else, elif, fi, case, esac, for, while, until, do, done, in, function, select, time, return,
+            exit, break, continue, local, export, readonly, declare, typeset, unset, shift, source, alias, eval,
+            exec, trap, set]
+  - scope: constant
+    words: [true, false]
+  - scope: function
+    match: '^\s*(?:function\s+)?([A-Za-z_][A-Za-z0-9_-]*)\s*\(\)'
+    group: 1
+  - scope: number
+    match: '\b\d+\b'
