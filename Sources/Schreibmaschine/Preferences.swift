@@ -1,0 +1,78 @@
+import AppKit
+
+/// Keys and defaults of the settings in UserDefaults.
+///
+/// Showing line numbers, wrapping and invisibles are defaults for new windows; each window can
+/// switch them in the View menu. Font, indentation and highlighting apply to all windows at once.
+enum Preferences {
+    static let fontName = "fontName"                        // empty: the system's monospaced font
+    static let fontSize = "fontSize"
+    static let showsLineNumbers = "showsLineNumbers"
+    static let wrapsLines = "wrapsLines"
+    static let showsInvisibles = "showsInvisibles"
+    static let highlightsCurrentLine = "highlightsCurrentLine"
+    static let tabWidth = "tabWidth"
+    static let indentsWithSpaces = "indentsWithSpaces"
+    static let autoIndents = "autoIndents"
+    static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
+    static let writesUTF8BOM = "writesUTF8BOM"
+    static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
+    static let opensDocumentsInTabs = "opensDocumentsInTabs"
+    static let windowWidth = "windowWidth"
+    static let windowHeight = "windowHeight"
+
+    static func registerDefaults() {
+        UserDefaults.standard.register(defaults: [
+            fontName: "",
+            fontSize: 13.0,
+            showsLineNumbers: true,
+            wrapsLines: true,
+            showsInvisibles: false,
+            highlightsCurrentLine: true,
+            tabWidth: 4,
+            indentsWithSpaces: true,
+            autoIndents: true,
+            defaultEncoding: Int(String.Encoding.utf8.rawValue),
+            writesUTF8BOM: false,
+            defaultLineEnding: LineEnding.lf.rawValue,
+            opensDocumentsInTabs: true,
+        ])
+    }
+
+    private static var defaults: UserDefaults { .standard }
+
+    static var font: NSFont {
+        let size = CGFloat(defaults.double(forKey: fontSize)).clamped(to: 6...72)
+        if let name = defaults.string(forKey: fontName), !name.isEmpty, let font = NSFont(name: name, size: size) {
+            return font
+        }
+        return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
+    }
+
+    static func setFont(_ font: NSFont) {
+        let system = NSFont.monospacedSystemFont(ofSize: font.pointSize, weight: .regular)
+        defaults.set(font.fontName == system.fontName ? "" : font.fontName, forKey: fontName)
+        defaults.set(Double(font.pointSize), forKey: fontSize)
+    }
+
+    static var tabWidthValue: Int { defaults.integer(forKey: tabWidth).clamped(to: 1...16) }
+    static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
+    static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
+    static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
+
+    static var defaultEncodingValue: String.Encoding {
+        let raw = UInt(defaults.integer(forKey: defaultEncoding))
+        let encoding = String.Encoding(rawValue: raw)
+        return TextEncoding.all.contains(encoding) ? encoding : .utf8
+    }
+
+    static var defaultLineEndingValue: LineEnding {
+        LineEnding(rawValue: defaults.string(forKey: defaultLineEnding) ?? "") ?? .lf
+    }
+}
+
+extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        min(max(self, range.lowerBound), range.upperBound)
+    }
+}

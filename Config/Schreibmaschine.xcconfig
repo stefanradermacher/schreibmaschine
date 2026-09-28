@@ -1,0 +1,15 @@
+// Projektweite Build-Einstellungen.
+//
+// Persönliches bleibt außen vor: Die Team-ID fürs Signieren steht in
+// Config/Local.xcconfig, die nicht im Repository liegt. Vorlage dafür ist
+// Config/Local.xcconfig.example. Fehlt die Datei, baut Xcode ohne Team;
+// build.sh signiert ohnehin ad hoc.
+#include? "Local.xcconfig"
+
+// Build-Nummer. Info.plist setzt CFBundleVersion daraus. Der Wert steht bewusst
+// hier im Repository statt beim Bauen erzeugt zu werden: So liefern Xcode und
+// build.sh dieselbe Nummer, und sie kann nicht sinken.
+//
+// Vor jedem Upload in den App Store einmal ./scripts/bump-build.sh ausführen und
+// mitcommitten — App Store Connect verlangt für jeden Upload eine höhere Nummer.
+CURRENT_PROJECT_VERSION = 1

@@ -1,0 +1,17 @@
+# Build results
+/build/
+/.build/
+DerivedData/
+
+# Personal Xcode settings
+xcuserdata/
+*.xcuserstate
+
+# macOS
+.DS_Store
+
+# Lokale Signierung
+Config/Local.xcconfig
+
+# Eigene Testbilder, nicht im Repository
+/Testdateien/

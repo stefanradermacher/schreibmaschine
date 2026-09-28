@@ -1,0 +1,5 @@
+// Kopie dieser Datei als Config/Local.xcconfig anlegen und die eigene
+// zehnstellige Team-ID eintragen (Xcode: Settings → Accounts, oder
+// App Store Connect → Mitgliedschaft). Nur nötig zum Signieren mit
+// Entwicklerkonto, etwa fürs Archivieren und Hochladen.
+DEVELOPMENT_TEAM = ABCDE12345

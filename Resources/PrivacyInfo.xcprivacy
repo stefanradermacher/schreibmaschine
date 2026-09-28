@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Schreibmaschine erfasst nichts: kein Tracking, keine Analyse, keine Werbung, und die
+	     App baut selbst keine Verbindung ins Internet auf. Einstellungen, Sitzung
+	     und der Zustand pro Datei bleiben auf dem Mac. Die Listen sind deshalb absichtlich leer. -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<!-- Begründungen für "Required Reason APIs" verlangt Apple nur auf iOS, iPadOS,
+	     tvOS, visionOS und watchOS, nicht auf macOS. Schreibmaschine benutzt UserDefaults
+	     und liest Änderungsdatum und Größe von Dateien, müsste das dort also angeben;
+	     hier bleibt die Liste leer. -->
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array/>
+</dict>
+</plist>

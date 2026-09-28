@@ -1,0 +1,274 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXFileReference section */
+		19F01414085055FB62EE9BE2 /* Schreibmaschine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Schreibmaschine.entitlements; sourceTree = "<group>"; };
+		2BDA14127946C1E92E2CAEB5 /* Schreibmaschine.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Schreibmaschine.xcconfig; sourceTree = "<group>"; };
+		A1B225BA2E22F19C4A80F823 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE6DD63A914B2A039E1BA067 /* Schreibmaschine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Schreibmaschine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		E8657E1A821915F071E5BAF4 /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		34CEEFC9BA79528D2E5FB7CF /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = Sources;
+			path = Sources/Schreibmaschine;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5E228987B52B24664AA1C431 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E3BDC3909FBF7B1EBB161AEF /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A1B225BA2E22F19C4A80F823 /* Info.plist */,
+				19F01414085055FB62EE9BE2 /* Schreibmaschine.entitlements */,
+				2BDA14127946C1E92E2CAEB5 /* Schreibmaschine.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		345DD38C17A59A3E66FA1F56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE6DD63A914B2A039E1BA067 /* Schreibmaschine.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AF23933537E30745C5B01668 = {
+			isa = PBXGroup;
+			children = (
+				34CEEFC9BA79528D2E5FB7CF /* Sources */,
+				E8657E1A821915F071E5BAF4 /* Resources */,
+				E3BDC3909FBF7B1EBB161AEF /* Config */,
+				345DD38C17A59A3E66FA1F56 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F03BBADD9F995C80D1F6194B /* Schreibmaschine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFDB29C68DBB2BA3458F72FB /* Build configuration list for PBXNativeTarget "Schreibmaschine" */;
+			buildPhases = (
+				326B294E411EA547D8E5CFE6 /* Sources */,
+				5E228987B52B24664AA1C431 /* Frameworks */,
+				C7D7974F820B966956D3E154 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E8657E1A821915F071E5BAF4 /* Resources */,
+				34CEEFC9BA79528D2E5FB7CF /* Sources */,
+			);
+			name = Schreibmaschine;
+			packageProductDependencies = (
+			);
+			productName = Schreibmaschine;
+			productReference = AE6DD63A914B2A039E1BA067 /* Schreibmaschine.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B330A412A6AB0B948D8C6897 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					F03BBADD9F995C80D1F6194B = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = CEE48FEE3ACCE0418508410B /* Build configuration list for PBXProject "Schreibmaschine" */;
+			developmentRegion = de;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				de,
+				en,
+				Base,
+			);
+			mainGroup = AF23933537E30745C5B01668;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 345DD38C17A59A3E66FA1F56 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F03BBADD9F995C80D1F6194B /* Schreibmaschine */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C7D7974F820B966956D3E154 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		326B294E411EA547D8E5CFE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		252C413D5B56A7CF4730EEAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BA63885DB57F043BD0428E4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2BDA14127946C1E92E2CAEB5 /* Schreibmaschine.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/Schreibmaschine.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stefanradermacher.schreibmaschine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		08F605A5A94653DA23E67F4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		22C2ABD8937E2CB399330490 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2BDA14127946C1E92E2CAEB5 /* Schreibmaschine.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/Schreibmaschine.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stefanradermacher.schreibmaschine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CEE48FEE3ACCE0418508410B /* Build configuration list for PBXProject "Schreibmaschine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				252C413D5B56A7CF4730EEAF /* Debug */,
+				08F605A5A94653DA23E67F4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BFDB29C68DBB2BA3458F72FB /* Build configuration list for PBXNativeTarget "Schreibmaschine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22C2ABD8937E2CB399330490 /* Debug */,
+				BA63885DB57F043BD0428E4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B330A412A6AB0B948D8C6897 /* Project object */;
+}
