@@ -32,6 +32,7 @@ final class SettingsWindowController: NSWindowController {
 }
 
 private struct GeneralSettings: View {
+    @AppStorage(Preferences.startupAction) private var startupAction = StartupAction.restoreSession.rawValue
     @AppStorage(Preferences.opensDocumentsInTabs) private var opensInTabs = true
     @AppStorage(Preferences.defaultEncoding) private var encoding = Int(String.Encoding.utf8.rawValue)
     @AppStorage(Preferences.writesUTF8BOM) private var writesBOM = false
@@ -39,6 +40,19 @@ private struct GeneralSettings: View {
 
     var body: some View {
         Form {
+            Section {
+                Picker("Beim Start ohne Datei:", selection: $startupAction) {
+                    Text("letzte Sitzung wiederherstellen").tag(StartupAction.restoreSession.rawValue)
+                    Text("neues Dokument öffnen").tag(StartupAction.newDocument.rawValue)
+                    Text("nichts öffnen").tag(StartupAction.nothing.rawValue)
+                }
+                .pickerStyle(.radioGroup)
+            } footer: {
+                Text("Startet Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
             Picker("Neue Dokumente öffnen:", selection: $opensInTabs) {
                 Text("als Tab im vorderen Fenster").tag(true)
                 Text("in einem neuen Fenster").tag(false)

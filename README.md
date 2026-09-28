@@ -10,14 +10,18 @@ Die Oberfläche gibt es auf Deutsch und Englisch. Die Texte liegen im String-Kat
 
 Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
-## Stand: Meilenstein 1
+## Stand: Meilenstein 2
 
 - **Dokumente:** Öffnen, Sichern, Sichern unter, Zurück zur gesicherten Version, Drucken. Gesichert wird nur mit ⌘S; die Datei ändert sich nie von selbst.
 - **Kodierung:** wird beim Öffnen erkannt (Byte Order Mark, UTF-16, UTF-8, dann die eingestellte Standardkodierung, bei anderen Schriften Foundations Schätzung, zuletzt Windows-1252 und ISO Latin 1) und beim Sichern beibehalten. Umstellen über Format → Zeichenkodierung oder die Statusleiste; lässt sich ein Zeichen in der neuen Kodierung nicht darstellen, nennt die App es vorher. Ablage → Erneut öffnen mit Kodierung liest die Datei in einer anderen Kodierung neu. Dateien mit Nullbytes gelten als Binärdateien und werden nicht geöffnet.
 - **Zeilenenden:** Im Editor endet jede Zeile mit LF. Die Zeilenenden der Datei (LF, CRLF, CR) werden erkannt und beim Sichern wieder eingesetzt; gemischte Zeilenenden zeigt die Statusleiste an. Eingesetzter Text bekommt ebenfalls LF.
 - **Editor:** Zeilennummern, Zeilenumbruch, unsichtbare Zeichen (jeweils pro Fenster im Menü Darstellung), aktuelle Zeile hervorgehoben, Schrift vergrößern und verkleinern (⌘+, ⌘−, ⌘0). Einrücken mit Leerzeichen oder Tabs, Einrückung der vorigen Zeile übernehmen, die Rücktaste springt im Einzug zum vorigen Tabstopp.
 - **Statusleiste:** Zeile und Spalte, Größe der Auswahl, Kodierung und Zeilenenden zum Anklicken.
-- **Fenster:** Neue Dokumente öffnen als Tab im vorderen Fenster oder in einem eigenen Fenster (Einstellung). Die Fensterwiederherstellung von macOS ist abgeschaltet: Öffnet man eine Datei aus dem Finder, erscheint nur diese. Eine eigene, sichtbare Sitzung folgt mit Meilenstein 2.
+- **Fenster:** Neue Dokumente öffnen als Tab im vorderen Fenster oder in einem eigenen Fenster (Einstellung), das erste Fenster mitten auf dem Bildschirm, weitere versetzt zum vorderen. Die Tab-Einstellung von macOS („Tabs bevorzugen: Immer“) greift nicht; ob ein Dokument als Tab kommt, entscheidet die Einstellung der App.
+- **Sitzung:** Die Fensterwiederherstellung von macOS ist abgeschaltet; die App führt eine eigene Sitzung aus Fenstern, Tabs und je Tab einer Datei oder einem ungesicherten Text (`Session.swift`). Sie wird wenige Sekunden nach jeder Änderung geschrieben und übersteht so auch einen Absturz. Beim Beenden fragt die App nie nach: Ungesicherte Texte und Änderungen bleiben als Pufferdateien im Container und kommen beim nächsten Mal wieder, als geändert markiert. Was zur Sitzung gehört, zeigt Fenster → Sitzung.
+- **Start:** Ohne Datei gestartet, stellt die App die letzte Sitzung wieder her, öffnet ein neues Dokument oder nichts (Einstellung „Beim Start ohne Datei“); nach einem Absturz kommt die Sitzung in jedem Fall zurück. Mit einer Datei gestartet (Doppelklick, Öffnen mit, Dock, `open`), erscheint nur diese Datei. Die Sitzung davor wird zur vorigen Sitzung, die sich unter Fenster → Sitzung wiederherstellen oder verwerfen lässt; enthält sie ungesicherte Texte, wird sie nie stillschweigend ersetzt, sondern um die nächste ergänzt.
+- **Fehlende Dateien:** Ist eine Datei der Sitzung gelöscht oder verschoben, nennt die App sie beim Start. Hatte sie ungesicherte Änderungen, kommt der Text als neues Dokument unter ihrem Namen zurück.
+- **Zustand pro Datei:** Auswahl, oberste sichtbare Zeile, Umbruch, Zeilennummern, unsichtbare Zeichen und Schriftgröße merkt sich die App für jede Datei, ebenso eine Kodierung, die mit Erneut öffnen mit Kodierung gewählt wurde (`FileState.swift`, als JSON im Container, nach Pfad; die Datei selbst bleibt unberührt).
 - **Suchen:** vorerst die Suchleiste von macOS (⌘F, ⌥⌘F); die eigene Suchleiste folgt mit Meilenstein 3.
 
 ## Bauen
@@ -48,6 +52,7 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `TextEncoding.swift`, `LineEnding.swift`: Erkennen und Umwandeln von Kodierungen und Zeilenenden
   - `LineIndex.swift`: Zeilenanfänge, bei jeder Änderung schrittweise nachgeführt
   - `DocumentWindowController.swift`, `EditorViewController.swift`: Fenster und Tabs, Editoransicht
+  - `Session.swift`, `FileState.swift`: die eigene Sitzung mit ungesicherten Texten, der Zustand pro Datei
   - `EditorTextView.swift`: Textansicht mit Einrückung und hervorgehobener Zeile
   - `LineNumberRuler.swift`, `InvisiblesLayoutFragment.swift`, `StatusBar.swift`: Zeilennummern, unsichtbare Zeichen, Statusleiste
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster

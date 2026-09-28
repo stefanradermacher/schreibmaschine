@@ -126,6 +126,61 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     override func viewDidAppear() {
         super.viewDidAppear()
         view.window?.makeFirstResponder(textView)
+        if let state = pendingViewState {
+            pendingViewState = nil
+            apply(state)
+        }
+    }
+
+    // MARK: - View state
+
+    /// Applied when the view first appears: the state the file was last shown with.
+    var pendingViewState: ViewState?
+
+    var viewState: ViewState {
+        if let pendingViewState { return pendingViewState }
+        let selection = textView.selectedRange()
+        var topOffset = 0
+        if let content = layoutManager.textContentManager,
+           let fragment = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: textView.visibleRect.minY - textView.textContainerOrigin.y)) {
+            topOffset = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+        }
+        return ViewState(
+            selectionLocation: selection.location, selectionLength: selection.length, topOffset: topOffset,
+            wrapsLines: wrapsLines, showsLineNumbers: showsLineNumbers, showsInvisibles: invisibles.showsInvisibles,
+            zoom: Double(zoom))
+    }
+
+    private func apply(_ state: ViewState) {
+        if state.wrapsLines != wrapsLines {
+            wrapsLines = state.wrapsLines
+            applyWrapping()
+        }
+        showsLineNumbers = state.showsLineNumbers
+        scrollView.rulersVisible = showsLineNumbers
+        if state.showsInvisibles != invisibles.showsInvisibles {
+            toggleInvisibles(nil)
+        }
+        if CGFloat(state.zoom) != zoom { setZoom(CGFloat(state.zoom)) }
+
+        let length = document.textStorage.length
+        let location = min(max(state.selectionLocation, 0), length)
+        textView.setSelectedRange(NSRange(location: location, length: min(max(state.selectionLength, 0), length - location)))
+        scroll(toOffset: min(max(state.topOffset, 0), length))
+    }
+
+    /// Scrolls so that the line at the offset is the first one visible. TextKit lays out only
+    /// around the visible part and estimates the rest; relocating the viewport lays out from the
+    /// line on and gives the matching scroll position.
+    private func scroll(toOffset offset: Int) {
+        guard let content = layoutManager.textContentManager,
+              let location = content.location(content.documentRange.location, offsetBy: offset)
+        else { return }
+        let viewport = layoutManager.textViewportLayoutController
+        let y = offset == 0 ? 0 : viewport.relocateViewport(to: location) + textView.textContainerOrigin.y
+        scrollView.contentView.scroll(to: NSPoint(x: scrollView.contentView.bounds.minX, y: y))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+        viewport.layoutViewport()
     }
 
     // MARK: - Applying settings
@@ -226,15 +281,22 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
     }
 
     @objc func toggleWrapping(_ sender: Any?) {
-        wrapsLines.toggle()
-        applyWrapping()
+        keepingTopLine {
+            wrapsLines.toggle()
+            applyWrapping()
+        }
     }
 
     @objc func toggleInvisibles(_ sender: Any?) {
         invisibles.showsInvisibles.toggle()
-        // The fragments read the option when drawing; they only need to draw again.
-        layoutManager.invalidateLayout(for: layoutManager.documentRange)
-        textView.needsDisplay = true
+        // The fragments read the option when drawing, so they only need to draw again. A new
+        // layout would make TextKit estimate the heights anew, and the view would jump.
+        func redraw(_ view: NSView) {
+            view.needsDisplay = true
+            view.layer?.sublayers?.forEach { $0.setNeedsDisplay() }
+            view.subviews.forEach(redraw)
+        }
+        redraw(textView)
     }
 
     @objc func zoomIn(_ sender: Any?) { setZoom(zoom + 1) }
@@ -243,8 +305,19 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
 
     private func setZoom(_ value: CGFloat) {
         let base = Preferences.font.pointSize
-        zoom = (base + value).clamped(to: 6...96) - base
-        applyFont()
+        keepingTopLine {
+            zoom = (base + value).clamped(to: 6...96) - base
+            applyFont()
+        }
+    }
+
+    /// Changes that lay out the text anew keep the line at the top where it was.
+    private func keepingTopLine(_ change: () -> Void) {
+        guard view.window != nil else { return change() }
+        let top = viewState.topOffset
+        change()
+        textView.layoutSubtreeIfNeeded()
+        scroll(toOffset: top)
     }
 
     func validateMenuItem(_ item: NSMenuItem) -> Bool {

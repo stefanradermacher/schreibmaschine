@@ -24,10 +24,10 @@ final class InvisiblesLayoutFragment: NSTextLayoutFragment {
         }
     }
 
-    // The line break mark sits behind the last character and may stick out of the text.
+    // The line break mark sits behind the last character and may stick out of the text. The
+    // bounds do not depend on the option, so switching it needs no new layout.
     override var renderingSurfaceBounds: CGRect {
         let bounds = super.renderingSurfaceBounds
-        guard options?.showsInvisibles == true else { return bounds }
         return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width + 20, height: bounds.height)
     }
 

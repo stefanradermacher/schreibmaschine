@@ -31,6 +31,36 @@
         }
       }
     },
+    "%@ – ungesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – unsaved"
+          }
+        }
+      }
+    },
+    "%lld Dokumente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld documents"
+          }
+        }
+      }
+    },
+    "%lld Dokumente, davon %lld ungesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld documents, %2$lld of them unsaved"
+          }
+        }
+      }
+    },
     "%lld Zeichen": {
       "localizations": {
         "en": {
@@ -201,6 +231,16 @@
         }
       }
     },
+    "Beim Start ohne Datei:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When starting without a file:"
+          }
+        }
+      }
+    },
     "Beim Öffnen erkennt Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.": {
       "localizations": {
         "en": {
@@ -341,6 +381,16 @@
         }
       }
     },
+    "Diese Dateien wurden gelöscht oder verschoben: %@. Hatten sie ungesicherte Änderungen, sind diese als neue Dokumente geöffnet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These files were deleted or moved: %@. Unsaved changes they had are open as new documents."
+          }
+        }
+      }
+    },
     "Diese Zeichen gibt es in der Kodierung nicht: %@. Wähle unter Format → Zeichenkodierung zum Beispiel UTF-8.": {
       "localizations": {
         "en": {
@@ -411,6 +461,16 @@
         }
       }
     },
+    "Einstellungen für den Start …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startup Settings…"
+          }
+        }
+      }
+    },
     "Einstellungen …": {
       "localizations": {
         "en": {
@@ -447,6 +507,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Window"
+          }
+        }
+      }
+    },
+    "Fenster %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Window %lld"
           }
         }
       }
@@ -541,6 +611,36 @@
         }
       }
     },
+    "In der Sitzung (beim Start ohne Datei nicht wiederhergestellt):": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the session (not restored when starting without a file):"
+          }
+        }
+      }
+    },
+    "Keine Dokumente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No documents"
+          }
+        }
+      }
+    },
+    "Kommt beim nächsten Start wieder:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comes back at the next start:"
+          }
+        }
+      }
+    },
     "Kopieren": {
       "localizations": {
         "en": {
@@ -607,6 +707,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open new documents:"
+          }
+        }
+      }
+    },
+    "Nicht alle Dateien der Sitzung sind noch da.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some files of the session are gone."
           }
         }
       }
@@ -751,12 +861,42 @@
         }
       }
     },
+    "Sie enthält %lld ungesicherte Texte. Sie gehen dabei verloren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It contains %lld unsaved texts. They will be lost."
+          }
+        }
+      }
+    },
     "Sie scheint keinen Text zu enthalten: Sie enthält Nullbytes, wie sie in Programmen, Bildern oder Archiven vorkommen.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "It does not seem to contain text: it contains null bytes, as found in programs, images or archives."
+          }
+        }
+      }
+    },
+    "Sitzung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session"
+          }
+        }
+      }
+    },
+    "Startet Schreibmaschine, weil eine Datei geöffnet wird, erscheint nur diese Datei. Die Sitzung davor lässt sich unter Fenster → Sitzung zurückholen. Ungesicherte Texte bleiben immer erhalten, auch nach einem Absturz.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When Schreibmaschine starts because a file is opened, only that file appears. The session before can be brought back under Window → Session. Unsaved texts are always kept, even after a crash."
           }
         }
       }
@@ -841,12 +981,52 @@
         }
       }
     },
+    "Verwerfen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard"
+          }
+        }
+      }
+    },
     "Vollbildmodus": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Enter Full Screen"
+          }
+        }
+      }
+    },
+    "Vorige Sitzung verwerfen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard Previous Session…"
+          }
+        }
+      }
+    },
+    "Vorige Sitzung verwerfen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard previous session?"
+          }
+        }
+      }
+    },
+    "Vorige Sitzung wiederherstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Previous Session"
           }
         }
       }
@@ -1017,6 +1197,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "in a new window"
+          }
+        }
+      }
+    },
+    "letzte Sitzung wiederherstellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "restore the last session"
+          }
+        }
+      }
+    },
+    "neues Dokument öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "open a new document"
+          }
+        }
+      }
+    },
+    "nichts öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "open nothing"
           }
         }
       }

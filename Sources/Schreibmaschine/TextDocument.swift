@@ -21,23 +21,138 @@ final class TextDocument: NSDocument {
 
     var textStorage: NSTextStorage { contentStorage.textStorage! }
 
+    /// Identifies the document in the session; its unsaved text is stored under this name.
+    var sessionID = UUID()
+    /// The name of a file that is gone, for the text kept from it; saving asks for a new place.
+    var keptName: String? {
+        didSet { displayName = keptName }
+    }
+
+    override var fileURL: URL? {
+        // Once saved, the document is named after its file again.
+        didSet { if fileURL != nil, keptName != nil { keptName = nil } }
+    }
+    private var editObserver: NSObjectProtocol?
+
     override init() {
         lineIndex = LineIndex(storage: contentStorage.textStorage!)
         super.init()
         hasBOM = encoding == .utf8 ? UserDefaults.standard.bool(forKey: Preferences.writesUTF8BOM) : false
+        editObserver = NotificationCenter.default.addObserver(
+            forName: NSTextStorage.didProcessEditingNotification, object: textStorage, queue: nil
+        ) { [weak self] _ in
+            self?.textDidEdit()
+        }
+    }
+
+    deinit {
+        if let editObserver { NotificationCenter.default.removeObserver(editObserver) }
+    }
+
+    /// While the text is replaced by loading or restoring, edits are not the user's.
+    private var isReplacingText = false
+
+    private func textDidEdit() {
+        SessionStore.shared.setNeedsSave()
+        guard textStorage.editedMask.contains(.editedCharacters), !isReplacingText,
+              undoManager?.isUndoing != true, undoManager?.isRedoing != true
+        else { return }
+        // Typing marks the document as changed through its undo registration, once the event is
+        // done. Text inserted through accessibility (dictation, Keyboard Viewer, automation) is
+        // not registered for undo; without this it would count as unchanged and not be kept.
+        // The check waits until the undo group of a keystroke is surely closed.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self, !isDocumentEdited else { return }
+            updateChangeCount(.changeDone)
+        }
+    }
+
+    var editor: EditorViewController? {
+        (windowControllers.first as? DocumentWindowController)?.editor
+    }
+
+    /// The text has to be kept by the session: it has changes that are not in a file.
+    var needsBuffer: Bool {
+        isDocumentEdited || (fileURL == nil && textStorage.length > 0)
     }
 
     // MARK: - NSDocument
 
-    // Saving writes the file only on ⌘S. Unsaved changes are kept by the session (milestone 2).
+    // Saving writes the file only on ⌘S. Unsaved changes are kept by the session instead, so
+    // quitting never asks and never loses text.
     override class var autosavesInPlace: Bool { false }
 
     override func makeWindowControllers() {
         addWindowController(DocumentWindowController())
     }
 
+    override func read(from url: URL, ofType typeName: String) throws {
+        let data = try Data(contentsOf: url)
+        // An encoding chosen by hand for this file before is used again, as long as it fits.
+        if let chosen = FileStateStore.shared.encoding(for: url), (try? load(data, as: chosen)) != nil { return }
+        try load(data, as: nil)
+    }
+
     override func read(from data: Data, ofType typeName: String) throws {
         try load(data, as: nil)
+    }
+
+    override func updateChangeCount(_ change: NSDocument.ChangeType) {
+        super.updateChangeCount(change)
+        SessionStore.shared.setNeedsSave()
+    }
+
+    override func close() {
+        if let fileURL, let view = editor?.viewState {
+            FileStateStore.shared.record(view, for: fileURL)
+        }
+        super.close()
+        stopSecurityScope()
+        SessionStore.shared.setNeedsSave()
+    }
+
+    // MARK: - Session
+
+    private var scopedURL: URL?
+    private var cachedBookmark: (url: URL, data: Data)?
+
+    /// Security-scoped bookmark of the file, so the session may open it again after a restart.
+    var bookmark: Data? {
+        guard let fileURL else { return nil }
+        if let cachedBookmark, cachedBookmark.url == fileURL { return cachedBookmark.data }
+        guard let data = try? fileURL.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) else {
+            return nil
+        }
+        cachedBookmark = (fileURL, data)
+        return data
+    }
+
+    /// Keeps access to a file opened through a bookmark for as long as the document is open.
+    func adoptSecurityScope(of url: URL, accessing: Bool) {
+        if accessing { scopedURL = url }
+    }
+
+    private func stopSecurityScope() {
+        scopedURL?.stopAccessingSecurityScopedResource()
+        scopedURL = nil
+    }
+
+    /// Puts back a text kept by the session, with the format it had; the document counts as
+    /// changed, since the text is not in a file.
+    func restore(text: String, encoding: String.Encoding, hasBOM: Bool, lineEnding: LineEnding) {
+        self.encoding = encoding
+        self.hasBOM = hasBOM
+        self.lineEnding = lineEnding
+        isReplacingText = true
+        defer { isReplacingText = false }
+        undoManager?.disableUndoRegistration()
+        textStorage.beginEditing()
+        textStorage.replaceCharacters(in: NSRange(location: 0, length: textStorage.length), with: text)
+        textStorage.setAttributes(EditorStyle.attributes(), range: NSRange(location: 0, length: textStorage.length))
+        textStorage.endEditing()
+        undoManager?.enableUndoRegistration()
+        updateChangeCount(.changeDone)
+        NotificationCenter.default.post(name: Self.formatDidChange, object: self)
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -111,6 +226,8 @@ final class TextDocument: NSDocument {
         hadMixedLineEndings = isMixed
 
         let text = decoded.text.normalizingLineEndings
+        isReplacingText = true
+        defer { isReplacingText = false }
         undoManager?.disableUndoRegistration()
         textStorage.beginEditing()
         textStorage.replaceCharacters(in: NSRange(location: 0, length: textStorage.length), with: text)
@@ -130,6 +247,7 @@ final class TextDocument: NSDocument {
                 let data = try Data(contentsOf: fileURL)
                 try load(data, as: encoding)
                 updateChangeCount(.changeCleared)
+                FileStateStore.shared.recordEncoding(encoding, for: fileURL)
             } catch {
                 presentError(error)
             }

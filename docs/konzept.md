@@ -54,7 +54,7 @@ Schreibmaschine schaltet die Systemwiederherstellung ab und verwaltet ihre **Sit
 
 ### Pro Datei gemerkt
 
-Cursor und Auswahl, Scrollposition, Faltungen, Lesezeichen, Kodierung, Zeilenenden, Sprache, Umbruch und Einrückung. Gespeichert wird das in einer kleinen Datenbank im Container, mit dem Bookmark der Datei als Schlüssel. Die Datei selbst bleibt unverändert, es werden auch keine erweiterten Attribute geschrieben.
+Cursor und Auswahl, Scrollposition, Faltungen, Lesezeichen, Kodierung, Zeilenenden, Sprache, Umbruch und Einrückung. Gespeichert wird das als JSON im Container, mit dem Pfad der Datei als Schlüssel (Bookmarks taugen nicht als Schlüssel, sie ändern sich bei jedem Erzeugen). Die Datei selbst bleibt unverändert, es werden auch keine erweiterten Attribute geschrieben. Die Kodierung wird nur gemerkt, wenn man sie mit „Erneut öffnen mit Kodierung“ selbst gewählt hat; sonst erkennt die App sie jedes Mal neu.
 
 ### Fenster und Tabs
 

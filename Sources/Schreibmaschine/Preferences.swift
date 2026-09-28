@@ -18,6 +18,7 @@ enum Preferences {
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
     static let opensDocumentsInTabs = "opensDocumentsInTabs"
+    static let startupAction = "startupAction"              // StartupAction.rawValue
     static let windowWidth = "windowWidth"
     static let windowHeight = "windowHeight"
 
@@ -36,6 +37,7 @@ enum Preferences {
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
             opensDocumentsInTabs: true,
+            startupAction: StartupAction.restoreSession.rawValue,
         ])
     }
 
@@ -66,9 +68,18 @@ enum Preferences {
         return TextEncoding.all.contains(encoding) ? encoding : .utf8
     }
 
+    static var startupActionValue: StartupAction {
+        StartupAction(rawValue: defaults.string(forKey: startupAction) ?? "") ?? .restoreSession
+    }
+
     static var defaultLineEndingValue: LineEnding {
         LineEnding(rawValue: defaults.string(forKey: defaultLineEnding) ?? "") ?? .lf
     }
+}
+
+/// What the app opens when it is started without a file.
+enum StartupAction: String, CaseIterable {
+    case restoreSession, newDocument, nothing
 }
 
 extension Comparable {

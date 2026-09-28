@@ -155,7 +155,75 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Im Dock ablegen"), #selector(NSWindow.performMiniaturize(_:)), "m"))
         menu.addItem(item(String(localized: "Zoomen"), #selector(NSWindow.performZoom(_:))))
         menu.addItem(.separator())
+        let session = NSMenu(title: String(localized: "Sitzung"))
+        session.delegate = SessionMenu.shared
+        menu.addItem(submenu(session))
+        menu.addItem(.separator())
         menu.addItem(item(String(localized: "Alle nach vorne bringen"), #selector(NSApplication.arrangeInFront(_:))))
         return menu
+    }
+}
+
+/// Window → Session: what belongs to the session and comes back at the next start, and the
+/// previous session, if one was kept.
+final class SessionMenu: NSObject, NSMenuDelegate {
+    static let shared = SessionMenu()
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let store = SessionStore.shared
+        let session = store.capture()
+
+        let header = NSMenuItem(title: Preferences.startupActionValue == .restoreSession
+                                ? String(localized: "Kommt beim nächsten Start wieder:")
+                                : String(localized: "In der Sitzung (beim Start ohne Datei nicht wiederhergestellt):"),
+                                action: nil, keyEquivalent: "")
+        header.isEnabled = false
+        menu.addItem(header)
+        if session.isEmpty {
+            let empty = NSMenuItem(title: String(localized: "Keine Dokumente"), action: nil, keyEquivalent: "")
+            empty.isEnabled = false
+            empty.indentationLevel = 1
+            menu.addItem(empty)
+        }
+        for (index, window) in session.windows.enumerated() {
+            let title = NSMenuItem(title: String(localized: "Fenster \(index + 1)"), action: nil, keyEquivalent: "")
+            title.isEnabled = false
+            title.indentationLevel = 1
+            menu.addItem(title)
+            for tab in window.tabs {
+                let name = tab.hasBuffer ? String(localized: "\(tab.name) – ungesichert") : tab.name
+                let entry = NSMenuItem(title: name, action: #selector(showTab(_:)), keyEquivalent: "")
+                entry.target = self
+                entry.representedObject = tab.id
+                entry.indentationLevel = 2
+                entry.toolTip = tab.path
+                menu.addItem(entry)
+            }
+        }
+
+        menu.addItem(.separator())
+        let previous = store.previous
+        let restore = NSMenuItem(title: String(localized: "Vorige Sitzung wiederherstellen"),
+                                 action: previous == nil ? nil : #selector(AppDelegate.restorePreviousSession(_:)), keyEquivalent: "")
+        if let previous {
+            let documents = previous.windows.reduce(0) { $0 + $1.tabs.count }
+            restore.toolTip = previous.unsavedCount > 0
+                ? String(localized: "\(documents) Dokumente, davon \(previous.unsavedCount) ungesichert")
+                : String(localized: "\(documents) Dokumente")
+        }
+        menu.addItem(restore)
+        menu.addItem(NSMenuItem(title: String(localized: "Vorige Sitzung verwerfen …"),
+                                action: previous == nil ? nil : #selector(AppDelegate.discardPreviousSession(_:)), keyEquivalent: ""))
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: String(localized: "Einstellungen für den Start …"),
+                                action: #selector(AppDelegate.showSettings(_:)), keyEquivalent: ""))
+    }
+
+    @objc private func showTab(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID,
+              let document = NSDocumentController.shared.documents.first(where: { ($0 as? TextDocument)?.sessionID == id })
+        else { return }
+        document.windowControllers.first?.window?.makeKeyAndOrderFront(nil)
     }
 }
