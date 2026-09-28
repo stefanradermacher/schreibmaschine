@@ -13,7 +13,7 @@ enum MainMenu {
         main.addItem(submenu(formatMenu()))
         let window = windowMenu()
         main.addItem(submenu(window))
-        let help = NSMenu(title: String(localized: "Hilfe"))
+        let help = helpMenu()
         main.addItem(submenu(help))
         NSApp.windowsMenu = window
         NSApp.helpMenu = help
@@ -37,7 +37,7 @@ enum MainMenu {
 
     private static func appMenu() -> NSMenu {
         let menu = NSMenu(title: appName)
-        menu.addItem(item(String(localized: "Über \(appName)"), #selector(NSApplication.orderFrontStandardAboutPanel(_:))))
+        menu.addItem(item(String(localized: "Über \(appName)"), #selector(AppDelegate.showAbout(_:))))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Einstellungen …"), #selector(AppDelegate.showSettings(_:)), ","))
         menu.addItem(.separator())
@@ -50,6 +50,18 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Alle einblenden"), #selector(NSApplication.unhideAllApplications(_:))))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "\(appName) beenden"), #selector(NSApplication.terminate(_:)), "q"))
+        return menu
+    }
+
+    /// AppKit adds the search field at the top.
+    private static func helpMenu() -> NSMenu {
+        let menu = NSMenu(title: String(localized: "Hilfe"))
+        menu.addItem(item(String(localized: "\(appName)-Hilfe"), #selector(AppDelegate.openHelp(_:)), "?"))
+        menu.addItem(item(String(localized: "\(appName) im Web"), #selector(AppDelegate.openProductPage(_:))))
+        menu.addItem(.separator())
+        menu.addItem(item(String(localized: "Fehler melden oder Idee vorschlagen …"), #selector(AppDelegate.sendFeedback(_:))))
+        menu.addItem(.separator())
+        menu.addItem(item(String(localized: "\(appName) unterstützen …"), #selector(AppDelegate.showSupport(_:))))
         return menu
     }
 

@@ -71,6 +71,26 @@
         }
       }
     },
+    "%@ im Web": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ on the Web"
+          }
+        }
+      }
+    },
+    "%@ unterstützen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support %@…"
+          }
+        }
+      }
+    },
     "%@ von %@": {
       "localizations": {
         "en": {
@@ -81,12 +101,32 @@
         }
       }
     },
+    "%@ · Apache-Lizenz 2.0": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · Apache License 2.0"
+          }
+        }
+      }
+    },
     "%@ – ungesichert": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ – unsaved"
+          }
+        }
+      }
+    },
+    "%@-Hilfe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Help"
           }
         }
       }
@@ -651,6 +691,36 @@
         }
       }
     },
+    "Danke für das Abendessen!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thanks for the dinner!"
+          }
+        }
+      }
+    },
+    "Danke für das Frühstück!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thanks for the breakfast!"
+          }
+        }
+      }
+    },
+    "Danke für den Kaffee!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thanks for the coffee!"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "localizations": {
         "en": {
@@ -681,12 +751,52 @@
         }
       }
     },
+    "Datenschutz": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        }
+      }
+    },
     "Definition dieser Sprache bearbeiten": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Edit Definition of This Language"
+          }
+        }
+      }
+    },
+    "Der Kauf ist nicht zustande gekommen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase did not go through."
+          }
+        }
+      }
+    },
+    "Der Kauf konnte nicht bestätigt werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase could not be verified."
+          }
+        }
+      }
+    },
+    "Der Kauf wartet noch auf eine Bestätigung.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase is still waiting for approval."
           }
         }
       }
@@ -787,6 +897,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "The list in square brackets is not closed."
+          }
+        }
+      }
+    },
+    "Die Schreibmaschine hat kein Tracking, keine Analyse und keine Werbung und baut selbst keine Verbindungen ins Internet auf; nur ein freiwilliges Trinkgeld läuft über den App Store. Deine Texte und Einstellungen bleiben auf deinem Mac.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine has no tracking, no analytics and no ads, and never connects to the internet by itself; only a voluntary tip goes through the App Store. Your texts and settings stay on your Mac."
+          }
+        }
+      }
+    },
+    "Die Schreibmaschine ist ein unabhängiges Open-Source-Projekt und bleibt vollständig kostenlos. Wenn du mir für die Weiterentwicklung etwas ausgeben möchtest, würde ich mich freuen:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine is an independent open source project and stays completely free. If you'd like to buy me something for its further development, I'd be happy:"
           }
         }
       }
@@ -927,6 +1057,56 @@
           "stringUnit": {
             "state": "translated",
             "value": "Custom Language Definition"
+          }
+        }
+      }
+    },
+    "Ein Abendessen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinner"
+          }
+        }
+      }
+    },
+    "Ein Frühstück": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breakfast"
+          }
+        }
+      }
+    },
+    "Ein Kaffee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coffee"
+          }
+        }
+      }
+    },
+    "Ein Texteditor für Text und Code.\nKein IDE-Ersatz, sondern ein Werkzeug zum Schreiben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A text editor for text and code.\nNot an IDE, but a tool for writing."
+          }
+        }
+      }
+    },
+    "Ein Trinkgeld ist in der Version aus dem App Store möglich.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tips are possible in the App Store version."
           }
         }
       }
@@ -1117,6 +1297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fold"
+          }
+        }
+      }
+    },
+    "Fehler melden oder Idee vorschlagen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report a Bug or Suggest an Idea…"
           }
         }
       }
@@ -1391,6 +1581,16 @@
         }
       }
     },
+    "Keine Datensammlung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No data collection"
+          }
+        }
+      }
+    },
     "Keine Dokumente": {
       "localizations": {
         "en": {
@@ -1447,6 +1647,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Kostenlos": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free"
           }
         }
       }
@@ -1731,6 +1941,16 @@
         }
       }
     },
+    "Nur Apple-Frameworks, keine Fremdkomponenten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only Apple frameworks, no third-party components."
+          }
+        }
+      }
+    },
     "Nur ganze Wörter": {
       "localizations": {
         "en": {
@@ -1807,6 +2027,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open Documents"
+          }
+        }
+      }
+    },
+    "Open Source (Apache 2.0)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open source (Apache 2.0)"
           }
         }
       }
@@ -1977,6 +2207,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Close (Esc)"
+          }
+        }
+      }
+    },
+    "Schreibmaschine im Web": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine on the Web"
+          }
+        }
+      }
+    },
+    "Schreibmaschine unterstützen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support Schreibmaschine"
           }
         }
       }
@@ -2431,6 +2681,16 @@
         }
       }
     },
+    "Vielen Dank für deine Unterstützung!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thank you for your support!"
+          }
+        }
+      }
+    },
     "Vollbildmodus": {
       "localizations": {
         "en": {
@@ -2551,12 +2811,32 @@
         }
       }
     },
+    "Weitere Werkzeuge von mir": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More tools by me"
+          }
+        }
+      }
+    },
     "Weitersuchen": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Find Next"
+          }
+        }
+      }
+    },
+    "Werbefrei": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ads"
           }
         }
       }
@@ -2957,6 +3237,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "About %@"
+          }
+        }
+      }
+    },
+    "Über Schreibmaschine": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About Schreibmaschine"
           }
         }
       }

@@ -25,6 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        TipJar.shared.startListening()
         // Started to open files (Finder, Open With, Dock, `open`): then exactly these files appear,
         // and the stored session is kept as the previous one. NSApplicationLaunchIsDefaultLaunchKey
         // cannot tell, it is false for a plain `open -a` too.
@@ -90,6 +91,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         SessionStore.shared.discardPrevious()
     }
+
+    @objc func showAbout(_ sender: Any?) { InfoWindowController.about.showWindow(sender) }
+    @objc func showSupport(_ sender: Any?) { InfoWindowController.support.showWindow(sender) }
+    @objc func openHelp(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.help) }
+    @objc func openProductPage(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.productPage) }
+    @objc func sendFeedback(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.feedback) }
 
     @objc func showSettings(_ sender: Any?) {
         if settingsWindow == nil { settingsWindow = SettingsWindowController() }
