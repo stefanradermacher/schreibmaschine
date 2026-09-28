@@ -32,8 +32,8 @@ final class MatchMarksView: NSView {
 /// Searching, replacing and going to a line in one editor view. The bar sits above the text;
 /// the matches are highlighted in the text and marked at the edge while it is open.
 final class SearchController: FindBarDelegate {
-    private unowned let textView: EditorTextView
-    private unowned let layoutManager: NSTextLayoutManager
+    private unowned var textView: EditorTextView
+    private unowned var layoutManager: NSTextLayoutManager
     private unowned let document: TextDocument
     let bar = FindBar()
     let marksView = MatchMarksView()
@@ -62,6 +62,15 @@ final class SearchController: FindBarDelegate {
 
     deinit {
         if let observer { NotificationCenter.default.removeObserver(observer) }
+    }
+
+    /// Searches in another view of the document, after the focus moved to it in a split editor.
+    func retarget(textView: EditorTextView, layoutManager: NSTextLayoutManager) {
+        guard textView !== self.textView else { return }
+        clearHighlights()
+        self.textView = textView
+        self.layoutManager = layoutManager
+        if isVisible, bar.mode != .goToLine, !matches.isEmpty { highlightMatches() }
     }
 
     var isVisible: Bool { !bar.isHidden }

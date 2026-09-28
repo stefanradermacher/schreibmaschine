@@ -24,7 +24,7 @@ Eine Leiste oben im Editor, wie in PhpStorm. Kein eigenes Fenster.
 - **Schalter** direkt im Feld: Groß-/Kleinschreibung (Aa), ganzes Wort (W), regulärer Ausdruck (.*), nur in der Auswahl. Der Zustand der Schalter ist immer sichtbar.
 - Ist ein regulärer Ausdruck ungültig, färbt sich das Feld rot und ein kurzer Hinweis erklärt den Fehler. Es gibt kein Dialogfenster.
 - **Ersetzen:** „Ersetzen“ ersetzt den aktuellen Treffer und geht zum nächsten (wie in PhpStorm, ↩ im Ersetzen-Feld), „Alle ersetzen“ ersetzt alle. Bei regulären Ausdrücken zeigt eine Vorschau, was aus dem aktuellen Treffer wird (`$1`, `\n`, `\t`). „Alle ersetzen“ lässt sich in einem Schritt widerrufen.
-- **Alle Treffer auswählen** (⌃⌘G): Aus jedem Treffer wird eine Auswahl; mit Meilenstein 6 wird daraus ein Cursor je Treffer, an dem man gleichzeitig tippt.
+- **Alle Treffer auswählen** (⌃⌘G): Aus jedem Treffer wird eine Auswahl, an der man gleichzeitig tippt.
 - Mehrzeilige Suchbegriffe sind möglich, das Feld wächst dann mit. Ein Verlauf der letzten Begriffe ist über ↓ oder ein Menü am Feld erreichbar.
 - **Gehe zu Zeile** (⌘L) nutzt dieselbe Leiste: `120`, `120:15` (Spalte), `+10`, `-10`.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Trefferliste in einer Seitenleiste, gegliedert nach Dokument, jeweils mit Zeilennummer und Zeile. Ein Klick springt zum Treffer. „Alle ersetzen“ gilt für alle offenen Dokumente und lässt sich in jedem Dokument einzeln widerrufen. Eine Suche in Ordnern oder Projekten gibt es bewusst nicht.
@@ -88,7 +88,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 | ⌃⇧J | Zeilen verbinden |
 | ⌘/ | Kommentar umschalten |
 | ⌥↑ / ⌥↓ | Auswahl erweitern / verkleinern (Wort → Zeichenkette → Klammer → Zeile → Absatz) |
-| ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen (mit Meilenstein 6) |
+| ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen |
 | ⌃⌘G | alle Vorkommen auswählen |
 
 ⌘↑ und ⌘↓ bleiben beim macOS-Standard (Anfang und Ende des Dokuments), deshalb verschiebt ⌥⇧↑/↓ die Zeilen, wie in PhpStorm auf dem Mac. Alle Kürzel lassen sich über die Systemeinstellungen („Tastatur → Tastaturkurzbefehle → App-Tastaturkurzbefehle“) ändern, weil sie ganz normale Menübefehle sind.

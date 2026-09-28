@@ -101,9 +101,18 @@ enum MainMenu {
         find.addItem(item(String(localized: "Auswahl anzeigen"), #selector(NSText.centerSelectionInVisibleArea(_:)), "j"))
         menu.addItem(submenu(find))
         menu.addItem(item(String(localized: "Gehe zu Zeile …"), #selector(EditorViewController.showGoToLine(_:)), "l"))
+        let bookmarks = NSMenu(title: String(localized: "Lesezeichen"))
+        bookmarks.addItem(item(String(localized: "Lesezeichen setzen"), #selector(EditorPane.toggleBookmark(_:)), "b"))
+        bookmarks.addItem(item(String(localized: "Nächstes Lesezeichen"), #selector(EditorPane.nextBookmark(_:)), String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), [.command, .option]))
+        bookmarks.addItem(item(String(localized: "Vorheriges Lesezeichen"), #selector(EditorPane.previousBookmark(_:)), String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), [.command, .option]))
+        bookmarks.addItem(item(String(localized: "Alle Lesezeichen entfernen"), #selector(EditorPane.removeAllBookmarks(_:))))
+        bookmarks.delegate = BookmarksMenu.shared
+        menu.addItem(submenu(bookmarks))
         menu.addItem(item(String(localized: "Auswahl erweitern"), #selector(EditorTextView.expandSelection(_:)), String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), [.option]))
         menu.addItem(item(String(localized: "Zur passenden Klammer"), #selector(EditorTextView.jumpToMatchingBracket(_:)), "m", [.command, .shift]))
         menu.addItem(item(String(localized: "Auswahl verkleinern"), #selector(EditorTextView.shrinkSelection(_:)), String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), [.option]))
+        menu.addItem(item(String(localized: "Nächstes Vorkommen auswählen"), #selector(EditorTextView.selectNextOccurrence(_:)), "g", [.control]))
+        menu.addItem(item(String(localized: "Auswahl in Zeilen teilen"), #selector(EditorTextView.splitSelectionIntoLines(_:)), "l", [.command, .shift]))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Befehlspalette …"), #selector(AppDelegate.showCommandPalette(_:)), "p", [.command, .shift]))
 
@@ -119,9 +128,21 @@ enum MainMenu {
 
     private static func viewMenu() -> NSMenu {
         let menu = NSMenu(title: String(localized: "Darstellung"))
-        menu.addItem(item(String(localized: "Zeilennummern"), #selector(EditorViewController.toggleLineNumbers(_:)), "l", [.command, .option]))
-        menu.addItem(item(String(localized: "Zeilen umbrechen"), #selector(EditorViewController.toggleWrapping(_:)), "w", [.command, .control]))
-        menu.addItem(item(String(localized: "Unsichtbare Zeichen"), #selector(EditorViewController.toggleInvisibles(_:)), "i", [.command, .option]))
+        menu.addItem(item(String(localized: "Zeilennummern"), #selector(EditorPane.toggleLineNumbers(_:)), "l", [.command, .option]))
+        menu.addItem(item(String(localized: "Zeilen umbrechen"), #selector(EditorPane.toggleWrapping(_:)), "w", [.command, .control]))
+        menu.addItem(item(String(localized: "Unsichtbare Zeichen"), #selector(EditorPane.toggleInvisibles(_:)), "i", [.command, .option]))
+        menu.addItem(item(String(localized: "Dokumentliste"), #selector(AppDelegate.toggleDocumentList(_:)), "s", [.command, .control]))
+        let folding = NSMenu(title: String(localized: "Code-Faltung"))
+        folding.addItem(item(String(localized: "Falten"), #selector(EditorPane.foldBlock(_:)), String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), [.command, .control]))
+        folding.addItem(item(String(localized: "Entfalten"), #selector(EditorPane.unfoldBlock(_:)), String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), [.command, .control]))
+        folding.addItem(item(String(localized: "Alles falten"), #selector(EditorPane.foldAll(_:)), String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), [.command, .control, .shift]))
+        folding.addItem(item(String(localized: "Alles entfalten"), #selector(EditorPane.unfoldAll(_:)), String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), [.command, .control, .shift]))
+        menu.addItem(submenu(folding))
+        menu.addItem(.separator())
+        menu.addItem(item(String(localized: "Nebeneinander teilen"), #selector(EditorViewController.splitSideBySide(_:)), "t", [.command, .control]))
+        menu.addItem(item(String(localized: "Untereinander teilen"), #selector(EditorViewController.splitStacked(_:)), "t", [.command, .control, .option]))
+        menu.addItem(item(String(localized: "Teilung aufheben"), #selector(EditorViewController.closeSplit(_:)), "w", [.command, .control, .shift]))
+        menu.addItem(item(String(localized: "Zur anderen Hälfte"), #selector(EditorViewController.focusOtherPane(_:)), "j", [.command, .option]))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Schrift vergrößern"), #selector(EditorViewController.zoomIn(_:)), "+"))
         menu.addItem(item(String(localized: "Schrift verkleinern"), #selector(EditorViewController.zoomOut(_:)), "-"))
@@ -307,5 +328,30 @@ final class LanguageMenu: NSObject, NSMenuDelegate {
                                 action: #selector(AppDelegate.showLanguageFolder(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: String(localized: "Sprachdefinitionen neu laden"),
                                 action: #selector(AppDelegate.reloadLanguages(_:)), keyEquivalent: ""))
+    }
+}
+
+/// The bookmarks of the front document, listed below the commands with the text of their line.
+final class BookmarksMenu: NSObject, NSMenuDelegate {
+    static let shared = BookmarksMenu()
+    private let marker = "bookmark"
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        for item in menu.items where item.representedObject as? String == marker { menu.removeItem(item) }
+        guard let document = NSDocumentController.shared.currentDocument as? TextDocument, !document.bookmarks.isEmpty else { return }
+        let separator = NSMenuItem.separator()
+        separator.representedObject = marker
+        menu.addItem(separator)
+        let text = document.textStorage.string as NSString
+        for line in document.bookmarkedLines {
+            var range = text.lineRange(for: NSRange(location: document.lineIndex.start(ofLine: line), length: 0))
+            range.length = min(range.length, 200)
+            let content = text.substring(with: range).trimmingCharacters(in: .whitespacesAndNewlines)
+            let title = String(localized: "Zeile \(line)") + (content.isEmpty ? "" : ": " + String(content.prefix(60)))
+            let item = NSMenuItem(title: title, action: #selector(EditorPane.goToBookmark(_:)), keyEquivalent: "")
+            item.tag = line
+            item.representedObject = marker
+            menu.addItem(item)
+        }
     }
 }

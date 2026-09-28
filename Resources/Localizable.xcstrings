@@ -231,6 +231,16 @@
         }
       }
     },
+    "Alle Lesezeichen entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove All Bookmarks"
+          }
+        }
+      }
+    },
     "Alle Treffer auswählen": {
       "localizations": {
         "en": {
@@ -287,6 +297,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Select All"
+          }
+        }
+      }
+    },
+    "Alles entfalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfold All"
+          }
+        }
+      }
+    },
+    "Alles falten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fold All"
           }
         }
       }
@@ -387,6 +417,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Expand Selection"
+          }
+        }
+      }
+    },
+    "Auswahl in Zeilen teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split Selection into Lines"
           }
         }
       }
@@ -601,6 +641,16 @@
         }
       }
     },
+    "Code-Faltung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code Folding"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "localizations": {
         "en": {
@@ -811,6 +861,26 @@
         }
       }
     },
+    "Dokumentliste": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Document List"
+          }
+        }
+      }
+    },
+    "Dokumentliste ausblenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Document List"
+          }
+        }
+      }
+    },
     "Drucken …": {
       "localizations": {
         "en": {
@@ -961,6 +1031,16 @@
         }
       }
     },
+    "Entfalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfold"
+          }
+        }
+      }
+    },
     "Erneut ausführen": {
       "localizations": {
         "en": {
@@ -1027,6 +1107,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Expected “key: value”."
+          }
+        }
+      }
+    },
+    "Falten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fold"
           }
         }
       }
@@ -1411,6 +1501,36 @@
         }
       }
     },
+    "Lesezeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmarks"
+          }
+        }
+      }
+    },
+    "Lesezeichen entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Bookmark"
+          }
+        }
+      }
+    },
+    "Lesezeichen setzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Bookmark"
+          }
+        }
+      }
+    },
     "Letzte Suchbegriffe": {
       "localizations": {
         "en": {
@@ -1517,6 +1637,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Move Down"
+          }
+        }
+      }
+    },
+    "Nebeneinander teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split Side by Side"
           }
         }
       }
@@ -1647,6 +1777,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next Document"
+          }
+        }
+      }
+    },
+    "Nächstes Lesezeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Bookmark"
+          }
+        }
+      }
+    },
+    "Nächstes Vorkommen auswählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select Next Occurrence"
+          }
+        }
+      }
+    },
+    "Offene Dokumente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Documents"
           }
         }
       }
@@ -2071,6 +2231,16 @@
         }
       }
     },
+    "Teilung aufheben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close Split"
+          }
+        }
+      }
+    },
     "Text": {
       "localizations": {
         "en": {
@@ -2171,6 +2341,16 @@
         }
       }
     },
+    "Ungesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unsaved"
+          }
+        }
+      }
+    },
     "Ungesicherte Änderungen verwerfen?": {
       "localizations": {
         "en": {
@@ -2217,6 +2397,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Invisible Characters"
+          }
+        }
+      }
+    },
+    "Untereinander teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split Top and Bottom"
           }
         }
       }
@@ -2317,6 +2507,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Previous Document"
+          }
+        }
+      }
+    },
+    "Vorheriges Lesezeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Bookmark"
           }
         }
       }
@@ -2437,6 +2637,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Text encoding:"
+          }
+        }
+      }
+    },
+    "Zeile %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Line %lld"
           }
         }
       }
@@ -2627,6 +2837,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mappings in curly braces are not supported; please use indentation."
+          }
+        }
+      }
+    },
+    "Zur anderen Hälfte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to Other Half"
           }
         }
       }

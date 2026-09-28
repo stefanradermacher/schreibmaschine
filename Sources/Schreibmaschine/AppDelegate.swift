@@ -49,6 +49,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showCommandPalette(_ sender: Any?) { CommandPalette.shared.show() }
 
+    /// ⌃⌘S: the document list in every window.
+    @objc func toggleDocumentList(_ sender: Any?) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: Preferences.showsDocumentList), forKey: Preferences.showsDocumentList)
+    }
+
     @objc func showLanguageFolder(_ sender: Any?) {
         NSWorkspace.shared.activateFileViewerSelecting([LanguageRegistry.userFolder])
     }
@@ -88,5 +94,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showSettings(_ sender: Any?) {
         if settingsWindow == nil { settingsWindow = SettingsWindowController() }
         settingsWindow?.showWindow(sender)
+    }
+}
+
+extension AppDelegate: NSMenuItemValidation {
+    func validateMenuItem(_ item: NSMenuItem) -> Bool {
+        if item.action == #selector(toggleDocumentList(_:)) {
+            item.state = UserDefaults.standard.bool(forKey: Preferences.showsDocumentList) ? .on : .off
+        }
+        return true
     }
 }

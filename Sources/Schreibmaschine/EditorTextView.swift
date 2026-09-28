@@ -56,6 +56,19 @@ final class EditorTextView: NSTextView {
         didSet { if bracketRanges != oldValue { setNeedsDisplay(visibleRect) } }
     }
 
+    /// Ends of the head lines of folded blocks; a mark there stands for the hidden lines.
+    var foldPlaceholders: () -> [Int] = { [] }
+    var onClickFoldPlaceholder: ((Int) -> Void)?
+
+    // Several insertion points (MultiCursor.swift).
+    /// The ranges edited together while there are several; nil with one selection.
+    var cursorRanges: [NSRange]?
+    /// Set while the editor changes the selection itself, so it does not end the multiple insertion points.
+    var isSettingCursors = false
+    var caretIndicators: [NSTextInsertionIndicator] = []
+    /// The occurrence ⌃G added last; the next one is searched after it.
+    var lastAddedOccurrence: NSRange?
+
     override func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
         case #selector(performTextCommand(_:)), #selector(expandSelection(_:)), #selector(shrinkSelection(_:)):
@@ -78,7 +91,93 @@ final class EditorTextView: NSTextView {
 
     override func cancelOperation(_ sender: Any?) {
         if onCancel?() == true { return }
+        if hasMultipleCursors { return collapseCursors() }
         super.cancelOperation(sender)
+    }
+
+    // MARK: - Several insertion points
+
+    override func doCommand(by selector: Selector) {
+        if performMultiCursorCommand(selector) { return }
+        super.doCommand(by: selector)
+    }
+
+    override func insertText(_ string: Any, replacementRange: NSRange) {
+        guard hasMultipleCursors, replacementRange.location == NSNotFound else {
+            return super.insertText(string, replacementRange: replacementRange)
+        }
+        let text = (string as? NSAttributedString)?.string ?? string as? String ?? ""
+        let ranges = editingRanges
+        replaceRanges(ranges, with: ranges.map { _ in text })
+    }
+
+    /// Dead keys and input methods compose at one place only; with several insertion points the
+    /// composed character is inserted at all of them when it is complete.
+    override func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {
+        if hasMultipleCursors { return }
+        super.setMarkedText(string, selectedRange: selectedRange, replacementRange: replacementRange)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        let point = convert(event.locationInWindow, from: nil)
+        if let (location, _) = foldPlaceholderRects().first(where: { $0.rect.contains(point) }) {
+            onClickFoldPlaceholder?(location)
+            return
+        }
+        let modifiers = event.modifierFlags.intersection([.command, .option, .shift, .control])
+        if modifiers == .command { return addCursor(with: event) }
+        if modifiers == .option { return selectBlock(with: event) }
+        super.mouseDown(with: event)
+    }
+
+    override func copy(_ sender: Any?) {
+        if copyMultiple(to: .general) { return }
+        super.copy(sender)
+    }
+
+    override func cut(_ sender: Any?) {
+        guard isEditable, copyMultiple(to: .general) else { return super.cut(sender) }
+        let ranges = editingRanges
+        replaceRanges(ranges, with: ranges.map { _ in "" })
+    }
+
+    override func paste(_ sender: Any?) {
+        if isEditable, pasteMultiple(from: .general) { return }
+        super.paste(sender)
+    }
+
+    /// Called when the view gets the keyboard focus; the editor makes its pane the active one.
+    var onFocus: (() -> Void)?
+
+    override func becomeFirstResponder() -> Bool {
+        defer { updateCaretIndicators() }
+        let accepted = super.becomeFirstResponder()
+        if accepted { onFocus?() }
+        return accepted
+    }
+
+    override func resignFirstResponder() -> Bool {
+        defer { updateCaretIndicators() }
+        return super.resignFirstResponder()
+    }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        NotificationCenter.default.removeObserver(self, name: NSWindow.didBecomeKeyNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: nil)
+        guard let window else { return }
+        for name in [NSWindow.didBecomeKeyNotification, NSWindow.didResignKeyNotification] {
+            NotificationCenter.default.addObserver(self, selector: #selector(keyStateDidChange(_:)), name: name, object: window)
+        }
+    }
+
+    @objc private func keyStateDidChange(_ notification: Notification) {
+        updateCaretIndicators()
+    }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        if cursorRanges != nil { updateCaretIndicators() }
     }
 
     /// Draws the laid-out paragraphs again without laying them out anew. TextKit 2 does not
@@ -97,9 +196,9 @@ final class EditorTextView: NSTextView {
 
     override func drawBackground(in rect: NSRect) {
         super.drawBackground(in: rect)
-        if highlightsCurrentLine, let lineRect = currentLineRect() {
+        if highlightsCurrentLine {
             EditorStyle.currentLineColor.setFill()
-            lineRect.intersection(rect).fill()
+            for lineRect in currentLineRects() { lineRect.intersection(rect).fill() }
         }
         if !bracketRanges.isEmpty {
             EditorStyle.bracketColor.setFill()
@@ -108,6 +207,33 @@ final class EditorTextView: NSTextView {
                     NSBezierPath(roundedRect: frame.insetBy(dx: -1, dy: 0), xRadius: 3, yRadius: 3).fill()
                 }
             }
+        }
+        drawFoldPlaceholders(in: rect)
+    }
+
+    // MARK: - Folds
+
+    private func foldPlaceholderRects() -> [(location: Int, rect: NSRect)] {
+        foldPlaceholders().compactMap { location in
+            let caret = caretRect(at: location)
+            guard caret.height > 0 else { return nil }
+            let height = min(caret.height - 2, (font?.pointSize ?? 12) + 4)
+            return (location, NSRect(x: caret.minX + 6, y: caret.midY - height / 2, width: max(22, height * 1.8), height: height))
+        }
+    }
+
+    /// A rounded mark with an ellipsis behind a folded head line, as in Xcode.
+    private func drawFoldPlaceholders(in dirtyRect: NSRect) {
+        for (_, rect) in foldPlaceholderRects() where rect.intersects(dirtyRect) {
+            NSColor.quaternaryLabelColor.setFill()
+            NSBezierPath(roundedRect: rect, xRadius: rect.height / 2.5, yRadius: rect.height / 2.5).fill()
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: NSFont.systemFont(ofSize: max(9, rect.height - 4), weight: .bold),
+                .foregroundColor: NSColor.secondaryLabelColor,
+            ]
+            let label = "⋯" as NSString
+            let size = label.size(withAttributes: attributes)
+            label.draw(at: NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2), withAttributes: attributes)
         }
     }
 
@@ -126,11 +252,16 @@ final class EditorTextView: NSTextView {
         return frames
     }
 
-    /// The visual line with the insertion point, across the whole width.
-    private func currentLineRect() -> NSRect? {
-        let selection = selectedRange()
-        guard selectedRanges.count == 1, selection.length == 0,
-              let layoutManager = textLayoutManager,
+    /// The visual lines with an insertion point, across the whole width.
+    private func currentLineRects() -> [NSRect] {
+        let carets = editingRanges.filter { $0.length == 0 }
+        guard carets.count == editingRanges.count else { return [] }
+        return carets.compactMap { currentLineRect(at: $0.location) }
+    }
+
+    private func currentLineRect(at caret: Int) -> NSRect? {
+        let selection = NSRange(location: caret, length: 0)
+        guard let layoutManager = textLayoutManager,
               let content = layoutManager.textContentManager,
               let location = content.location(content.documentRange.location, offsetBy: selection.location)
         else { return nil }
@@ -144,6 +275,13 @@ final class EditorTextView: NSTextView {
     }
 
     override func setSelectedRanges(_ ranges: [NSValue], affinity: NSSelectionAffinity, stillSelecting: Bool) {
+        if !isSettingCursors {
+            lastAddedOccurrence = nil
+            if cursorRanges != nil {
+                cursorRanges = nil
+                updateCaretIndicators()
+            }
+        }
         super.setSelectedRanges(ranges, affinity: affinity, stillSelecting: stillSelecting)
         if highlightsCurrentLine { setNeedsDisplay(visibleRect) }
     }
@@ -207,7 +345,7 @@ final class EditorTextView: NSTextView {
     }
 
     /// Visual column of a location in its line, with tabs expanded.
-    private func column(at location: Int) -> Int {
+    func column(at location: Int) -> Int {
         let text = string as NSString
         let lineStart = text.lineRange(for: NSRange(location: location, length: 0)).location
         let width = indentation().width

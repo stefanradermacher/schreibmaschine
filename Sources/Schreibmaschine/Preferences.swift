@@ -12,6 +12,7 @@ enum Preferences {
     static let showsInvisibles = "showsInvisibles"
     static let highlightsCurrentLine = "highlightsCurrentLine"
     static let highlightsSyntax = "highlightsSyntax"
+    static let showsDocumentList = "showsDocumentList"
     static let tabWidth = "tabWidth"
     static let wrapColumn = "wrapColumn"
     static let indentsWithSpaces = "indentsWithSpaces"
@@ -37,6 +38,7 @@ enum Preferences {
             showsInvisibles: false,
             highlightsCurrentLine: true,
             highlightsSyntax: true,
+            showsDocumentList: false,
             tabWidth: 4,
             wrapColumn: 80,
             indentsWithSpaces: true,

@@ -31,6 +31,12 @@ final class TextDocument: NSDocument {
     static let coloringDidInvalidate = Notification.Name("TextDocumentColoringDidInvalidate")
     /// Posted when the indentation changes.
     static let indentationDidChange = Notification.Name("TextDocumentIndentationDidChange")
+    /// Posted when folds are made or opened.
+    static let foldsDidChange = Notification.Name("TextDocumentFoldsDidChange")
+    /// Hidden text of folded blocks, sorted (Folding.swift).
+    var folds: [NSRange] = []
+    /// Posted when bookmarks are set or removed.
+    static let bookmarksDidChange = Notification.Name("TextDocumentBookmarksDidChange")
 
     var textStorage: NSTextStorage { contentStorage.textStorage! }
 
@@ -49,6 +55,7 @@ final class TextDocument: NSDocument {
             if fileURL != oldValue, fileURL != nil, !languageChosenByUser {
                 setLanguage(detectedLanguage(), byUser: false)
             }
+            DocumentListView.setNeedsUpdate()
         }
     }
     private var observers: [NSObjectProtocol] = []
@@ -58,6 +65,7 @@ final class TextDocument: NSDocument {
         lineIndex = LineIndex(storage: storage)
         highlighter = SyntaxHighlighter(storage: storage, lineIndex: lineIndex)
         super.init()
+        contentStorage.delegate = self
         hasBOM = encoding == .utf8 ? UserDefaults.standard.bool(forKey: Preferences.writesUTF8BOM) : false
         let center = NotificationCenter.default
         observers = [
@@ -84,6 +92,8 @@ final class TextDocument: NSDocument {
             let line = lineIndex.lineNumber(at: textStorage.editedRange.location)
             highlighter.invalidate(fromLine: line)
             NotificationCenter.default.post(name: Self.coloringDidInvalidate, object: self, userInfo: ["line": line])
+            adjustBookmarks()
+            adjustFolds()
         }
         guard textStorage.editedMask.contains(.editedCharacters), !isReplacingText,
               undoManager?.isUndoing != true, undoManager?.isRedoing != true
@@ -97,6 +107,47 @@ final class TextDocument: NSDocument {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self, !isDocumentEdited, saveGeneration == generation else { return }
             updateChangeCount(.changeDone)
+        }
+    }
+
+    // MARK: - Bookmarks
+
+    /// The starts of the lines with a bookmark, sorted. They follow their lines through edits.
+    private(set) var bookmarks: [Int] = []
+
+    var bookmarkedLines: [Int] { bookmarks.map { lineIndex.lineNumber(at: $0) } }
+
+    func setBookmarkedLines(_ lines: [Int]) {
+        bookmarks = Set(lines.filter { $0 >= 1 && $0 <= lineIndex.lineCount }).sorted().map { lineIndex.start(ofLine: $0) }
+        NotificationCenter.default.post(name: Self.bookmarksDidChange, object: self)
+    }
+
+    func toggleBookmark(atLine line: Int) {
+        var lines = bookmarkedLines
+        if let index = lines.firstIndex(of: line) { lines.remove(at: index) } else { lines.append(line) }
+        setBookmarkedLines(lines)
+        SessionStore.shared.setNeedsSave()
+    }
+
+    /// Moves the bookmarks with the text. A bookmark in deleted text goes to the line where the
+    /// deletion was; one at the start of a line moves down when a line break is typed there.
+    private func adjustBookmarks() {
+        guard !bookmarks.isEmpty else { return }
+        let edited = textStorage.editedRange
+        let delta = textStorage.changeInLength
+        let oldEnd = edited.upperBound - delta
+        let text = textStorage.string as NSString
+        let insertedLineBreak = edited.length > 0 && text.substring(with: edited).contains("\n")
+        let moved = bookmarks.map { start -> Int in
+            if start < edited.location { return start }
+            if start == edited.location && oldEnd == edited.location { return insertedLineBreak ? start + delta : start }
+            if start >= oldEnd { return start + delta }
+            return edited.location
+        }
+        let adjusted = Array(Set(moved.map { text.lineRange(for: NSRange(location: min($0, text.length), length: 0)).location })).sorted()
+        if adjusted != bookmarks {
+            bookmarks = adjusted
+            NotificationCenter.default.post(name: Self.bookmarksDidChange, object: self)
         }
     }
 
@@ -228,6 +279,7 @@ final class TextDocument: NSDocument {
         if change == .changeCleared || change == .changeAutosaved { saveGeneration += 1 }
         super.updateChangeCount(change)
         SessionStore.shared.setNeedsSave()
+        DocumentListView.setNeedsUpdate()
     }
 
     override func close() {

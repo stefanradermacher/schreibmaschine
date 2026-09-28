@@ -1,126 +1,75 @@
 import AppKit
 
-/// One view of a document: the text with line numbers and the status bar.
+/// The editor of a document in its window or tab: find bar, the text in one or two panes
+/// (EditorPane.swift), the status bar, and the sidebar of the search in all documents.
 ///
-/// Line numbers, wrapping, invisibles and zoom belong to the view; they start from the settings.
-final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLayoutManagerDelegate, NSMenuItemValidation {
+/// The find bar and the status bar work with the pane that has the keyboard focus. The font
+/// size belongs to the editor, because the panes share the text and with it the font.
+final class EditorViewController: NSViewController, NSMenuItemValidation, NSSplitViewDelegate {
     let document: TextDocument
-    private let layoutManager = NSTextLayoutManager()
-    private let textContainer = NSTextContainer(size: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
-    private(set) var textView: EditorTextView!
-    private var scrollView: NSScrollView!
-    private var ruler: LineNumberRuler!
+    private(set) var panes: [EditorPane] = []
+    /// The pane the find bar and the status bar work with.
+    private(set) var activePane: EditorPane!
+    private let splitView = NSSplitView()
     private var statusBar: StatusBar!
     private(set) var search: SearchController!
     private var textAtTop: NSLayoutConstraint!
     private let allDocumentsView = AllDocumentsSearchView()
+    private let documentList = DocumentListView()
     private var editorAtLeft: NSLayoutConstraint!
     private var editorBesideSidebar: NSLayoutConstraint!
+    private var editorBesideList: NSLayoutConstraint!
     private var textBelowBar: NSLayoutConstraint!
-    private let invisibles = InvisiblesLayoutFragment.Options()
+    private var marksConstraints: [NSLayoutConstraint] = []
     private var observers: [NSObjectProtocol] = []
 
-    private(set) var showsLineNumbers = UserDefaults.standard.bool(forKey: Preferences.showsLineNumbers)
-    private(set) var wrapsLines = UserDefaults.standard.bool(forKey: Preferences.wrapsLines)
     /// Change of the font size against the settings, in points.
     private var zoom: CGFloat = 0
+
+    /// The text view the find bar and other commands work with.
+    var textView: EditorTextView { activePane.textView }
 
     init(document: TextDocument) {
         self.document = document
         super.init(nibName: nil, bundle: nil)
-        invisibles.showsInvisibles = UserDefaults.standard.bool(forKey: Preferences.showsInvisibles)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
 
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
-        document.contentStorage.removeTextLayoutManager(layoutManager)
     }
 
     override func loadView() {
-        layoutManager.delegate = self
-        // Lines are colored when TextKit is about to show them.
-        layoutManager.renderingAttributesValidator = { [weak self] layoutManager, fragment in
-            self?.color(fragment, in: layoutManager)
-        }
-        layoutManager.textContainer = textContainer
-        document.contentStorage.addTextLayoutManager(layoutManager)
-        document.contentStorage.primaryTextLayoutManager = layoutManager
-
-        let textView = EditorTextView(frame: NSRect(x: 0, y: 0, width: 600, height: 400), textContainer: textContainer)
-        textView.delegate = self
-        textView.isRichText = false
-        textView.importsGraphics = false
-        textView.allowsUndo = true
-        textView.usesFindBar = false
-        textView.smartInsertDeleteEnabled = false
-        textView.isAutomaticQuoteSubstitutionEnabled = false
-        textView.isAutomaticDashSubstitutionEnabled = false
-        textView.isAutomaticTextReplacementEnabled = false
-        textView.isAutomaticSpellingCorrectionEnabled = false
-        textView.isAutomaticLinkDetectionEnabled = false
-        textView.isAutomaticDataDetectionEnabled = false
-        textView.isContinuousSpellCheckingEnabled = false
-        textView.isGrammarCheckingEnabled = false
-        textView.usesFontPanel = false
-        textView.textContainerInset = NSSize(width: 4, height: 6)
-        textView.drawsBackground = true
-        textView.backgroundColor = .textBackgroundColor
-        textView.textColor = .textColor
-        textView.insertionPointColor = EditorStyle.insertionPointColor
-        textView.isVerticallyResizable = true
-        textView.minSize = NSSize(width: 0, height: 0)
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
-        textView.indentation = { [weak document] in document?.indentation ?? .preferred }
-        textView.language = { [weak document] in document?.language }
-        self.textView = textView
-
-        let scrollView = NSScrollView()
-        scrollView.documentView = textView
-        scrollView.hasVerticalScroller = true
-        scrollView.autohidesScrollers = true
-        scrollView.drawsBackground = false
-        self.scrollView = scrollView
-
-        ruler = LineNumberRuler(textView: textView, lineIndex: document.lineIndex)
-        scrollView.verticalRulerView = ruler
-        scrollView.hasVerticalRuler = true
-        scrollView.rulersVisible = showsLineNumbers
+        splitView.dividerStyle = .thin
+        splitView.delegate = self
+        let first = makePane()
+        activePane = first
 
         statusBar = StatusBar(document: document)
-        search = SearchController(textView: textView, layoutManager: layoutManager, document: document)
-        textView.onCancel = { [weak self] in
-            guard let search = self?.search, search.isVisible else { return false }
-            search.close()
-            return true
-        }
+        search = SearchController(textView: first.textView, layoutManager: first.layoutManager, document: document)
 
         let container = NSView()   // the editor: find bar, text, status bar
         let bar = search.bar
         let marks = search.marksView
-        for view in [bar, scrollView, statusBar!, marks] as [NSView] {
+        for view in [bar, splitView, statusBar!, marks] as [NSView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             container.addSubview(view)
         }
         // The text starts below the find bar while it is shown, at the top otherwise.
-        textBelowBar = scrollView.topAnchor.constraint(equalTo: bar.bottomAnchor)
-        textAtTop = scrollView.topAnchor.constraint(equalTo: container.topAnchor)
+        textBelowBar = splitView.topAnchor.constraint(equalTo: bar.bottomAnchor)
+        textAtTop = splitView.topAnchor.constraint(equalTo: container.topAnchor)
         NSLayoutConstraint.activate([
             bar.topAnchor.constraint(equalTo: container.topAnchor),
             bar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             bar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             textAtTop,
-            scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            statusBar.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            splitView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            splitView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            statusBar.topAnchor.constraint(equalTo: splitView.bottomAnchor),
             statusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             statusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             statusBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            marks.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 2),
-            marks.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -2),
-            marks.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -1),
             marks.widthAnchor.constraint(equalToConstant: 7),
         ])
         search.onVisibilityChange = { [weak self] visible in
@@ -129,16 +78,23 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
             textBelowBar.isActive = visible
         }
 
-        // The search in all documents shows its results in a sidebar on the left.
+        // The search in all documents shows its results in a sidebar on the left; the document
+        // list stands in the same place while the search is not active.
         let root = NSView()
         allDocumentsView.isHidden = true
-        for view in [allDocumentsView, container] {
+        documentList.isHidden = true
+        for view in [allDocumentsView, documentList, container] {
             view.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview(view)
         }
         editorAtLeft = container.leadingAnchor.constraint(equalTo: root.leadingAnchor)
         editorBesideSidebar = container.leadingAnchor.constraint(equalTo: allDocumentsView.trailingAnchor)
+        editorBesideList = container.leadingAnchor.constraint(equalTo: documentList.trailingAnchor)
         NSLayoutConstraint.activate([
+            documentList.topAnchor.constraint(equalTo: root.topAnchor),
+            documentList.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            documentList.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            documentList.widthAnchor.constraint(equalToConstant: 220),
             allDocumentsView.topAnchor.constraint(equalTo: root.topAnchor),
             allDocumentsView.bottomAnchor.constraint(equalTo: root.bottomAnchor),
             allDocumentsView.leadingAnchor.constraint(equalTo: root.leadingAnchor),
@@ -149,20 +105,21 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
             container.trailingAnchor.constraint(equalTo: root.trailingAnchor),
         ])
         view = root
+        attachMarks(to: first)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         applyFont()
-        applyWrapping()
         updateSidebar()
-        textView.setSelectedRange(NSRange(location: 0, length: 0))
         updatePosition()
 
         let center = NotificationCenter.default
         observers = [
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-                self?.preferencesDidChange()
+                guard let self else { return }
+                updateSidebar()
+                if currentFont != lastFont { applyFont() }
             },
             center.addObserver(forName: AllDocumentsSearch.didChange, object: nil, queue: .main) { [weak self] _ in
                 self?.updateSidebar()
@@ -171,20 +128,12 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
                 self?.statusBar.updateFormat()
             },
             center.addObserver(forName: TextDocument.textDidReload, object: document, queue: .main) { [weak self] _ in
-                self?.applyFont()
-                self?.textView.setSelectedRange(NSRange(location: 0, length: 0))
-            },
-            center.addObserver(forName: NSTextStorage.didProcessEditingNotification, object: document.textStorage, queue: .main) { [weak self] _ in
-                self?.ruler.updateThickness()
-                self?.ruler.needsDisplay = true
-            },
-            center.addObserver(forName: TextDocument.coloringDidInvalidate, object: document, queue: .main) { [weak self] note in
-                self?.recolor(fromLine: note.userInfo?["line"] as? Int ?? 1)
+                guard let self else { return }
+                applyFont()
+                panes.forEach { $0.textView.setSelectedRange(NSRange(location: 0, length: 0)) }
             },
             center.addObserver(forName: TextDocument.languageDidChange, object: document, queue: .main) { [weak self] _ in
-                self?.recolor(fromLine: 1)
                 self?.statusBar.updateFormat()
-                self?.updateBrackets()
             },
             center.addObserver(forName: TextDocument.indentationDidChange, object: document, queue: .main) { [weak self] _ in
                 self?.applyFont()
@@ -210,7 +159,157 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
                 search.findBarQueryDidChange(search.bar)
             }
         }
+        // For testing editing commands: -DebugScript "at:5|sel:selectNextOccurrence:|type:X|dump",
+        // steps separated by |; the results go to the log.
+        if let script = UserDefaults.standard.string(forKey: "DebugScript"), !Self.debugScriptDone {
+            Self.debugScriptDone = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.runDebugScript(script) }
+        }
         #endif
+    }
+
+    #if DEBUG
+    private static var debugScriptDone = false
+
+    private func runDebugScript(_ script: String) {
+        for step in script.components(separatedBy: "|") {
+            let (command, argument) = step.firstIndex(of: ":").map { (String(step[..<$0]), String(step[step.index(after: $0)...])) } ?? (step, "")
+            switch command {
+            case "at":
+                let parts = argument.split(separator: ",").compactMap { Int($0) }
+                textView.setSelectedRange(NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0))
+            case "line":
+                textView.setSelectedRange(NSRange(location: document.lineIndex.start(ofLine: Int(argument) ?? 1), length: 0))
+                textView.scrollRangeToVisible(textView.selectedRange())
+            case "add":
+                let parts = argument.split(separator: ",").compactMap { Int($0) }
+                textView.setCursorRanges(textView.editingRanges + [NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0)])
+            case "key":
+                textView.doCommand(by: NSSelectorFromString(argument))
+            case "sel":
+                NSApp.sendAction(NSSelectorFromString(argument), to: nil, from: nil)
+            case "type":
+                textView.insertText(argument.replacingOccurrences(of: "\\n", with: "\n"), replacementRange: NSRange(location: NSNotFound, length: 0))
+            case "dump":
+                let ranges = textView.editingRanges.map { "\($0.location),\($0.length)" }.joined(separator: " ")
+                NSLog("DEBUGSCRIPT %@ panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, panes.count,
+                      panes.firstIndex { $0 === activePane } ?? -1, ranges, document.bookmarkedLines.description,
+                      document.foldedHeads.description, textView.string.count < 300 ? textView.string.debugDescription : "…")
+            default:
+                NSLog("DEBUGSCRIPT unknown step %@", step)
+            }
+        }
+        NSLog("DEBUGSCRIPT done")
+    }
+    #endif
+
+    // MARK: - Panes
+
+    private func makePane() -> EditorPane {
+        let pane = EditorPane(document: document)
+        pane.onFocus = { [weak self] pane in self?.activate(pane) }
+        pane.onSelectionChange = { [weak self] pane in
+            if pane === self?.activePane { self?.updatePosition() }
+        }
+        addChild(pane)
+        splitView.addArrangedSubview(pane.view)
+        pane.textView.onCancel = { [weak self] in
+            guard let search = self?.search, search.isVisible else { return false }
+            search.close()
+            return true
+        }
+        panes.append(pane)
+        if let font = lastFont { pane.takeFont(font, attributes: EditorStyle.attributes(font: font, tabWidth: document.indentation.width)) }
+        return pane
+    }
+
+    private func activate(_ pane: EditorPane) {
+        guard pane !== activePane else { return }
+        activePane = pane
+        search.retarget(textView: pane.textView, layoutManager: pane.layoutManager)
+        attachMarks(to: pane)
+        updatePosition()
+    }
+
+    /// The marks of the matches stand at the right edge of the pane being searched.
+    private func attachMarks(to pane: EditorPane) {
+        NSLayoutConstraint.deactivate(marksConstraints)
+        let marks = search.marksView
+        marksConstraints = [
+            marks.topAnchor.constraint(equalTo: pane.scrollView.topAnchor, constant: 2),
+            marks.bottomAnchor.constraint(equalTo: pane.scrollView.bottomAnchor, constant: -2),
+            marks.trailingAnchor.constraint(equalTo: pane.scrollView.trailingAnchor, constant: -1),
+        ]
+        NSLayoutConstraint.activate(marksConstraints)
+    }
+
+    var isSplit: Bool { panes.count > 1 }
+
+    /// Shows the text a second time, beside or below, starting where the current pane is.
+    private func split(sideBySide: Bool, state: EditorPane.State? = nil, fraction: Double = 0.5) {
+        if isSplit {
+            splitView.isVertical = sideBySide
+            splitView.adjustSubviews()
+            setSplitFraction(fraction)
+            return
+        }
+        let current = activePane.state
+        splitView.isVertical = sideBySide
+        let pane = makePane()
+        splitView.layoutSubtreeIfNeeded()
+        setSplitFraction(fraction)
+        pane.apply(state ?? current)
+        if state == nil {
+            view.window?.makeFirstResponder(pane.textView)
+        }
+        SessionStore.shared.setNeedsSave()
+    }
+
+    private func setSplitFraction(_ fraction: Double) {
+        let total = splitView.isVertical ? splitView.bounds.width : splitView.bounds.height
+        splitView.setPosition((total - splitView.dividerThickness) * CGFloat(fraction.clamped(to: 0.1...0.9)), ofDividerAt: 0)
+    }
+
+    private var splitFraction: Double {
+        guard isSplit, let first = splitView.arrangedSubviews.first else { return 0.5 }
+        let total = splitView.isVertical ? splitView.bounds.width : splitView.bounds.height
+        let size = splitView.isVertical ? first.frame.width : first.frame.height
+        return total > 0 ? Double(size / (total - splitView.dividerThickness)) : 0.5
+    }
+
+    @objc func splitSideBySide(_ sender: Any?) { split(sideBySide: true) }
+    @objc func splitStacked(_ sender: Any?) { split(sideBySide: false) }
+
+    /// Closes the pane with the focus; the other one stays.
+    @objc func closeSplit(_ sender: Any?) {
+        guard isSplit, let index = panes.firstIndex(where: { $0 === activePane }) else { return }
+        let closing = panes.remove(at: index)
+        let remaining = panes[0]
+        activate(remaining)
+        if document.contentStorage.primaryTextLayoutManager === closing.layoutManager {
+            document.contentStorage.primaryTextLayoutManager = remaining.layoutManager
+        }
+        closing.view.removeFromSuperview()
+        closing.removeFromParent()
+        view.window?.makeFirstResponder(remaining.textView)
+        SessionStore.shared.setNeedsSave()
+    }
+
+    @objc func focusOtherPane(_ sender: Any?) {
+        guard isSplit, let other = panes.first(where: { $0 !== activePane }) else { return NSSound.beep() }
+        view.window?.makeFirstResponder(other.textView)
+    }
+
+    func splitView(_ splitView: NSSplitView, constrainMinCoordinate proposedMinimumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
+        proposedMinimumPosition + 80
+    }
+
+    func splitView(_ splitView: NSSplitView, constrainMaxCoordinate proposedMaximumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
+        proposedMaximumPosition - 80
+    }
+
+    func splitViewDidResizeSubviews(_ notification: Notification) {
+        SessionStore.shared.setNeedsSave()
     }
 
     // MARK: - View state
@@ -220,139 +319,32 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
 
     var viewState: ViewState {
         if let pendingViewState { return pendingViewState }
-        let selection = textView.selectedRange()
-        var topOffset = 0
-        if let content = layoutManager.textContentManager,
-           let fragment = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: textView.visibleRect.minY - textView.textContainerOrigin.y)) {
-            topOffset = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+        let first = panes[0].state
+        var state = ViewState(
+            selectionLocation: first.selectionLocation, selectionLength: first.selectionLength, topOffset: first.topOffset,
+            wrapsLines: first.wrapsLines, showsLineNumbers: first.showsLineNumbers, showsInvisibles: first.showsInvisibles,
+            zoom: Double(zoom), bookmarks: document.bookmarkedLines, folds: document.foldedHeads)
+        if isSplit {
+            state.split = SplitState(sideBySide: splitView.isVertical, second: panes[1].state, fraction: splitFraction)
         }
-        return ViewState(
-            selectionLocation: selection.location, selectionLength: selection.length, topOffset: topOffset,
-            wrapsLines: wrapsLines, showsLineNumbers: showsLineNumbers, showsInvisibles: invisibles.showsInvisibles,
-            zoom: Double(zoom))
+        return state
     }
 
     private func apply(_ state: ViewState) {
-        if state.wrapsLines != wrapsLines {
-            wrapsLines = state.wrapsLines
-            applyWrapping()
-        }
-        showsLineNumbers = state.showsLineNumbers
-        scrollView.rulersVisible = showsLineNumbers
-        if state.showsInvisibles != invisibles.showsInvisibles {
-            toggleInvisibles(nil)
-        }
         if CGFloat(state.zoom) != zoom { setZoom(CGFloat(state.zoom)) }
-
-        let length = document.textStorage.length
-        let location = min(max(state.selectionLocation, 0), length)
-        textView.setSelectedRange(NSRange(location: location, length: min(max(state.selectionLength, 0), length - location)))
-        scroll(toOffset: min(max(state.topOffset, 0), length))
+        if let bookmarks = state.bookmarks, document.bookmarks.isEmpty { document.setBookmarkedLines(bookmarks) }
+        if let folds = state.folds, !folds.isEmpty, document.folds.isEmpty { document.setFoldedHeads(folds) }
+        panes[0].apply(EditorPane.State(
+            selectionLocation: state.selectionLocation, selectionLength: state.selectionLength, topOffset: state.topOffset,
+            wrapsLines: state.wrapsLines, showsLineNumbers: state.showsLineNumbers, showsInvisibles: state.showsInvisibles))
+        if let splitState = state.split {
+            split(sideBySide: splitState.sideBySide, state: splitState.second, fraction: splitState.fraction)
+        }
     }
 
-    /// Scrolls so that the line at the offset is the first one visible. TextKit lays out only
-    /// around the visible part and estimates the rest; relocating the viewport lays out from the
-    /// line on and gives the matching scroll position.
-    private func scroll(toOffset offset: Int) {
-        guard let content = layoutManager.textContentManager,
-              let location = content.location(content.documentRange.location, offsetBy: offset)
-        else { return }
-        let viewport = layoutManager.textViewportLayoutController
-        let y = offset == 0 ? 0 : viewport.relocateViewport(to: location) + textView.textContainerOrigin.y
-        scrollView.contentView.scroll(to: NSPoint(x: scrollView.contentView.bounds.minX, y: y))
-        scrollView.reflectScrolledClipView(scrollView.contentView)
-        viewport.layoutViewport()
-    }
-
-    // MARK: - Applying settings
+    // MARK: - Font
 
     private var lastFont: NSFont?
-    private var lastHighlightsSyntax = Preferences.highlightsSyntaxValue
-
-    private func preferencesDidChange() {
-        textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
-        if currentFont != lastFont {
-            applyFont()
-        }
-        if Preferences.highlightsSyntaxValue != lastHighlightsSyntax {
-            lastHighlightsSyntax = Preferences.highlightsSyntaxValue
-            recolor(fromLine: 1)
-        }
-    }
-
-    // MARK: - Coloring
-
-    /// Colors one paragraph, that is one line, from the tokens of its language.
-    private func color(_ fragment: NSTextLayoutFragment, in layoutManager: NSTextLayoutManager) {
-        guard let content = layoutManager.textContentManager else { return }
-        let range = fragment.rangeInElement
-        layoutManager.removeRenderingAttribute(.foregroundColor, for: range)
-        layoutManager.removeRenderingAttribute(.underlineStyle, for: range)
-        guard Preferences.highlightsSyntaxValue, document.language != nil else { return }
-        let start = content.offset(from: content.documentRange.location, to: range.location)
-        let end = content.offset(from: content.documentRange.location, to: range.endLocation)
-        let line = document.lineIndex.lineNumber(at: start)
-        for token in document.highlighter.tokens(forLine: line) {
-            let from = max(token.range.location, start), to = min(token.range.upperBound, end)
-            guard from < to,
-                  let tokenStart = content.location(content.documentRange.location, offsetBy: from),
-                  let tokenEnd = content.location(tokenStart, offsetBy: to - from),
-                  let tokenRange = NSTextRange(location: tokenStart, end: tokenEnd)
-            else { continue }
-            layoutManager.addRenderingAttribute(.foregroundColor, value: token.scope.color, for: tokenRange)
-            if token.scope == .link {
-                layoutManager.addRenderingAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, for: tokenRange)
-            }
-        }
-    }
-
-    /// After an edit or a change of language: the lines from `line` on are colored again when
-    /// shown; the visible ones right away.
-    private func recolor(fromLine line: Int) {
-        // Edits are reported while TextKit is still processing them; its paragraphs are only
-        // up to date afterwards. Several edits in a row are handled together.
-        pendingRecolorLine = min(pendingRecolorLine ?? line, line)
-        guard !recolorScheduled else { return }
-        recolorScheduled = true
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            recolorScheduled = false
-            let line = pendingRecolorLine ?? 1
-            pendingRecolorLine = nil
-            recolorNow(fromLine: line)
-        }
-    }
-
-    private var recolorScheduled = false
-    private var pendingRecolorLine: Int?
-
-    private func recolorNow(fromLine line: Int) {
-        guard line <= document.lineIndex.lineCount, let content = layoutManager.textContentManager,
-              let start = content.location(content.documentRange.location, offsetBy: document.lineIndex.start(ofLine: line)),
-              let range = NSTextRange(location: start, end: content.documentRange.endLocation)
-        else { return }
-        // TextKit asks for colors only when it lays a paragraph out anew. The paragraphs on screen
-        // are colored here directly; the ones below are laid out again when they come into view.
-        let viewport = layoutManager.textViewportLayoutController.viewportRange
-        let visibleEnd = viewport?.endLocation ?? content.documentRange.endLocation
-        layoutManager.enumerateTextLayoutFragments(from: range.location, options: []) { fragment in
-            guard fragment.rangeInElement.location.compare(visibleEnd) == .orderedAscending else { return false }
-            color(fragment, in: layoutManager)
-            return true
-        }
-        if visibleEnd.compare(content.documentRange.endLocation) == .orderedAscending,
-           let below = NSTextRange(location: visibleEnd.compare(range.location) == .orderedDescending ? visibleEnd : range.location,
-                                   end: content.documentRange.endLocation) {
-            layoutManager.invalidateLayout(for: below)
-        }
-        textView.redrawFragments()
-    }
-
-    /// Marks the bracket next to the insertion point and its partner.
-    private func updateBrackets() {
-        let pairs = document.language?.brackets ?? [("(", ")"), ("[", "]"), ("{", "}")]
-        textView.bracketRanges = textView.matchingBrackets(pairs: pairs)
-    }
 
     private var currentFont: NSFont {
         let base = Preferences.font
@@ -367,37 +359,29 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
         storage.beginEditing()
         storage.setAttributes(attributes, range: NSRange(location: 0, length: storage.length))
         storage.endEditing()
-        textView.font = font
-        textView.typingAttributes = attributes
-        textView.defaultParagraphStyle = attributes[.paragraphStyle] as? NSParagraphStyle
-        ruler.font = NSFont.monospacedDigitSystemFont(ofSize: max(9, font.pointSize - 2), weight: .regular)
-        ruler.needsDisplay = true
+        panes.forEach { $0.takeFont(font, attributes: attributes) }
     }
 
-    private func applyWrapping() {
-        let contentSize = scrollView.contentSize
-        if wrapsLines {
-            scrollView.hasHorizontalScroller = false
-            textView.isHorizontallyResizable = false
-            textView.autoresizingMask = [.width]
-            textContainer.widthTracksTextView = true
-            textView.frame.size.width = contentSize.width
-            textContainer.size = NSSize(width: contentSize.width, height: CGFloat.greatestFiniteMagnitude)
-        } else {
-            scrollView.hasHorizontalScroller = true
-            textView.isHorizontallyResizable = true
-            textView.autoresizingMask = []
-            textContainer.widthTracksTextView = false
-            textContainer.size = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+    @objc func zoomIn(_ sender: Any?) { setZoom(zoom + 1) }
+    @objc func zoomOut(_ sender: Any?) { setZoom(zoom - 1) }
+    @objc func resetZoom(_ sender: Any?) { setZoom(0) }
+
+    private func setZoom(_ value: CGFloat) {
+        let base = Preferences.font.pointSize
+        let tops = panes.map { ($0, $0.topOffset) }
+        zoom = (base + value).clamped(to: 6...96) - base
+        applyFont()
+        guard view.window != nil else { return }
+        for (pane, top) in tops {
+            pane.textView.layoutSubtreeIfNeeded()
+            pane.scroll(toOffset: top)
         }
-        layoutManager.invalidateLayout(for: layoutManager.documentRange)
-        textView.needsLayout = true
-        textView.needsDisplay = true
     }
 
     // MARK: - Status
 
     private func updatePosition() {
+        let textView = textView
         let text = textView.string as NSString
         let selection = textView.selectedRange()
         let lineIndex = document.lineIndex
@@ -415,20 +399,6 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
             selectedLines = lineIndex.lineNumber(at: last) - line + 1
         }
         statusBar.updatePosition(line: line, column: column, selectedCharacters: selectedCharacters, selectedLines: selectedLines)
-    }
-
-    func textViewDidChangeSelection(_ notification: Notification) {
-        updatePosition()
-        updateBrackets()
-        ruler.needsDisplay = true
-    }
-
-    // MARK: - NSTextLayoutManagerDelegate
-
-    func textLayoutManager(_ textLayoutManager: NSTextLayoutManager, textLayoutFragmentFor location: NSTextLocation, in textElement: NSTextElement) -> NSTextLayoutFragment {
-        let fragment = InvisiblesLayoutFragment(textElement: textElement, range: textElement.elementRange)
-        fragment.options = invisibles
-        return fragment
     }
 
     // MARK: - Find menu
@@ -455,66 +425,29 @@ final class EditorViewController: NSViewController, NSTextViewDelegate, NSTextLa
 
     private func updateSidebar() {
         let active = AllDocumentsSearch.shared.isActive
-        guard allDocumentsView.isHidden == active else { return }
+        let showsList = !active && UserDefaults.standard.bool(forKey: Preferences.showsDocumentList)
+        guard allDocumentsView.isHidden == active || documentList.isHidden == showsList else { return }
         allDocumentsView.isHidden = !active
-        editorAtLeft.isActive = !active
-        editorBesideSidebar.isActive = active
-        if !active, view.window?.firstResponder is NSTextView, view.window?.firstResponder !== textView {
+        documentList.isHidden = !showsList
+        editorAtLeft.isActive = false
+        editorBesideSidebar.isActive = false
+        editorBesideList.isActive = false
+        (active ? editorBesideSidebar : showsList ? editorBesideList : editorAtLeft).isActive = true
+        if !active, view.window?.firstResponder is NSTextView, !panes.contains(where: { view.window?.firstResponder === $0.textView }) {
             view.window?.makeFirstResponder(textView)
         }
     }
 
-    // MARK: - View menu
-
-    @objc func toggleLineNumbers(_ sender: Any?) {
-        showsLineNumbers.toggle()
-        scrollView.rulersVisible = showsLineNumbers
-    }
-
-    @objc func toggleWrapping(_ sender: Any?) {
-        keepingTopLine {
-            wrapsLines.toggle()
-            applyWrapping()
-        }
-    }
-
-    @objc func toggleInvisibles(_ sender: Any?) {
-        // The fragments read the option when drawing, so they only need to draw again.
-        invisibles.showsInvisibles.toggle()
-        textView.redrawFragments()
-    }
-
-    @objc func zoomIn(_ sender: Any?) { setZoom(zoom + 1) }
-    @objc func zoomOut(_ sender: Any?) { setZoom(zoom - 1) }
-    @objc func resetZoom(_ sender: Any?) { setZoom(0) }
-
-    private func setZoom(_ value: CGFloat) {
-        let base = Preferences.font.pointSize
-        keepingTopLine {
-            zoom = (base + value).clamped(to: 6...96) - base
-            applyFont()
-        }
-    }
-
-    /// Changes that lay out the text anew keep the line at the top where it was.
-    private func keepingTopLine(_ change: () -> Void) {
-        guard view.window != nil else { return change() }
-        let top = viewState.topOffset
-        change()
-        textView.layoutSubtreeIfNeeded()
-        scroll(toOffset: top)
-    }
-
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
-        case #selector(toggleLineNumbers(_:)):
-            item.state = showsLineNumbers ? .on : .off
-        case #selector(toggleWrapping(_:)):
-            item.state = wrapsLines ? .on : .off
-        case #selector(toggleInvisibles(_:)):
-            item.state = invisibles.showsInvisibles ? .on : .off
         case #selector(resetZoom(_:)):
             return zoom != 0
+        case #selector(splitSideBySide(_:)):
+            item.state = isSplit && splitView.isVertical ? .on : .off
+        case #selector(splitStacked(_:)):
+            item.state = isSplit && !splitView.isVertical ? .on : .off
+        case #selector(closeSplit(_:)), #selector(focusOtherPane(_:)):
+            return isSplit
         default:
             break
         }

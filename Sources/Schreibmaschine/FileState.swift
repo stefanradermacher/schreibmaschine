@@ -10,6 +10,20 @@ struct ViewState: Codable, Equatable {
     var showsLineNumbers: Bool
     var showsInvisibles: Bool
     var zoom: Double = 0
+    /// Lines with a bookmark; they belong to the document, not the view, but are kept with it.
+    var bookmarks: [Int]?
+    /// Lines heading a folded block; like bookmarks, they belong to the document.
+    var folds: [Int]?
+    /// The second half of a split view; the fields above describe the first.
+    var split: SplitState?
+}
+
+struct SplitState: Codable, Equatable {
+    /// Side by side; otherwise one above the other.
+    var sideBySide: Bool
+    var second: EditorPane.State
+    /// Share of the first half, from 0 to 1.
+    var fraction: Double
 }
 
 /// What the app remembers about a file between openings: how it was shown, and the encoding
