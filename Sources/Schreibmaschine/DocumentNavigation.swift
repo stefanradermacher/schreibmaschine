@@ -2,6 +2,7 @@ import AppKit
 
 /// Moving between the open documents by keyboard, across tabs and windows: ⌥⌘← and ⌥⌘→ go to
 /// the previous and next document, ⌘1 to ⌘8 straight to one of the first eight, ⌘9 to the last.
+/// ⌃⇥ and ⌃⇧⇥ stay what they are on every Mac: the tabs of one window.
 enum DocumentNavigation {
     /// The document windows in a fixed order: windows in the order they were opened, within a
     /// window its tabs from left to right. The same order as in Window → Documents.

@@ -11,7 +11,6 @@ enum MainMenu {
         main.addItem(submenu(viewMenu()))
         main.addItem(submenu(formatMenu()))
         let window = windowMenu()
-        window.delegate = WindowMenu.shared
         main.addItem(submenu(window))
         let help = NSMenu(title: String(localized: "Hilfe"))
         main.addItem(submenu(help))
@@ -161,17 +160,9 @@ enum MainMenu {
         menu.addItem(.separator())
         let left = String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!))
         let right = String(Character(UnicodeScalar(NSRightArrowFunctionKey)!))
-        // ⌃⇥ and ⌃⇧⇥ are the tab items macOS adds to this menu (see WindowMenu); ⌥⌘← and ⌥⌘→
-        // do the same without taking up room in the menu.
-        for (title, action, key) in [
-            (String(localized: "Vorheriges Dokument"), #selector(AppDelegate.previousDocument(_:)), left),
-            (String(localized: "Nächstes Dokument"), #selector(AppDelegate.nextDocument(_:)), right),
-        ] {
-            let hidden = item(title, action, key, [.command, .option])
-            hidden.isHidden = true
-            hidden.allowsKeyEquivalentWhenHidden = true
-            menu.addItem(hidden)
-        }
+        // Across all windows; ⌃⇥ and ⌃⇧⇥ keep switching the tabs of one window, as everywhere on the Mac.
+        menu.addItem(item(String(localized: "Vorheriges Dokument"), #selector(AppDelegate.previousDocument(_:)), left, [.command, .option]))
+        menu.addItem(item(String(localized: "Nächstes Dokument"), #selector(AppDelegate.nextDocument(_:)), right, [.command, .option]))
         let documents = NSMenu(title: String(localized: "Dokumente"))
         documents.delegate = DocumentsMenu.shared
         menu.addItem(submenu(documents))
@@ -249,17 +240,3 @@ final class SessionMenu: NSObject, NSMenuDelegate {
     }
 }
 
-/// The Window menu: the tab items macOS adds are named after what they do in this app.
-final class WindowMenu: NSObject, NSMenuDelegate {
-    static let shared = WindowMenu()
-
-    func menuNeedsUpdate(_ menu: NSMenu) {
-        for item in menu.items {
-            switch item.action {
-            case #selector(NSWindow.selectNextTab(_:)): item.title = String(localized: "Nächstes Dokument")
-            case #selector(NSWindow.selectPreviousTab(_:)): item.title = String(localized: "Vorheriges Dokument")
-            default: break
-            }
-        }
-    }
-}

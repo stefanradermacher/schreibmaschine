@@ -6,7 +6,7 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
     static let tabbingIdentifier = "Schreibmaschine.Dokument"
 
     init() {
-        let window = DocumentWindow(
+        let window = NSWindow(
             contentRect: NSRect(origin: .zero, size: Self.savedContentSize),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
             backing: .buffered, defer: true)
@@ -129,18 +129,3 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
     }
 }
 
-/// A document window. The tab commands of macOS (⌃⇥ and ⌃⇧⇥) go through all open documents,
-/// across windows, not only through the tabs of this window.
-final class DocumentWindow: NSWindow {
-    override func selectNextTab(_ sender: Any?) { DocumentNavigation.step(by: 1) }
-    override func selectPreviousTab(_ sender: Any?) { DocumentNavigation.step(by: -1) }
-
-    override func validateUserInterfaceItem(_ item: any NSValidatedUserInterfaceItem) -> Bool {
-        switch item.action {
-        case #selector(selectNextTab(_:)), #selector(selectPreviousTab(_:)):
-            return DocumentNavigation.windows.count > 1
-        default:
-            return super.validateUserInterfaceItem(item)
-        }
-    }
-}
