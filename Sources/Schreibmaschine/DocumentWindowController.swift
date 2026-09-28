@@ -51,7 +51,10 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
             window.makeKeyAndOrderFront(sender)
             return
         }
-        if let host {
+        if let host, Self.fillsScreen(window) {
+            // A window that fills the screen stays in place: offset, it would be cut off or shrunk.
+            window.setFrame((host.screen ?? NSScreen.main)?.visibleFrame ?? window.frame, display: false)
+        } else if let host {
             let topLeft = NSPoint(x: host.frame.minX, y: host.frame.maxY)
             window.setFrameTopLeftPoint(window.cascadeTopLeft(from: topLeft))
         } else {
@@ -67,6 +70,12 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
         window.tabbingMode = .disallowed
         show()
         window.tabbingMode = .automatic
+    }
+
+    /// Whether the window takes up the whole usable area of the screen, as after zooming.
+    static func fillsScreen(_ window: NSWindow) -> Bool {
+        guard let visible = (window.screen ?? NSScreen.main)?.visibleFrame else { return false }
+        return window.frame.width >= visible.width - 2 && window.frame.height >= visible.height - 2
     }
 
     /// Centers the window on the screen in use. NSWindow.center() puts it higher than the middle.
