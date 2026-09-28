@@ -521,6 +521,16 @@
         }
       }
     },
+    "Dokumente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documents"
+          }
+        }
+      }
+    },
     "Drucken …": {
       "localizations": {
         "en": {
@@ -1011,6 +1021,16 @@
         }
       }
     },
+    "Nächstes Dokument": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Document"
+          }
+        }
+      }
+    },
     "Originalgröße": {
       "localizations": {
         "en": {
@@ -1407,6 +1427,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Previous match (⇧↩)"
+          }
+        }
+      }
+    },
+    "Vorheriges Dokument": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Document"
           }
         }
       }

@@ -61,8 +61,10 @@ final class TextDocument: NSDocument {
         // done. Text inserted through accessibility (dictation, Keyboard Viewer, automation) is
         // not registered for undo; without this it would count as unchanged and not be kept.
         // The check waits until the undo group of a keystroke is surely closed.
+        // A save in between would make the text unchanged again; then this edit is in the file.
+        let generation = saveGeneration
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            guard let self, !isDocumentEdited else { return }
+            guard let self, !isDocumentEdited, saveGeneration == generation else { return }
             updateChangeCount(.changeDone)
         }
     }
@@ -97,7 +99,18 @@ final class TextDocument: NSDocument {
         try load(data, as: nil)
     }
 
+    /// Counts saves and reverts, so a late check after an edit can tell whether one happened.
+    private var saveGeneration = 0
+
+    // Saving reports through the token variant, not updateChangeCount(_:).
+    override func updateChangeCount(withToken changeCountToken: Any, for saveOperation: NSDocument.SaveOperationType) {
+        saveGeneration += 1
+        super.updateChangeCount(withToken: changeCountToken, for: saveOperation)
+        SessionStore.shared.setNeedsSave()
+    }
+
     override func updateChangeCount(_ change: NSDocument.ChangeType) {
+        if change == .changeCleared || change == .changeAutosaved { saveGeneration += 1 }
         super.updateChangeCount(change)
         SessionStore.shared.setNeedsSave()
     }

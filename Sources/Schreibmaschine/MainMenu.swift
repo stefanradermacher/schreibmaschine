@@ -158,6 +158,14 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Im Dock ablegen"), #selector(NSWindow.performMiniaturize(_:)), "m"))
         menu.addItem(item(String(localized: "Zoomen"), #selector(NSWindow.performZoom(_:))))
         menu.addItem(.separator())
+        let left = String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!))
+        let right = String(Character(UnicodeScalar(NSRightArrowFunctionKey)!))
+        menu.addItem(item(String(localized: "Vorheriges Dokument"), #selector(AppDelegate.previousDocument(_:)), left, [.command, .option]))
+        menu.addItem(item(String(localized: "Nächstes Dokument"), #selector(AppDelegate.nextDocument(_:)), right, [.command, .option]))
+        let documents = NSMenu(title: String(localized: "Dokumente"))
+        documents.delegate = DocumentsMenu.shared
+        menu.addItem(submenu(documents))
+        menu.addItem(.separator())
         let session = NSMenu(title: String(localized: "Sitzung"))
         session.delegate = SessionMenu.shared
         menu.addItem(submenu(session))
