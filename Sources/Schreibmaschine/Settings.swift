@@ -100,7 +100,12 @@ private struct EditorSettings: View {
     var body: some View {
         Form {
             LabeledContent {
-                Button("Auswählen …") { FontPicker.shared.show() }
+                HStack {
+                    // SF Mono is hidden from the font panel; this is the way back to it.
+                    Button("Standard") { fontName = "" }
+                        .disabled(fontName.isEmpty)
+                    Button("Auswählen …") { FontPicker.shared.show() }
+                }
             } label: {
                 Text("Schrift")
                 Text(fontDescription)
