@@ -57,6 +57,7 @@ enum MainMenu {
     private static func helpMenu() -> NSMenu {
         let menu = NSMenu(title: String(localized: "Hilfe"))
         menu.addItem(item(String(localized: "\(appName)-Hilfe"), #selector(AppDelegate.openHelp(_:)), "?"))
+        menu.addItem(item(String(localized: "\(appName)-Handbuch"), #selector(AppDelegate.openManual(_:))))
         menu.addItem(item(String(localized: "\(appName) im Web"), #selector(AppDelegate.openProductPage(_:))))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Fehler melden oder Idee vorschlagen …"), #selector(AppDelegate.sendFeedback(_:))))

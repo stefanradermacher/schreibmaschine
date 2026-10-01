@@ -121,6 +121,16 @@
         }
       }
     },
+    "%@-Handbuch": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Manual"
+          }
+        }
+      }
+    },
     "%@-Hilfe": {
       "localizations": {
         "en": {

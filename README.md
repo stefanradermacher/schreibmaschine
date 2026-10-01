@@ -58,6 +58,10 @@ Die Versionsnummer steht im Projekt unter „Version“ (`MARKETING_VERSION`) un
 
 Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-Icon in den Asset-Katalog, das Dokumentsymbol nach `Resources/TextDocument.icns`. Das App-Icon zeigt eine schwarze Schreibmaschine auf Stahlblau; Stahlblau ist auch die Akzentfarbe der App, und die Einfügemarke im Editor hat das Orange des Cursors im Symbol. Das Dokumentsymbol zeigt macOS nur, wenn Schreibmaschine die Standard-App für eine Dateiart ist. Nach Änderungen an der Zeichnung im Projektordner `swift scripts/make_icon.swift` ausführen.
 
+### Handbuch
+
+`scripts/make_manual.swift` zeichnet `docs/Schreibmaschine-Handbuch.pdf`, ein kurzes Handbuch mit Gliederung im Stil der Handbücher von Leser und Motiv. Die Texte stehen in `docs/handbuch/de.md` und `docs/handbuch/en.md`, das Format ist oben in `de.md` beschrieben; Bildschirmfotos kommen aus `docs/screenshots/` (englische aus `docs/screenshots/en/`) und werden ausgelassen, solange sie fehlen. Nach Änderungen im Projektordner `swift scripts/make_manual.swift` ausführen; `swift scripts/make_manual.swift en` schreibt die englische Fassung nach `docs/Schreibmaschine-Manual.pdf`. Beide Fassungen kopiert das Skript außerdem nach `Resources/`: Sie liegen im App-Bundle, und „Hilfe → Schreibmaschine-Handbuch“ öffnet die zur App-Sprache passende in der Standard-PDF-App, offline und immer zur Version passend.
+
 ### Projektstruktur
 
 - `Sources/Schreibmaschine/`: Quellcode; neue Dateien gehören automatisch zum Projekt
@@ -81,4 +85,4 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster
 - `Resources/`: Asset-Katalog mit App-Icon und Akzentfarbe, Dokumentsymbol, Lokalisierung, `PrivacyInfo.xcprivacy`, die mitgelieferten Sprachen in `Languages/`
 - `Config/`: `Info.plist`, Entitlements, Build-Einstellungen
-- `docs/`: Konzept, Format der Sprachdefinitionen (`sprachen.md`), App-Store-Unterlagen
+- `docs/`: Konzept, Format der Sprachdefinitionen (`sprachen.md`), App-Store-Unterlagen, Handbuch (`handbuch/` und die PDFs)

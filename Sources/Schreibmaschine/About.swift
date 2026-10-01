@@ -9,6 +9,15 @@ enum AppLinks {
     static let help = URL(string: "https://stefanradermacher.com/projects/schreibmaschine/support")!
     static let privacy = URL(string: "https://stefanradermacher.com/projects/schreibmaschine/datenschutz")!
     static let feedback = URL(string: "mailto:schreibmaschine@stefanradermacher.com")!
+
+    /// Opens the manual that comes with the app, in the language of the app, in the default
+    /// PDF viewer. It lives in the bundle, so it matches this version and needs no network.
+    static func openManual() {
+        let german = Bundle.main.preferredLocalizations.first?.hasPrefix("de") == true
+        guard let url = Bundle.main.url(forResource: german ? "Schreibmaschine-Handbuch" : "Schreibmaschine-Manual", withExtension: "pdf")
+        else { return NSSound.beep() }
+        NSWorkspace.shared.open(url)
+    }
 }
 
 /// A small window with SwiftUI content and no visible title bar, for "About" and "Support".
