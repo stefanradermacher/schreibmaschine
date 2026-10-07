@@ -911,6 +911,16 @@
         }
       }
     },
+    "Die Preise konnten gerade nicht vom App Store geladen werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The prices could not be loaded from the App Store right now."
+          }
+        }
+      }
+    },
     "Die Schreibmaschine hat kein Tracking, keine Analyse und keine Werbung und baut selbst keine Verbindungen ins Internet auf; nur ein freiwilliges Trinkgeld läuft über den App Store. Deine Texte und Einstellungen bleiben auf deinem Mac.": {
       "localizations": {
         "en": {
@@ -1247,6 +1257,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Run Again: %@"
+          }
+        }
+      }
+    },
+    "Erneut versuchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
           }
         }
       }

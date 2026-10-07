@@ -43,8 +43,15 @@ final class TipJar {
     enum State: Equatable {
         case loading
         case ready
-        /// No App Store products, e.g. in a build that does not come from the App Store.
+        /// No App Store products: in a build that does not come from the App Store, or because
+        /// the App Store could not be reached.
         case unavailable
+    }
+
+    /// Whether this copy comes from the App Store or TestFlight. Only then can the tips load at
+    /// all, so only then is it worth trying again.
+    var isFromAppStore: Bool {
+        Bundle.main.appStoreReceiptURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false
     }
 
     private(set) var state = State.loading
@@ -148,9 +155,25 @@ struct TipJarView: View {
                         }
                     }
                 case .unavailable:
-                    Text("Ein Trinkgeld ist in der Version aus dem App Store möglich.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if jar.isFromAppStore {
+                        // Usually a passing problem with the App Store; App Review once saw only
+                        // a note here and could not find the purchases.
+                        VStack(spacing: 8) {
+                            Text("Die Preise konnten gerade nicht vom App Store geladen werden.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Erneut versuchen") {
+                                Task { await jar.loadProducts() }
+                            }
+                            .controlSize(.small)
+                        }
+                        .frame(minHeight: 64)
+                    } else {
+                        Text("Ein Trinkgeld ist in der Version aus dem App Store möglich.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 
