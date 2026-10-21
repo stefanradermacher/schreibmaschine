@@ -344,7 +344,10 @@ final class EditorTextView: NSTextView {
     // wrapped to the new width only when the mouse was released. Without its live-resize mode
     // they wrap as the edge moves, like in TextEdit.
     override func viewWillStartLiveResize() {}
-    override func viewDidEndLiveResize() {}
+    override func viewDidEndLiveResize() { onLiveResizeEnd?() }
+
+    /// Called when a live resize of the window or a split view is over.
+    var onLiveResizeEnd: (() -> Void)?
 
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)

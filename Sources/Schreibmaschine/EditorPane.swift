@@ -53,9 +53,12 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     override func loadView() {
         layoutManager.delegate = self
-        // Lines are colored when TextKit is about to show them.
+        // Lines are colored when TextKit lays them out, except while the whole text is laid out
+        // in one go; then they are colored when they come into view.
         layoutManager.renderingAttributesValidator = { [weak self] layoutManager, fragment in
-            self?.color(fragment, in: layoutManager)
+            guard let self, !isLayingOutEverything else { return }
+            color(fragment, in: layoutManager)
+            coloredFragments.add(fragment)
         }
         layoutManager.textContainer = textContainer
         document.contentStorage.addTextLayoutManager(layoutManager)
@@ -90,6 +93,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
         textView.indentation = { [weak document] in document?.indentation ?? .preferred }
         textView.language = { [weak document] in document?.language }
+        textView.onLiveResizeEnd = { [weak self] in self?.scheduleFullLayout() }
         textView.onFocus = { [weak self] in
             guard let self else { return }
             onFocus?(self)
@@ -131,7 +135,12 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         textView.setSelectedRange(NSRange(location: 0, length: 0))
 
         let center = NotificationCenter.default
+        scrollView.contentView.postsBoundsChangedNotifications = true
         observers = [
+            // Paragraphs coming into view get their colors.
+            center.addObserver(forName: NSView.boundsDidChangeNotification, object: scrollView.contentView, queue: .main) { [weak self] _ in
+                self?.colorVisibleFragments()
+            },
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 self?.preferencesDidChange()
             },
@@ -153,6 +162,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
                 self?.ruler.needsDisplay = true
             },
         ]
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        scheduleFullLayout()
     }
 
     // MARK: - State
@@ -186,6 +200,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         let location = min(max(state.selectionLocation, 0), length)
         textView.setSelectedRange(NSRange(location: location, length: min(max(state.selectionLength, 0), length - location)))
         scroll(toOffset: min(max(state.topOffset, 0), length))
+        scheduleFullLayout()
     }
 
     /// The offset of the first line visible at the top.
@@ -239,6 +254,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         textView.defaultParagraphStyle = attributes[.paragraphStyle] as? NSParagraphStyle
         ruler.font = NSFont.monospacedDigitSystemFont(ofSize: max(9, font.pointSize - 2), weight: .regular)
         ruler.needsDisplay = true
+        scheduleFullLayout()
     }
 
     /// While the divider of a split view is dragged, the pane is in a live resize, in which
@@ -275,6 +291,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         layoutManager.invalidateLayout(for: layoutManager.documentRange)
         textView.needsLayout = true
         textView.needsDisplay = true
+        scheduleFullLayout()
     }
 
     // MARK: - Coloring
@@ -324,25 +341,42 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     private var pendingRecolorLine: Int?
 
     private func recolorNow(fromLine line: Int) {
+        // TextKit asks for colors only when it lays a paragraph out anew. Laying out again would
+        // bring back its estimated heights, so the paragraphs are only marked: the visible ones
+        // are colored now, the others when they come into view.
+        let line = max(line, 1)
         guard line <= document.lineIndex.lineCount, let content = layoutManager.textContentManager,
-              let start = content.location(content.documentRange.location, offsetBy: document.lineIndex.start(ofLine: line)),
-              let range = NSTextRange(location: start, end: content.documentRange.endLocation)
+              let start = content.location(content.documentRange.location, offsetBy: document.lineIndex.start(ofLine: line))
         else { return }
-        // TextKit asks for colors only when it lays a paragraph out anew. The paragraphs on screen
-        // are colored here directly; the ones below are laid out again when they come into view.
-        let viewport = layoutManager.textViewportLayoutController.viewportRange
-        let visibleEnd = viewport?.endLocation ?? content.documentRange.endLocation
-        layoutManager.enumerateTextLayoutFragments(from: range.location, options: []) { fragment in
-            guard fragment.rangeInElement.location.compare(visibleEnd) == .orderedAscending else { return false }
-            color(fragment, in: layoutManager)
+        for case let fragment as NSTextLayoutFragment in coloredFragments.allObjects
+        where fragment.rangeInElement.endLocation.compare(start) == .orderedDescending {
+            coloredFragments.remove(fragment)
+        }
+        colorVisibleFragments()
+    }
+
+    /// The paragraphs a TextKit fragment at a time that have their colors; the others are colored
+    /// when they come into view. Weak, so fragments TextKit discards drop out by themselves.
+    private let coloredFragments = NSHashTable<NSTextLayoutFragment>.weakObjects()
+
+    /// Colors the visible paragraphs that are not colored yet.
+    private func colorVisibleFragments() {
+        guard let content = layoutManager.textContentManager else { return }
+        let visible = textView.visibleRect
+        let origin = textView.textContainerOrigin
+        let start = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: visible.minY - origin.y))?.rangeInElement.location
+            ?? content.documentRange.location
+        var colored = false
+        layoutManager.enumerateTextLayoutFragments(from: start, options: [.ensuresLayout]) { fragment in
+            if fragment.layoutFragmentFrame.minY + origin.y > visible.maxY { return false }
+            if !coloredFragments.contains(fragment) {
+                color(fragment, in: layoutManager)
+                coloredFragments.add(fragment)
+                colored = true
+            }
             return true
         }
-        if visibleEnd.compare(content.documentRange.endLocation) == .orderedAscending,
-           let below = NSTextRange(location: visibleEnd.compare(range.location) == .orderedDescending ? visibleEnd : range.location,
-                                   end: content.documentRange.endLocation) {
-            layoutManager.invalidateLayout(for: below)
-        }
-        textView.redrawFragments()
+        if colored { textView.redrawFragments() }
     }
 
     /// Marks the bracket next to the insertion point and its partner.
@@ -377,6 +411,39 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     // MARK: - Folding
 
     /// Lays the text out again after folding. The line at the top stays where it is.
+    // MARK: - Laying out the whole text
+
+    /// TextKit 2 lays out only what is visible and estimates the height of the rest, so the
+    /// scroller jumped while scrolling through long texts as the estimate changed. The whole
+    /// text is therefore laid out in one go, after opening and after changes that lay out
+    /// everything anew. Without coloring that takes about a quarter of a second for 5 MB;
+    /// colors follow when the paragraphs come into view.
+    private var isLayingOutEverything = false
+    private var fullLayoutScheduled = false
+
+    /// Beyond this size the text is left to TextKit's estimates (milestone 9: large files).
+    private static let fullLayoutLimit = 20_000_000
+
+    func scheduleFullLayout() {
+        guard !fullLayoutScheduled else { return }
+        fullLayoutScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            fullLayoutScheduled = false
+            layOutEverything()
+        }
+    }
+
+    private func layOutEverything() {
+        guard view.window != nil, document.textStorage.length <= Self.fullLayoutLimit else { return }
+        keepingTopLine {
+            isLayingOutEverything = true
+            layoutManager.ensureLayout(for: layoutManager.documentRange)
+            isLayingOutEverything = false
+        }
+        colorVisibleFragments()
+    }
+
     private func foldsDidChange() {
         keepingTopLine {
             layoutManager.invalidateLayout(for: layoutManager.documentRange)
@@ -384,6 +451,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         }
         textView.needsDisplay = true
         ruler.needsDisplay = true
+        scheduleFullLayout()
     }
 
     private func toggleFold(headedBy line: Int) {

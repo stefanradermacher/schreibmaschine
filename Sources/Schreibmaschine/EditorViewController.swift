@@ -186,8 +186,15 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private static var debugScriptDone = false
 
     private func runDebugScript(_ script: String) {
-        for step in script.components(separatedBy: "|") {
+        let steps = script.components(separatedBy: "|")
+        for (index, step) in steps.enumerated() {
             let (command, argument) = step.firstIndex(of: ":").map { (String(step[..<$0]), String(step[step.index(after: $0)...])) } ?? (step, "")
+            if command == "wait" {
+                // wait:3 — the rest runs later, while the app goes on working.
+                let rest = steps[(index + 1)...].joined(separator: "|")
+                DispatchQueue.main.asyncAfter(deadline: .now() + (Double(argument) ?? 1)) { [weak self] in self?.runDebugScript(rest) }
+                return
+            }
             switch command {
             case "at":
                 let parts = argument.split(separator: ",").compactMap { Int($0) }
@@ -200,6 +207,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 textView.setCursorRanges(textView.editingRanges + [NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0)])
             case "key":
                 textView.doCommand(by: NSSelectorFromString(argument))
+            case "layoutall":
+                let started = Date()
+                activePane.layoutManager.ensureLayout(for: activePane.layoutManager.documentRange)
+                NSLog("DEBUGSCRIPT layoutall %.2f s", Date().timeIntervalSince(started))
             case "press":
                 // press:home, press:end+shift, press:home+cmd, press:pagedown
                 let parts = argument.split(separator: "+").map(String.init)
@@ -222,7 +233,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let ranges = textView.editingRanges.map { "\($0.location),\($0.length)" }.joined(separator: " ")
                 let caretY = textView.caretRect(at: textView.selectedRange().upperBound).minY - textView.visibleRect.minY
                 let caretLine = document.lineIndex.lineNumber(at: textView.selectedRange().upperBound)
-                NSLog("DEBUGSCRIPT %@ line=%d y=%.1f panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, caretLine, caretY, panes.count,
+                NSLog("DEBUGSCRIPT %@ height=%.0f line=%d y=%.1f panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, textView.frame.height, caretLine, caretY, panes.count,
                       panes.firstIndex { $0 === activePane } ?? -1, ranges, document.bookmarkedLines.description,
                       document.foldedHeads.description, textView.string.count < 300 ? textView.string.debugDescription : "…")
             default:
