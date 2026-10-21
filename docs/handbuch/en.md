@@ -184,7 +184,7 @@ At the bottom of the window are line and column, the size of the selection, lang
 ## Settings
 
 - General: what happens when the app starts without a file, tabs or windows, encoding and line endings for new documents
-- Editor: font, line height (1 to 2 times what the font needs, 1.2 by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting and highlighting of the current line
+- Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting and highlighting of the current line
 
 The default font is SF Mono, the monospaced font of macOS. Because macOS does not list it in the font panel, the “Default” button leads back to it.
 

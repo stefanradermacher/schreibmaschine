@@ -126,7 +126,8 @@ private struct EditorSettings: View {
                 Text(fontDescription)
             }
             Stepper(value: $lineHeight, in: 1.0...2.0, step: 0.1) {
-                LabeledContent("Zeilenhöhe:", value: lineHeight.formatted(.number.precision(.fractionLength(1))))
+                // Shown as extra space over what the font needs: +0 % to +100 %.
+                LabeledContent("Zeilenhöhe:", value: String(localized: "+\(Int(((lineHeight - 1) * 100).rounded())) %"))
             }
 
             Section {
