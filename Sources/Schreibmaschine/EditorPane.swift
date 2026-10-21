@@ -246,14 +246,14 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     /// are wrapped right away instead.
     func rewrapAfterResize() {
         guard wrapsLines, textView.inLiveResize || scrollView.inLiveResize else { return }
+        // Only the width changes; TextKit itself discards just the paragraphs that wrap
+        // differently. Discarding the visible ones by hand made them flicker. The container
+        // may already have followed the text view; then the layout is only due.
         let width = scrollView.contentSize.width
         if abs(textContainer.size.width - width) > 0.5 {
             textContainer.size = NSSize(width: width, height: CGFloat.greatestFiniteMagnitude)
         }
-        let viewport = layoutManager.textViewportLayoutController
-        layoutManager.invalidateLayout(for: viewport.viewportRange ?? layoutManager.documentRange)
-        viewport.layoutViewport()
-        textView.needsDisplay = true
+        layoutManager.textViewportLayoutController.layoutViewport()
     }
 
     private func applyWrapping() {
