@@ -37,7 +37,7 @@ enum Preferences {
     static let statusCountUnit = "statusCountUnit"
     static let typewriterMode = "typewriterMode"
     static let textColumn = "textColumn"
-    static let dimsOtherLines = "dimsOtherLines"
+    static let focusMode = "focusMode"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
@@ -67,7 +67,7 @@ enum Preferences {
             autoIndents: true,
             navigationMovesCaret: true,
             textColumn: 70,
-            dimsOtherLines: false,
+            focusMode: false,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
@@ -105,8 +105,8 @@ enum Preferences {
     static var typewriterModeValue: Bool { defaults.bool(forKey: typewriterMode) }
     /// Width of the text column in the distraction-free mode, in characters.
     static var textColumnValue: Int { defaults.integer(forKey: textColumn).clamped(to: 40...140) }
-    /// In the distraction-free mode, everything but the line with the insertion point is dimmed.
-    static var dimsOtherLinesValue: Bool { defaults.bool(forKey: dimsOtherLines) }
+    /// The focus mode: everything but the paragraph with the insertion point fades.
+    static var focusModeValue: Bool { defaults.bool(forKey: focusMode) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
     static var highlightsSyntaxValue: Bool { defaults.bool(forKey: highlightsSyntax) }
 

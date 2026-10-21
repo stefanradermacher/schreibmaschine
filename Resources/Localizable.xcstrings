@@ -561,16 +561,6 @@
         }
       }
     },
-    "Andere Zeilen abdunkeln": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dim Other Lines"
-          }
-        }
-      }
-    },
     "Andere ausblenden": {
       "localizations": {
         "en": {
@@ -921,12 +911,12 @@
         }
       }
     },
-    "Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Beim Abdunkeln bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext ist das der ganze Absatz.": {
+    "Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "View → Distraction-Free Mode (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. When dimming, only the line with the insertion point stays strong; in running text that is the whole paragraph."
+            "value": "View → Distraction-Free Mode (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers."
           }
         }
       }
@@ -1561,6 +1551,16 @@
         }
       }
     },
+    "Fokus-Modus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus Mode"
+          }
+        }
+      }
+    },
     "Format": {
       "localizations": {
         "en": {
@@ -2177,6 +2177,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Only Apple frameworks, no third-party components."
+          }
+        }
+      }
+    },
+    "Nur der Absatz mit der Einfügemarke bleibt kräftig, der übrige Text tritt zurück. Genau genommen ist es die Zeile mit der Einfügemarke; in Fließtext, in dem jeder Absatz eine Zeile ist, also der ganze Absatz.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the paragraph with the insertion point stays strong; the rest of the text steps back. Strictly speaking it is the line with the insertion point; in running text, where every paragraph is one line, that is the whole paragraph."
           }
         }
       }

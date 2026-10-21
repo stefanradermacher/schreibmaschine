@@ -161,9 +161,13 @@ Unter „Darstellung → Schreibmaschinen-Modus“ bleibt die Zeile mit der Einf
 
 ## Ablenkungsfreier Modus
 
-„Darstellung → Ablenkungsfreier Modus“ (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Mit „Andere Zeilen abdunkeln“ bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext, in dem jeder Absatz eine Zeile ist, ist das der ganze Absatz. Die Breite der Spalte steht in den Einstellungen unter „Schreiben“. Derselbe Befehl oder das Verlassen des Vollbilds bringt alles zurück, wie es vorher war.
+„Darstellung → Ablenkungsfreier Modus“ (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Die Breite der Spalte steht in den Einstellungen unter „Schreiben“. Derselbe Befehl oder das Verlassen des Vollbilds bringt alles zurück, wie es vorher war.
 
-> Schreibmaschinen-Modus und ablenkungsfreier Modus lassen sich verbinden: dann steht die aktuelle Zeile mitten im Bildschirm, und alles andere tritt zurück.
+## Fokus-Modus
+
+Unter „Darstellung → Fokus-Modus“ bleibt nur der Absatz mit der Einfügemarke kräftig, der übrige Text tritt zurück. Genau genommen ist es die Zeile mit der Einfügemarke; in Fließtext, in dem jeder Absatz eine Zeile ist, also der ganze Absatz.
+
+> Die drei Modi lassen sich verbinden: Im ablenkungsfreien Modus mit Schreibmaschinen- und Fokus-Modus steht der aktuelle Absatz mitten im Bildschirm, und alles andere tritt zurück.
 
 ## Markdown-Vorschau
 

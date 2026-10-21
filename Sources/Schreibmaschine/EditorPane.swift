@@ -251,6 +251,13 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     private func preferencesDidChange() {
         textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
+        if Preferences.focusModeValue != lastFocusMode {
+            lastFocusMode = Preferences.focusModeValue
+            focusedFragment = nil
+            coloredFragments.removeAllObjects()
+            colorVisibleFragments()
+            updateFocusedFragment()
+        }
         if Preferences.typewriterModeValue != lastTypewriterMode {
             lastTypewriterMode = Preferences.typewriterModeValue
             updateInsets()
@@ -318,7 +325,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         layoutManager.removeRenderingAttribute(.foregroundColor, for: range)
         layoutManager.removeRenderingAttribute(.underlineStyle, for: range)
         defer {
-            if isDimmed(fragment, in: content) {
+            if isFaded(fragment, in: content) {
                 layoutManager.addRenderingAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, for: range)
             }
         }
@@ -427,42 +434,37 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     // MARK: - Writing modes
 
-    /// The distraction-free mode as far as the pane is concerned: a column of text without line
-    /// numbers, always wrapped, and on request everything but the current line dimmed.
-    struct Focus: Equatable {
-        var columnWidth: CGFloat
-        var dimsOtherLines: Bool
-    }
-
-    var focus: Focus? {
+    /// The distraction-free mode as far as the pane is concerned: a column of text of this width
+    /// without line numbers, always wrapped; nil outside the mode. Set by the editor.
+    var distractionFreeColumn: CGFloat? {
         didSet {
-            guard focus != oldValue else { return }
-            if focus != nil, oldValue == nil {
+            guard distractionFreeColumn != oldValue else { return }
+            if distractionFreeColumn != nil, oldValue == nil {
                 wrappedBeforeFocus = wrapsLines
                 if !wrapsLines { wrapsLines = true; applyWrapping() }
-            } else if focus == nil, let wrapped = wrappedBeforeFocus {
+            } else if distractionFreeColumn == nil, let wrapped = wrappedBeforeFocus {
                 wrappedBeforeFocus = nil
                 if wrapped != wrapsLines { wrapsLines = wrapped; applyWrapping() }
             }
             updateRuler()
-            textColumnWidth = focus?.columnWidth
-            if focus?.dimsOtherLines != oldValue?.dimsOtherLines {
-                coloredFragments.removeAllObjects()
-                colorVisibleFragments()
-            }
+            textColumnWidth = distractionFreeColumn
         }
     }
     private var wrappedBeforeFocus: Bool?
 
     private func updateRuler() {
-        scrollView.rulersVisible = showsLineNumbers && focus == nil
+        scrollView.rulersVisible = showsLineNumbers && distractionFreeColumn == nil
     }
 
-    /// The paragraph with the insertion point, the one left bright when the others are dimmed.
+    /// The focus mode: everything but the paragraph with the insertion point fades, in every
+    /// window, with or without the distraction-free mode.
+    private var lastFocusMode = Preferences.focusModeValue
+
+    /// The paragraph with the insertion point, the one left strong in the focus mode.
     private weak var focusedFragment: NSTextLayoutFragment?
 
-    private func isDimmed(_ fragment: NSTextLayoutFragment, in content: NSTextContentManager) -> Bool {
-        guard focus?.dimsOtherLines == true else { return false }
+    private func isFaded(_ fragment: NSTextLayoutFragment, in content: NSTextContentManager) -> Bool {
+        guard Preferences.focusModeValue else { return false }
         let caret = textView.selectedRange().location
         let start = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
         let end = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.endLocation)
@@ -472,7 +474,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     /// When the insertion point moves to another paragraph, the old and the new one are colored anew.
     private func updateFocusedFragment() {
-        guard focus?.dimsOtherLines == true, let content = layoutManager.textContentManager,
+        guard Preferences.focusModeValue, let content = layoutManager.textContentManager,
               let location = content.location(content.documentRange.location, offsetBy: textView.selectedRange().location)
         else { return }
         let current = layoutManager.textLayoutFragment(for: location)

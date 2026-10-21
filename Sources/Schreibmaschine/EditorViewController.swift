@@ -278,7 +278,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             return true
         }
         panes.append(pane)
-        if isDistractionFree { pane.focus = focus }
+        if isDistractionFree { pane.distractionFreeColumn = textColumnWidth }
         if let font = lastFont { pane.takeFont(font, attributes: EditorStyle.attributes(font: font, tabWidth: document.indentation.width)) }
         return pane
     }
@@ -461,10 +461,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private var enteredFullScreen = false
     private var fullScreenObserver: NSObjectProtocol?
 
-    private var focus: EditorPane.Focus {
-        let font = currentFont
-        let width = EditorStyle.spaceWidth(of: font) * CGFloat(Preferences.textColumnValue) + 8
-        return EditorPane.Focus(columnWidth: width.rounded(), dimsOtherLines: Preferences.dimsOtherLinesValue)
+    /// The width of the text column, from the setting in characters.
+    private var textColumnWidth: CGFloat {
+        (EditorStyle.spaceWidth(of: currentFont) * CGFloat(Preferences.textColumnValue) + 8).rounded()
     }
 
     @objc func toggleDistractionFree(_ sender: Any?) {
@@ -497,7 +496,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         textToBottom.isActive = false
         statusBar.isHidden = false
         textAboveStatusBar.isActive = true
-        panes.forEach { $0.focus = nil }
+        panes.forEach { $0.distractionFreeColumn = nil }
         updateSidebar()
         if endFullScreen, enteredFullScreen, let window = view.window, window.styleMask.contains(.fullScreen) {
             window.toggleFullScreen(nil)
@@ -506,8 +505,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     }
 
     private func applyFocus() {
-        let focus = focus
-        panes.forEach { $0.focus = focus }
+        let width = textColumnWidth
+        panes.forEach { $0.distractionFreeColumn = width }
     }
 
     // MARK: - View state

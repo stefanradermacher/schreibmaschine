@@ -102,7 +102,7 @@ private struct GeneralSettings: View {
 private struct WritingSettings: View {
     @AppStorage(Preferences.typewriterMode) private var typewriterMode = false
     @AppStorage(Preferences.textColumn) private var textColumn = 70
-    @AppStorage(Preferences.dimsOtherLines) private var dimsOtherLines = false
+    @AppStorage(Preferences.focusMode) private var focusMode = false
 
     var body: some View {
         Form {
@@ -115,14 +115,21 @@ private struct WritingSettings: View {
             }
 
             Section {
+                Toggle("Fokus-Modus", isOn: $focusMode)
+            } footer: {
+                Text("Nur der Absatz mit der Einfügemarke bleibt kräftig, der übrige Text tritt zurück. Genau genommen ist es die Zeile mit der Einfügemarke; in Fließtext, in dem jeder Absatz eine Zeile ist, also der ganze Absatz.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
                 Stepper(value: $textColumn, in: 40...140, step: 5) {
                     LabeledContent("Breite der Textspalte:", value: String(localized: "\(textColumn) Zeichen"))
                 }
-                Toggle("Andere Zeilen abdunkeln", isOn: $dimsOtherLines)
             } header: {
                 Text("Ablenkungsfreier Modus")
             } footer: {
-                Text("Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Beim Abdunkeln bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext ist das der ganze Absatz.")
+                Text("Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

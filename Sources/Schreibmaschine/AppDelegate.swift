@@ -76,9 +76,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         defaults.set(!defaults.bool(forKey: Preferences.typewriterMode), forKey: Preferences.typewriterMode)
     }
 
-    @objc func toggleDimsOtherLines(_ sender: Any?) {
+    /// The focus mode, for all windows.
+    @objc func toggleFocusMode(_ sender: Any?) {
         let defaults = UserDefaults.standard
-        defaults.set(!defaults.bool(forKey: Preferences.dimsOtherLines), forKey: Preferences.dimsOtherLines)
+        defaults.set(!defaults.bool(forKey: Preferences.focusMode), forKey: Preferences.focusMode)
     }
 
     @objc func showLanguageFolder(_ sender: Any?) {
@@ -138,8 +139,8 @@ extension AppDelegate: NSMenuItemValidation {
         if item.action == #selector(toggleTypewriterMode(_:)) {
             item.state = Preferences.typewriterModeValue ? .on : .off
         }
-        if item.action == #selector(toggleDimsOtherLines(_:)) {
-            item.state = Preferences.dimsOtherLinesValue ? .on : .off
+        if item.action == #selector(toggleFocusMode(_:)) {
+            item.state = Preferences.focusModeValue ? .on : .off
         }
         return true
     }

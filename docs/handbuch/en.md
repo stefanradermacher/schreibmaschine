@@ -150,9 +150,13 @@ With “View → Typewriter Mode”, the line with the insertion point stays in 
 
 ## Distraction-free mode
 
-“View → Distraction-Free Mode” (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. With “Dim Other Lines”, only the line with the insertion point stays strong; in running text, where every paragraph is one line, that is the whole paragraph. The width of the column is in the settings under “Writing”. The same command, or leaving full screen, brings everything back as it was.
+“View → Distraction-Free Mode” (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. The width of the column is in the settings under “Writing”. The same command, or leaving full screen, brings everything back as it was.
 
-> Typewriter mode and distraction-free mode can be combined: then the current line stands in the middle of the screen, and everything else steps back.
+## Focus mode
+
+With “View → Focus Mode”, only the paragraph with the insertion point stays strong; the rest of the text steps back. Strictly speaking it is the line with the insertion point; in running text, where every paragraph is one line, that is the whole paragraph.
+
+> The three modes can be combined: in the distraction-free mode with typewriter and focus mode, the current paragraph stands in the middle of the screen, and everything else steps back.
 
 ## Markdown preview
 
