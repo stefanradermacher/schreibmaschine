@@ -42,22 +42,23 @@ let margin: CGFloat = 70
 let contentWidth = pageSize.width - 2 * margin
 let bottomMargin: CGFloat = 78
 
-func paragraphStyle(_ spacing: CGFloat, alignment: NSTextAlignment = .left, lineSpacing: CGFloat = 3) -> NSParagraphStyle {
+func paragraphStyle(_ spacing: CGFloat, alignment: NSTextAlignment = .left, lineSpacing: CGFloat = 3,
+                    hyphenates: Bool = true) -> NSParagraphStyle {
     let style = NSMutableParagraphStyle()
     style.paragraphSpacing = spacing
     style.alignment = alignment
     style.lineSpacing = lineSpacing
-    style.hyphenationFactor = 1
+    style.hyphenationFactor = hyphenates ? 1 : 0
     return style
 }
 
 func text(_ string: String, size: CGFloat, weight: NSFont.Weight = .regular,
           color: NSColor = ink, spacing: CGFloat = 0, alignment: NSTextAlignment = .left,
-          lineSpacing: CGFloat = 3) -> NSAttributedString {
+          lineSpacing: CGFloat = 3, hyphenates: Bool = true) -> NSAttributedString {
     NSAttributedString(string: string, attributes: [
         .font: NSFont.systemFont(ofSize: size, weight: weight),
         .foregroundColor: color,
-        .paragraphStyle: paragraphStyle(spacing, alignment: alignment, lineSpacing: lineSpacing),
+        .paragraphStyle: paragraphStyle(spacing, alignment: alignment, lineSpacing: lineSpacing, hyphenates: hyphenates),
     ])
 }
 
@@ -257,18 +258,19 @@ func titlePage() {
 
     let title = text("Schreibmaschine", size: 46, weight: .bold, color: .white)
     title.draw(at: NSPoint(x: margin, y: pageSize.height - 150))
-    let subtitle = text(coverSubtitle, size: 15, color: NSColor(white: 1, alpha: 0.9))
+    // The title page breaks lines only between words: centered short texts look better whole.
+    let subtitle = text(coverSubtitle, size: 15, color: NSColor(white: 1, alpha: 0.9), hyphenates: false)
     subtitle.draw(at: NSPoint(x: margin + 3, y: pageSize.height - 185))
 
     if let icon = NSImage(contentsOfFile: "Resources/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png") {
         icon.draw(in: CGRect(x: (pageSize.width - 190) / 2, y: 380, width: 190, height: 190))
     }
 
-    let claim = text(coverClaim, size: 19, weight: .semibold, color: accent, alignment: .center)
+    let claim = text(coverClaim, size: 19, weight: .semibold, color: accent, alignment: .center, hyphenates: false)
     claim.draw(with: CGRect(x: margin, y: 310, width: contentWidth, height: 40), options: [.usesLineFragmentOrigin])
 
     let intro = text(coverIntro,
-                     size: 12, color: quiet, alignment: .center, lineSpacing: 4)
+                     size: 12, color: quiet, alignment: .center, lineSpacing: 4, hyphenates: false)
     intro.draw(with: CGRect(x: margin + 40, y: 230, width: contentWidth - 80, height: 70), options: [.usesLineFragmentOrigin, .usesFontLeading])
 
     let footer = text("Version 1.0 · stefanradermacher.com", size: 9.5, color: quiet, alignment: .center)

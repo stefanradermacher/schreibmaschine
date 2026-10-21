@@ -8,7 +8,7 @@ Thema: Text editor for macOS
 Untertitel: Manual for the text editor for macOS
 Leitsatz: For text and code.
 Einleitung: Not an IDE, but a tool for writing: with a find bar, text commands and a session that forgets nothing.
-Free, ad-free and without data collection.
+Free, ad-free and without data collection.
 
 # About this manual
 
