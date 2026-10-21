@@ -86,10 +86,8 @@ final class LineNumberRuler: NSRulerView {
         let bookmarks = Set(bookmarkedLines())
         let folded = Set(foldedHeads())
         let marked: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: NSColor.white]
-        // The text is raised to sit in the middle of higher lines; the numbers follow it.
-        let raise = textView.typingAttributes[.baselineOffset] as? CGFloat ?? 0
 
-        func drawNumber(_ number: Int, lineTop: CGFloat, lineHeight: CGFloat, baseline: CGFloat) {
+        func drawNumber(_ number: Int, lineTop: CGFloat, lineHeight: CGFloat) {
             let label = String(number) as NSString
             let isMarked = bookmarks.contains(number)
             let attributes = isMarked ? marked : number == currentLine ? current : normal
@@ -101,8 +99,9 @@ final class LineNumberRuler: NSRulerView {
             } else if isMouseInside {
                 drawFoldMark(foldMark(number), top: y, height: lineHeight)
             }
-            // Align the number's baseline with the text's.
-            let top = y + baseline - raise - font.ascender
+            // In the middle of the line, measured by the height of the digits, like the bookmark
+            // around it. On the text's baseline the smaller digits would sit too low.
+            let top = (y + lineHeight / 2 - font.ascender + font.capHeight / 2).rounded()
             label.draw(at: NSPoint(x: ruleThickness - foldWidth - padding - size.width, y: top), withAttributes: attributes)
         }
 
@@ -115,20 +114,20 @@ final class LineNumberRuler: NSRulerView {
             let number = lineIndex.lineNumber(at: offset)
             let lines = fragment.textLineFragments
             if let first = lines.first {
-                drawNumber(number, lineTop: frame.minY + first.typographicBounds.minY, lineHeight: first.typographicBounds.height, baseline: first.glyphOrigin.y)
+                drawNumber(number, lineTop: frame.minY + first.typographicBounds.minY, lineHeight: first.typographicBounds.height)
             }
             // The empty last line after a final line break.
             if lines.count > 1, let last = lines.last, last.characterRange.length == 0,
                fragment.rangeInElement.endLocation.compare(content.documentRange.endLocation) != .orderedAscending,
                endsWithNewline {
-                drawNumber(number + 1, lineTop: frame.minY + last.typographicBounds.minY, lineHeight: last.typographicBounds.height, baseline: last.glyphOrigin.y)
+                drawNumber(number + 1, lineTop: frame.minY + last.typographicBounds.minY, lineHeight: last.typographicBounds.height)
             }
             return true
         }
 
         // An empty document has no fragment; its only line still gets a number.
         if textView.string.isEmpty {
-            drawNumber(1, lineTop: 0, lineHeight: NSLayoutManager().defaultLineHeight(for: textView.font ?? font), baseline: (textView.font ?? font).ascender)
+            drawNumber(1, lineTop: 0, lineHeight: EditorStyle.lineHeightPoints(font: textView.font ?? font, multiple: Preferences.lineHeightValue))
         }
     }
 
