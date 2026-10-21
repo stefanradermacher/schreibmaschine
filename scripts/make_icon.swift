@@ -211,7 +211,7 @@ func drawDocumentIcon() {
     // The text starts at the top margin, as on Leser's page; the lines beside the folded corner
     // stay short of it.
     let text = NSRect(x: r.minX + margin, y: r.minY + margin * 1.2, width: r.width - 2 * margin, height: r.height - margin * 2.2)
-    let widths: [CGFloat] = [0.5, 0.72, 0.95, 0.88, 0.92, 0.7, 0.9, 0.84, 0.93, 0.8, 0.35]
+    let widths: [CGFloat] = [0.72, 0.5, 0.95, 0.88, 0.92, 0.7, 0.9, 0.84, 0.93, 0.8, 0.35]
     typedLines(in: text, widths: widths, height: 34, gap: 72)
     cursorColor.setFill()
     let last = CGFloat(widths.count - 1)
