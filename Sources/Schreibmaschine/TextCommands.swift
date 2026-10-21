@@ -53,7 +53,7 @@ enum TextCommands {
             TextCommand(id: "moveUp", title: String(localized: "Nach oben verschieben"), key: up, modifiers: [.option, .shift]) { view, _ in view.moveLines(up: true) },
             TextCommand(id: "moveDown", title: String(localized: "Nach unten verschieben"), key: down, modifiers: [.option, .shift]) { view, _ in view.moveLines(up: false) },
             nil,
-            TextCommand(id: "join", title: String(localized: "Zeilen verbinden"), key: "j", modifiers: [.control, .shift]) { view, _ in
+            TextCommand(id: "join", title: String(localized: "Zeilen verbinden"), key: "j", modifiers: [.command, .shift]) { view, _ in
                 view.transformLines(scope: .selectionOrNextLine) { [TextTransforms.join($0, separator: " ")] }
             },
             TextCommand(id: "joinWith", title: String(localized: "Zeilen verbinden mit …"),

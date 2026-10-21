@@ -85,7 +85,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 | ⌘D | Zeile oder Auswahl duplizieren |
 | ⌥⇧↑ / ⌥⇧↓ | Zeile oder Auswahl nach oben / unten verschieben |
 | ⌘⌫ | Zeile löschen (ohne Auswahl) |
-| ⌃⇧J | Zeilen verbinden |
+| ⇧⌘J | Zeilen verbinden (wie in CotEditor) |
 | ⌘/ | Kommentar umschalten |
 | ⌥↑ / ⌥↓ | Auswahl erweitern / verkleinern (Wort → Zeichenkette → Klammer → Zeile → Absatz) |
 | ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen |

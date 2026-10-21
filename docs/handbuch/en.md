@@ -200,7 +200,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Repeat the last text command | ⌘R |
 | Duplicate line, delete line | ⌘D, ⌘⌫ |
 | Move lines | ⌥⇧↑, ⌥⇧↓ |
-| Join lines | ⌃⇧J |
+| Join lines | ⇧⌘J |
 | Indent, outdent | ⌘], ⌘[ |
 | Toggle comment | ⌘/ |
 | Jump to matching bracket | ⇧⌘M |

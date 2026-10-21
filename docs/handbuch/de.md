@@ -211,7 +211,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Letzten Textbefehl erneut ausführen | ⌘R |
 | Zeile duplizieren, löschen | ⌘D, ⌘⌫ |
 | Zeilen verschieben | ⌥⇧↑, ⌥⇧↓ |
-| Zeilen verbinden | ⌃⇧J |
+| Zeilen verbinden | ⇧⌘J |
 | Einrücken, Ausrücken | ⌘], ⌘[ |
 | Kommentar umschalten | ⌘/ |
 | Zur passenden Klammer | ⇧⌘M |
