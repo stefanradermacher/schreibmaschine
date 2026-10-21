@@ -38,6 +38,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
     }
 
+    /// Back in front: a file may have changed while the app was in the background.
+    func applicationDidBecomeActive(_ notification: Notification) {
+        TextDocument.checkAllForExternalChanges()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         TipJar.shared.startListening()
         // Started to open files (Finder, Open With, Dock, `open`): then exactly these files appear,

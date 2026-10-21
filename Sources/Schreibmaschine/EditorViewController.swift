@@ -321,6 +321,15 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let item = NSMenuItem()
                 item.representedObject = argument
                 textView.performTextCommand(item)
+            case "external":
+                // external:reload | keep | save — the buttons of the bar, or ⌘S
+                switch argument {
+                case "reload": document.reloadFromDisk()
+                case "keep": document.keepOwnText()
+                case "save": document.save(nil)
+                default: document.checkForExternalChange()
+                }
+                NSLog("DEBUGSCRIPT external %@ → %@ edited=%d", argument, String(describing: document.externalChange), document.isDocumentEdited ? 1 : 0)
             case "call":
                 // call:<action> — straight to this editor, also when the window is not in front
                 _ = perform(NSSelectorFromString(argument), with: nil)

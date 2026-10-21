@@ -811,6 +811,26 @@
         }
       }
     },
+    "Behalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep"
+          }
+        }
+      }
+    },
+    "Behält deinen Text; Sichern überschreibt dann die geänderte Datei": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeps your text; saving then overwrites the changed file"
+          }
+        }
+      }
+    },
     "Beim Start ohne Datei:": {
       "localizations": {
         "en": {
@@ -2301,6 +2321,16 @@
         }
       }
     },
+    "Liest die Datei neu; deine ungesicherten Änderungen gehen verloren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reads the file again; your unsaved changes are lost"
+          }
+        }
+      }
+    },
     "Löschen": {
       "localizations": {
         "en": {
@@ -2477,6 +2507,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "New"
+          }
+        }
+      }
+    },
+    "Neu laden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload"
           }
         }
       }
@@ -4227,6 +4267,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "“%@” was not possible."
+          }
+        }
+      }
+    },
+    "„%@“ wurde außerhalb der Schreibmaschine geändert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” was changed outside Schreibmaschine."
+          }
+        }
+      }
+    },
+    "„%@“ wurde gelöscht oder verschoben. Dein Text bleibt erhalten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” was deleted or moved. Your text is kept."
           }
         }
       }

@@ -54,6 +54,24 @@ final class TextDocument: NSDocument {
 
     var textStorage: NSTextStorage { contentStorage.textStorage! }
 
+    // Changes by other programs (ExternalChanges.swift).
+    var fileWatcher: FileWatcher?
+    var externalCheck: DispatchWorkItem?
+    var externalChange: ExternalChange?
+    /// The document writes its file itself; the writes it sees meanwhile are its own.
+    var isSavingFile = false
+
+    /// Other programs that take part in file coordination report their writes here.
+    override func presentedItemDidChange() {
+        DispatchQueue.main.async { [weak self] in self?.scheduleExternalCheck() }
+    }
+
+    /// Moved in the Finder: NSDocument follows the file, the watcher follows it too.
+    override func presentedItemDidMove(to newURL: URL) {
+        super.presentedItemDidMove(to: newURL)
+        DispatchQueue.main.async { [weak self] in self?.watchFile() }
+    }
+
     /// Identifies the document in the session; its unsaved text is stored under this name.
     var sessionID = UUID()
     /// The name of a file that is gone, for the text kept from it; saving asks for a new place.
@@ -185,6 +203,8 @@ final class TextDocument: NSDocument {
     }
 
     override func read(from url: URL, ofType typeName: String) throws {
+        // NSDocument sets the file only after reading it.
+        defer { DispatchQueue.main.async { [weak self] in self?.watchFile() } }
         let data = try Data(contentsOf: url)
         // An encoding chosen by hand for this file before is used again, as long as it fits.
         if let chosen = FileStateStore.shared.encoding(for: url), (try? load(data, as: chosen)) != nil {
@@ -262,7 +282,14 @@ final class TextDocument: NSDocument {
     /// Saving a language definition from the folder of the user's own ones makes it take effect.
     override func save(to url: URL, ofType typeName: String, for saveOperation: NSDocument.SaveOperationType,
                        completionHandler: @escaping ((any Error)?) -> Void) {
+        isSavingFile = true
         super.save(to: url, ofType: typeName, for: saveOperation) { error in
+            self.isSavingFile = false
+            if error == nil, saveOperation != .autosaveElsewhereOperation {
+                self.clearExternalChange()
+                // "Save As" gives the document another file.
+                self.watchFile()
+            }
             completionHandler(error)
             guard error == nil,
                   url.deletingLastPathComponent().standardizedFileURL == LanguageRegistry.userFolder.standardizedFileURL
@@ -303,6 +330,8 @@ final class TextDocument: NSDocument {
         if let fileURL, let view = editor?.viewState {
             FileStateStore.shared.record(view, for: fileURL)
         }
+        fileWatcher = nil
+        externalCheck?.cancel()
         super.close()
         stopSecurityScope()
         SessionStore.shared.setNeedsSave()
@@ -407,7 +436,7 @@ final class TextDocument: NSDocument {
 
     // MARK: - Loading
 
-    private func load(_ data: Data, as requested: String.Encoding?) throws {
+    func load(_ data: Data, as requested: String.Encoding?) throws {
         let decoded: TextEncoding.Decoded
         do {
             decoded = try TextEncoding.decode(data, as: requested, preferred: Preferences.defaultEncodingValue)

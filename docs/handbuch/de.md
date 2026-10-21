@@ -58,6 +58,8 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst. Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
 
+Ändert ein anderes Programm eine offene Datei, etwa git oder ein zweiter Editor, lädt die Schreibmaschine sie von selbst neu, solange du nichts Ungesichertes darin hast; Einfügemarke und Scrollposition bleiben, wo sie waren. Hast du ungesicherte Änderungen, fragt eine Leiste unter der Titelleiste: „Neu laden“ übernimmt die Datei, „Behalten“ bleibt bei deinem Text, den ⌘S dann über die Datei schreibt. Wird eine offene Datei gelöscht oder verschoben, bleibt dein Text erhalten und gilt als ungesichert; „Sichern unter …“ legt ihn wieder ab.
+
 # Die Sitzung
 
 Viele Mac-Apps überlassen es macOS, nach dem Neustart wieder zu öffnen, was offen war. Ob das klappt, hängt von Systemeinstellungen und der Art des Beendens ab. Die Schreibmaschine führt deshalb ihre eigene Sitzung: alle Fenster mit ihren Tabs, die Dateien darin und alle ungesicherten Texte.
