@@ -131,13 +131,13 @@ Die Beschreibung darf in App Store Connect höchstens 45 Zeichen lang sein, der 
 
 ## Datenschutzangaben im Fragebogen
 
-„Es werden keine Daten erfasst.“ Die Schreibmaschine sendet nichts an eigene oder fremde Server. Einstellungen, Sitzung, ungesicherte Texte und der Zustand pro Datei liegen ausschließlich lokal im Container der App. Käufe wickelt Apple ab.
+„Es werden keine Daten erfasst.“ Die Schreibmaschine sendet nichts an eigene oder fremde Server. Die Berechtigung für ausgehende Netzwerkverbindungen (`com.apple.security.network.client`) hat sie nur, weil die Webansicht (WebKit) der Markdown-Vorschau ohne sie in der Sandbox nicht startet; die Vorschau lädt nichts aus dem Netz. Einstellungen, Sitzung, ungesicherte Texte und der Zustand pro Datei liegen ausschließlich lokal im Container der App. Käufe wickelt Apple ab.
 
 Dieselbe Aussage steht maschinenlesbar in `Resources/PrivacyInfo.xcprivacy`: kein Tracking, keine Tracking-Domains, keine erfassten Datentypen.
 
 ## Hinweise für die Prüfung
 
-Die Schreibmaschine ist ein Texteditor. Es gibt keine Anmeldung, kein Konto und keine Testzugangsdaten. Dateien ändert die App nur, wenn man sie ausdrücklich sichert (⌘S); ungesicherte Texte hält sie in ihrem Container, damit beim Beenden nichts verloren geht.
+Die Schreibmaschine ist ein Texteditor. Es gibt keine Anmeldung, kein Konto und keine Testzugangsdaten. Die Berechtigung für ausgehende Netzwerkverbindungen braucht allein die Markdown-Vorschau: Sie zeigt das HTML in einer WKWebView, deren Hilfsprozesse in einer sandboxierten App ohne diese Berechtigung nicht starten. Eine Content-Security-Policy verbietet der Seite jeden Netzzugriff; Links öffnen im Browser. Dateien ändert die App nur, wenn man sie ausdrücklich sichert (⌘S); ungesicherte Texte hält sie in ihrem Container, damit beim Beenden nichts verloren geht.
 
 Zum Testen eignet sich jede beliebige Textdatei.
 

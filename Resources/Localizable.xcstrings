@@ -1991,6 +1991,16 @@
         }
       }
     },
+    "Markdown-Vorschau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Markdown Preview"
+          }
+        }
+      }
+    },
     "Mehrfache Leerzeichen zusammenfassen": {
       "localizations": {
         "en": {

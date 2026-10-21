@@ -154,6 +154,10 @@ With “View → Typewriter Mode”, the line with the insertion point stays in 
 
 > Typewriter mode and distraction-free mode can be combined: then the current line stands in the middle of the screen, and everything else steps back.
 
+## Markdown preview
+
+In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
+
 # Code
 
 Schreibmaschine recognizes the language of a file from its name, extension or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL and Lua. The language can be chosen under “Format → Language” or in the status bar.
@@ -233,7 +237,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Split side by side, top and bottom | ⌃⌘T, ⌃⌥⌘T |
 | Go to other half, close split | ⌥⌘J, ⌃⇧⌘W |
 | Document list | ⌃⌘S |
-| Distraction-free mode | ⌃⇧⌘F |
+| Markdown preview, distraction-free mode | ⌥⌘P, ⌃⇧⌘F |
 | Next, previous document | ⌥⌘→, ⌥⌘← |
 | Documents 1 to 8, last document | ⌘1 – ⌘8, ⌘9 |
 | Bigger, smaller, actual size text | ⌘+, ⌘-, ⌘0 |

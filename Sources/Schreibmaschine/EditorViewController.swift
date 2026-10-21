@@ -25,6 +25,12 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     /// The pane the find bar and the status bar work with.
     private(set) var activePane: EditorPane!
     private let splitView = NSSplitView()
+    /// The panes on the left, the Markdown preview on the right while it is shown.
+    private let contentSplit = NSSplitView()
+    private var preview: MarkdownPreview?
+    private var previewHeadings: [Int] = []
+    private var previewUpdate: DispatchWorkItem?
+    private var previewObserver: NSObjectProtocol?
     private var statusBar: StatusBar!
     private(set) var search: SearchController!
     private var textAtTop: NSLayoutConstraint!
@@ -59,6 +65,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     override func loadView() {
         splitView.dividerStyle = .thin
         splitView.delegate = self
+        contentSplit.dividerStyle = .thin
+        contentSplit.isVertical = true
+        contentSplit.delegate = self
+        contentSplit.addArrangedSubview(splitView)
         let first = makePane()
         activePane = first
 
@@ -68,22 +78,22 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         let container = NSView()   // the editor: find bar, text, status bar
         let bar = search.bar
         let marks = search.marksView
-        for view in [bar, splitView, statusBar!, marks] as [NSView] {
+        for view in [bar, contentSplit, statusBar!, marks] as [NSView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             container.addSubview(view)
         }
         // The text starts below the find bar while it is shown, at the top otherwise.
-        textBelowBar = splitView.topAnchor.constraint(equalTo: bar.bottomAnchor)
-        textAboveStatusBar = statusBar.topAnchor.constraint(equalTo: splitView.bottomAnchor)
-        textToBottom = splitView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        textAtTop = splitView.topAnchor.constraint(equalTo: container.topAnchor)
+        textBelowBar = contentSplit.topAnchor.constraint(equalTo: bar.bottomAnchor)
+        textAboveStatusBar = statusBar.topAnchor.constraint(equalTo: contentSplit.bottomAnchor)
+        textToBottom = contentSplit.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        textAtTop = contentSplit.topAnchor.constraint(equalTo: container.topAnchor)
         NSLayoutConstraint.activate([
             bar.topAnchor.constraint(equalTo: container.topAnchor),
             bar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             bar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             textAtTop,
-            splitView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            splitView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            contentSplit.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            contentSplit.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             textAboveStatusBar,
             statusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             statusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
@@ -254,6 +264,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private func makePane() -> EditorPane {
         let pane = EditorPane(document: document)
         pane.onFocus = { [weak self] pane in self?.activate(pane) }
+        pane.onScroll = { [weak self] pane in
+            if pane === self?.activePane { self?.syncPreviewScroll() }
+        }
         pane.onSelectionChange = { [weak self] pane in
             if pane === self?.activePane { self?.updatePosition() }
         }
@@ -276,6 +289,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         search.retarget(textView: pane.textView, layoutManager: pane.layoutManager)
         attachMarks(to: pane)
         updatePosition()
+        syncPreviewScroll()
     }
 
     /// The marks of the matches stand at the right edge of the pane being searched.
@@ -360,6 +374,85 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         SessionStore.shared.setNeedsSave()
     }
 
+    // MARK: - Markdown preview
+
+    var showsPreview: Bool { preview != nil }
+
+    /// ⌥⌘P: the Markdown preview beside the text, or away again.
+    @objc func togglePreview(_ sender: Any?) {
+        showsPreview ? hidePreview() : showPreview()
+        SessionStore.shared.setNeedsSave()
+    }
+
+    private func showPreview(fraction: Double = 0.5) {
+        guard preview == nil else { return }
+        let preview = MarkdownPreview(baseURL: document.fileURL?.deletingLastPathComponent())
+        self.preview = preview
+        contentSplit.addArrangedSubview(preview)
+        contentSplit.layoutSubtreeIfNeeded()
+        contentSplit.setPosition((contentSplit.bounds.width - contentSplit.dividerThickness) * CGFloat(fraction.clamped(to: 0.2...0.8)), ofDividerAt: 0)
+        renderPreview()
+        // The preview follows the text a moment after each change.
+        previewObserver = NotificationCenter.default.addObserver(
+            forName: NSTextStorage.didProcessEditingNotification, object: document.textStorage, queue: .main
+        ) { [weak self] _ in
+            guard let self, document.textStorage.editedMask.contains(.editedCharacters) else { return }
+            previewUpdate?.cancel()
+            let work = DispatchWorkItem { [weak self] in self?.renderPreview() }
+            previewUpdate = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: work)
+        }
+    }
+
+    private func hidePreview() {
+        previewUpdate?.cancel()
+        if let previewObserver { NotificationCenter.default.removeObserver(previewObserver) }
+        previewObserver = nil
+        preview?.removeFromSuperview()
+        preview = nil
+        view.window?.makeFirstResponder(textView)
+    }
+
+    private func renderPreview() {
+        guard let preview else { return }
+        let text = document.textStorage.string
+        previewHeadings = MarkdownRenderer.headingLines(in: text)
+        let folder = document.fileURL?.deletingLastPathComponent()
+        preview.show(html: MarkdownRenderer.html(from: text) { url in Self.imageSource(url, relativeTo: folder) })
+        syncPreviewScroll()
+    }
+
+    /// The preview shows the place of the text at the top of the active pane, measured between
+    /// the headings around it.
+    private func syncPreviewScroll() {
+        guard let preview else { return }
+        let lineIndex = document.lineIndex
+        let line = lineIndex.lineNumber(at: activePane.topOffset)
+        let index = previewHeadings.lastIndex { $0 <= line }.map { $0 + 1 } ?? 0
+        let start = index == 0 ? 1 : previewHeadings[index - 1]
+        let end = index < previewHeadings.count ? previewHeadings[index] : lineIndex.lineCount + 1
+        let fraction = end > start ? Double(line - start) / Double(end - start) : 0
+        preview.scroll(betweenHeading: index, fraction: fraction)
+    }
+
+    /// An image of the document as a data URL, if the app may read it. In the sandbox that is
+    /// usually not the case for files next to the document; images from the web are never loaded.
+    private static func imageSource(_ url: URL, relativeTo folder: URL?) -> String? {
+        if url.scheme == "data" { return url.absoluteString }
+        guard url.scheme == nil || url.isFileURL, let folder else { return nil }
+        let file = url.isFileURL ? url : URL(fileURLWithPath: url.relativeString.removingPercentEncoding ?? url.relativeString, relativeTo: folder)
+        guard let data = try? Data(contentsOf: file), data.count < 20_000_000 else { return nil }
+        let types = ["png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "gif": "image/gif",
+                     "svg": "image/svg+xml", "webp": "image/webp", "heic": "image/heic"]
+        guard let type = types[file.pathExtension.lowercased()] else { return nil }
+        return "data:\(type);base64,\(data.base64EncodedString())"
+    }
+
+    private var previewFraction: Double {
+        guard let first = contentSplit.arrangedSubviews.first, contentSplit.bounds.width > 0 else { return 0.5 }
+        return Double(first.frame.width / (contentSplit.bounds.width - contentSplit.dividerThickness))
+    }
+
     // MARK: - Distraction-free mode
 
     /// Full screen without status bar, sidebars and line numbers, the text in a narrow column.
@@ -429,6 +522,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             selectionLocation: first.selectionLocation, selectionLength: first.selectionLength, topOffset: first.topOffset,
             wrapsLines: first.wrapsLines, showsLineNumbers: first.showsLineNumbers, showsInvisibles: first.showsInvisibles,
             zoom: Double(zoom), bookmarks: document.bookmarkedLines, folds: document.foldedHeads)
+        if showsPreview { state.preview = previewFraction }
         if isSplit {
             state.split = SplitState(sideBySide: splitView.isVertical, second: panes[1].state, fraction: splitFraction)
         }
@@ -445,6 +539,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         if let splitState = state.split {
             split(sideBySide: splitState.sideBySide, state: splitState.second, fraction: splitState.fraction)
         }
+        if let fraction = state.preview { showPreview(fraction: fraction) }
     }
 
     // MARK: - Font
@@ -554,6 +649,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             item.state = isSplit && splitView.isVertical ? .on : .off
         case #selector(splitStacked(_:)):
             item.state = isSplit && !splitView.isVertical ? .on : .off
+        case #selector(togglePreview(_:)):
+            item.state = showsPreview ? .on : .off
+            return showsPreview || document.language?.id == "markdown"
         case #selector(toggleDistractionFree(_:)):
             item.state = isDistractionFree ? .on : .off
         case #selector(closeSplit(_:)), #selector(focusOtherPane(_:)):

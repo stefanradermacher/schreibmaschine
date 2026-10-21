@@ -37,6 +37,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     /// Called when the pane's text gets the keyboard focus, and when its selection changes.
     var onFocus: ((EditorPane) -> Void)?
     var onSelectionChange: ((EditorPane) -> Void)?
+    var onScroll: ((EditorPane) -> Void)?
 
     init(document: TextDocument) {
         self.document = document
@@ -144,7 +145,9 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             },
             // Paragraphs coming into view get their colors.
             center.addObserver(forName: NSView.boundsDidChangeNotification, object: scrollView.contentView, queue: .main) { [weak self] _ in
-                self?.colorVisibleFragments()
+                guard let self else { return }
+                colorVisibleFragments()
+                onScroll?(self)
             },
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 self?.preferencesDidChange()

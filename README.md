@@ -10,7 +10,7 @@ Die Oberfläche gibt es auf Deutsch und Englisch. Die Texte liegen im String-Kat
 
 Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 
-## Stand: Meilenstein 6
+## Stand: Meilenstein 7
 
 - **Dokumente:** Öffnen, Sichern, Sichern unter, Zurück zur gesicherten Version, Drucken. Gesichert wird nur mit ⌘S; die Datei ändert sich nie von selbst.
 - **Kodierung:** wird beim Öffnen erkannt (Byte Order Mark, UTF-16, UTF-8, dann die eingestellte Standardkodierung, bei anderen Schriften Foundations Schätzung, zuletzt Windows-1252 und ISO Latin 1) und beim Sichern beibehalten. Umstellen über Format → Zeichenkodierung oder die Statusleiste, die gängigen direkt, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“ nach Schriftraum; lässt sich ein Zeichen in der neuen Kodierung nicht darstellen, nennt die App es vorher. Ablage → Erneut öffnen mit Kodierung liest die Datei in einer anderen Kodierung neu. Dateien mit Nullbytes gelten als Binärdateien und werden nicht geöffnet.
@@ -38,6 +38,7 @@ Was die App werden soll und in welcher Reihenfolge, steht in `docs/konzept.md`.
 - **Zählen:** Links in der Statusleiste die Zahl der Wörter, mit Auswahl „12 von 1.234 Wörtern“; ein Klick zeigt Wörter, Zeichen, Zeichen ohne Leerzeichen, Zeilen und Absätze und wählt, was in der Leiste steht. Gezählt wird verzögert im Hintergrund (`TextStatistics.swift`).
 - **Schreibmaschinen-Modus** (Darstellung): Die Zeile mit der Einfügemarke bleibt in der Fenstermitte, der Text läuft an ihr vorbei; oben und unten bekommt der Text dafür eine halbe Fensterhöhe Rand.
 - **Ablenkungsfreier Modus** (⌃⇧⌘F): Vollbild ohne Statusleiste, Seitenleisten und Zeilennummern, der Text umbrochen in einer Spalte von einstellbarer Breite (voreingestellt 70 Zeichen); auf Wunsch wird alles außer der Zeile mit der Einfügemarke abgedunkelt. Beenden oder Verlassen des Vollbilds stellt alles wieder her. Die Optionen stehen in den Einstellungen unter „Schreiben“.
+- **Markdown-Vorschau** (⌥⌘P): rechts neben dem Text, aus dem Markdown-Leser von macOS (`AttributedString(markdown:)`, also ohne fremden Parser) als HTML gesetzt (`MarkdownRenderer.swift`) und in einer Webansicht gezeigt (`MarkdownPreview.swift`). Sie folgt dem Tippen nach einer Viertelsekunde, ohne neu zu laden, und scrollt mit, ausgerichtet an den Überschriften. Aufgabenlisten bekommen Häkchen, HTML im Text wird als Text gezeigt, nicht ausgeführt. Eine Content-Security-Policy verbietet der Seite jeden Netzzugriff, Links öffnen im Browser; Bilder neben der Datei erscheinen nur, wenn die App sie lesen darf. Die Webansicht startet in der Sandbox nur mit der Berechtigung für ausgehende Netzwerkverbindungen; die App hat sie deshalb, nutzt sie aber nicht. Ob die Vorschau offen ist, gehört zum Zustand der Datei.
 - **Gehe zu Zeile** (⌘L) in derselben Leiste: `120`, `120:15` (mit Spalte), `+10`, `-10`.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Seitenleiste links mit den Treffern nach Dokument, jeweils mit Zeilennummer und Zeile; ein Klick holt das Dokument nach vorn und wählt den Treffer aus. Sie ist in allen Tabs dieselbe und bleibt sichtbar, wenn ein Klick in einen anderen Tab wechselt. Alle ersetzen gilt für alle offenen Dokumente, jedes kann es einzeln widerrufen. In Ordnern oder Projekten sucht die Schreibmaschine bewusst nicht.
 
@@ -84,6 +85,8 @@ Das App-Icon und das Dokumentsymbol zeichnet `scripts/make_icon.swift`: das App-
   - `SyntaxHighlighter.swift`: Färben Zeile für Zeile, mit dem Zustand am Zeilenanfang
   - `Indentation.swift`: Einrückung eines Dokuments und ihr Erkennen
   - `MultiCursor.swift`, `Folding.swift`: mehrere Einfügemarken und Blockauswahl, Code-Faltung
+  - `MarkdownRenderer.swift`, `MarkdownPreview.swift`: Markdown als HTML und die Vorschau daneben
+  - `TextStatistics.swift`: Zählen für die Statusleiste
   - `LineNumberRuler.swift`, `InvisiblesLayoutFragment.swift`, `StatusBar.swift`: Zeilennummern, unsichtbare Zeichen, Statusleiste
   - `Preferences.swift`, `Settings.swift`: Einstellungen und ihr Fenster
 - `Resources/`: Asset-Katalog mit App-Icon und Akzentfarbe, Dokumentsymbol, Lokalisierung, `PrivacyInfo.xcprivacy`, die mitgelieferten Sprachen in `Languages/`

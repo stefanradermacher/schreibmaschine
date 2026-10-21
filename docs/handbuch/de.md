@@ -165,6 +165,10 @@ Unter „Darstellung → Schreibmaschinen-Modus“ bleibt die Zeile mit der Einf
 
 > Schreibmaschinen-Modus und ablenkungsfreier Modus lassen sich verbinden: dann steht die aktuelle Zeile mitten im Bildschirm, und alles andere tritt zurück.
 
+## Markdown-Vorschau
+
+In einer Markdown-Datei zeigt „Darstellung → Markdown-Vorschau“ (⌥⌘P) rechts neben dem Text, wie er gesetzt aussieht: Überschriften, Hervorhebungen, Listen und Aufgabenlisten, Zitate, Codeblöcke, Tabellen und Links. Die Vorschau folgt dem Tippen nach einem kurzen Augenblick und scrollt mit, ausgerichtet an den Überschriften. Links öffnen sich im Browser. Die Vorschau lädt nichts aus dem Internet; Bilder neben der Datei zeigt sie nur, wenn die Schreibmaschine sie lesen darf, sonst steht an ihrer Stelle ihre Beschreibung.
+
 # Code
 
 Die Schreibmaschine erkennt die Sprache einer Datei an Name, Endung oder erster Zeile und färbt sie entsprechend. Mitgeliefert werden Swift, Markdown, PHP, JavaScript und TypeScript, Python, JSON, YAML, INI und TOML, Shell, HTML, XML, CSS, SQL und Lua. Die Sprache lässt sich unter „Format → Sprache“ oder in der Statusleiste wählen.
@@ -244,7 +248,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Nebeneinander, untereinander teilen | ⌃⌘T, ⌃⌥⌘T |
 | Zur anderen Hälfte, Teilung aufheben | ⌥⌘J, ⌃⇧⌘W |
 | Dokumentliste | ⌃⌘S |
-| Ablenkungsfreier Modus | ⌃⇧⌘F |
+| Markdown-Vorschau, ablenkungsfreier Modus | ⌥⌘P, ⌃⇧⌘F |
 | Nächstes, voriges Dokument | ⌥⌘→, ⌥⌘← |
 | Dokument 1 bis 8, letztes Dokument | ⌘1 – ⌘8, ⌘9 |
 | Schrift vergrößern, verkleinern, zurücksetzen | ⌘+, ⌘-, ⌘0 |

@@ -107,7 +107,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 
 ## 5. Schreiben
 
-- **Markdown-Vorschau:** neben dem Text oder in einem eigenen Tab, sie wird live aktualisiert und scrollt mit dem Text mit. Bilder werden relativ zur Datei gezeigt, externe Inhalte nicht geladen.
+- **Markdown-Vorschau:** neben dem Text oder in einem eigenen Tab, sie wird live aktualisiert und scrollt mit dem Text mit. Bilder neben der Datei werden gezeigt, soweit die Sandbox es erlaubt, externe Inhalte nicht geladen.
 - **Schreibmaschinen-Modus:** Die aktuelle Zeile bleibt in der Mitte des Fensters stehen.
 - **Ablenkungsfreier Modus:** Vollbild ohne Toolbar, Statusleiste und Seitenleisten, mit schmaler Textspalte. Auf Wunsch wird alles außer dem aktuellen Absatz abgedunkelt.
 - **Idee für später, noch nicht entschieden: Schreibmaschinengeräusche** im ablenkungsfreien Modus, standardmäßig aus. Jeder Tastenschlag klingt wie eine echte Schreibmaschine, idealerweise jede Type etwas anders; die Glocke klingelt einige Zeichen vor der Umbruchspalte, ↩ löst den Wagenrücklauf aus. Wählbar zwischen mechanischer und elektrischer Maschine. Die Klänge kommen entweder aus eigener Synthese (`scripts/make_sounds.swift` erzeugt Hörproben nach `Klangproben/`) oder aus Aufnahmen unter CC0; dann wäre „keine Fremdkomponenten“ ehrlich einzuschränken. Abgespielt mit `AVAudioEngine` und vorgeladenen Puffern, damit schnelles Tippen nicht verzögert.
@@ -149,7 +149,7 @@ Code-Plugins (in der Sandbox nicht erlaubt), LSP, Autovervollständigung über W
 - Ob die App mit einer Datei gestartet wurde, zeigt das Apple Event beim Start (`kAEOpenDocuments` statt `kAEOpenApplication`). Erst danach entscheidet die App, ob sie eine Sitzung wiederherstellt.
 - Vergleich: zeilenweise mit dem Histogram-Verfahren (wie `git diff --histogram`, liefert besser lesbare Blöcke als reines Myers), innerhalb geänderter Zeilen zeichenweise mit Myers. Beides ist eigener Code und läuft im Hintergrund, damit das Tippen flüssig bleibt.
 - Die Syntaxhervorhebung arbeitet inkrementell und nur auf dem sichtbaren Bereich plus Rand, damit auch große Dateien flüssig bleiben.
-- Markdown-Vorschau: Apples Paket `swift-markdown` (baut auf cmark-gfm auf, kennt also auch Tabellen, Durchstreichen und Aufgabenlisten). Die Ausgabe als HTML übernimmt ein eigener Visitor, angezeigt wird sie in einem `WKWebView` ohne Netzwerkzugriff. Das ist die einzige Abhängigkeit außerhalb der System-Frameworks. Sie stammt von Apple und wird über den Swift Package Manager eingebunden.
+- Markdown-Vorschau: der Markdown-Leser, den macOS mitbringt (`AttributedString(markdown:)` mit der vollen Syntax: auch Tabellen und Durchstreichen; Aufgabenlisten ergänzt die App selbst). So braucht die App keinen fremden Parser. Die Ausgabe als HTML übernimmt eigener Code, angezeigt wird sie in einem `WKWebView`, dem eine Content-Security-Policy jeden Netzzugriff verbietet. Weil WebKit in der Sandbox nur mit der Berechtigung für ausgehende Verbindungen startet, hat die App diese Berechtigung, nutzt sie aber nicht. Ursprünglich war Apples Paket `swift-markdown` vorgesehen; es hätte genauere Positionen für das Mitscrollen geliefert, aber eine Fremdkomponente (cmark-gfm) mitgebracht.
 - YAML: Apple liefert keinen YAML-Parser mit. Statt einer fremden Bibliothek liest ein eigener, kleiner Parser genau die Teilmenge, die Sprachdefinitionen brauchen: Zuordnungen, Listen, Zeichenketten in einfachen und doppelten Anführungszeichen, Block-Zeichenketten mit `|` und Kommentare. Was er nicht versteht, meldet er mit Zeilennummer.
 
 ## Meilensteine
@@ -168,7 +168,7 @@ Nach Meilenstein 3 ist die App schon für den Alltag mit Plain Text brauchbar.
 
 ## Entschieden
 
-- **Markdown:** Apples Paket `swift-markdown`.
+- **Markdown:** der Markdown-Leser von macOS, Vorschau in einer Webansicht ohne Netzzugriff.
 - **Tastenkürzel:** macOS-Standard mit einzelnen PhpStorm-Kürzeln (siehe 3).
 - **Suchen:** in allen offenen Dokumenten ja, in Ordnern oder Projekten nein.
 - **Sprachdefinitionen:** YAML, gelesen von einem eigenen Parser für die benötigte Teilmenge.

@@ -30,6 +30,8 @@ struct ViewState: Codable, Equatable {
     var folds: [Int]?
     /// The second half of a split view; the fields above describe the first.
     var split: SplitState?
+    /// The Markdown preview is shown, taking the rest beside this share of the width for the text.
+    var preview: Double?
 }
 
 struct SplitState: Codable, Equatable {

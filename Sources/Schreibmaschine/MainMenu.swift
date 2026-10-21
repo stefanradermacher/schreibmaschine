@@ -157,6 +157,7 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Zeilen umbrechen"), #selector(EditorPane.toggleWrapping(_:)), "w", [.command, .control]))
         menu.addItem(item(String(localized: "Unsichtbare Zeichen"), #selector(EditorPane.toggleInvisibles(_:)), "i", [.command, .option]))
         menu.addItem(item(String(localized: "Dokumentliste"), #selector(AppDelegate.toggleDocumentList(_:)), "s", [.command, .control]))
+        menu.addItem(item(String(localized: "Markdown-Vorschau"), #selector(EditorViewController.togglePreview(_:)), "p", [.command, .option]))
         menu.addItem(item(String(localized: "Schreibmaschinen-Modus"), #selector(AppDelegate.toggleTypewriterMode(_:))))
         menu.addItem(item(String(localized: "Ablenkungsfreier Modus"), #selector(EditorViewController.toggleDistractionFree(_:)), "f", [.command, .control, .shift]))
         menu.addItem(item(String(localized: "Andere Zeilen abdunkeln"), #selector(AppDelegate.toggleDimsOtherLines(_:))))
