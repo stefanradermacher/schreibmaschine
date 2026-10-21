@@ -174,7 +174,7 @@ Schreibmaschine recognizes from the text whether a file is indented with tabs or
 
 ## Comments and brackets
 
-⌘/ adds or removes comment marks in front of the lines of the selection. The bracket next to the insertion point and its partner are highlighted, ⇧⌘M jumps to the partner.
+⌘/ adds or removes comment marks in front of the lines of the selection. ⌥⌘/ puts the selection, or the line if nothing is selected, into a block comment such as /* … */ or <!-- … -->; with the insertion point inside a block comment, it takes the comment away. Languages without block comments get line comments. The bracket next to the insertion point and its partner are highlighted, ⇧⌘M jumps to the partner.
 
 ## Folding
 
@@ -187,7 +187,7 @@ Every language is a small YAML file with regular expressions. “Format → Lang
 ## How a definition is built
 
 - name, extensions, filenames and interpreters: what the language is called and how it is recognized
-- comment: the marks for line and block comments, used by ⌘/
+- comment: the marks for line and block comments, used by ⌘/ and ⌥⌘/
 - indent: the width of the indentation and whether to indent with tabs
 - rules: the coloring rules, each with a scope such as keyword, string or comment
 
@@ -268,7 +268,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Move lines | ⌥⇧↑, ⌥⇧↓ |
 | Join lines | ⇧⌘J |
 | Indent, outdent | ⌘], ⌘[ |
-| Toggle comment, jump to matching bracket | ⌘/, ⇧⌘M |
+| Line, block comment, matching bracket | ⌘/, ⌥⌘/, ⇧⌘M |
 | Expand, shrink selection | ⌥↑, ⌥↓ |
 | Add the next occurrence | ⌃G |
 | Select all matches | ⌃⌘G |

@@ -87,6 +87,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 | ⌘⌫ | Zeile löschen (ohne Auswahl) |
 | ⇧⌘J | Zeilen verbinden (wie in CotEditor) |
 | ⌘/ | Kommentar umschalten |
+| ⌥⌘/ | Blockkommentar umschalten (wie in PhpStorm) |
 | ⌥↑ / ⌥↓ | Auswahl erweitern / verkleinern (Wort → Zeichenkette → Klammer → Zeile → Absatz) |
 | ⌃G | nächstes Vorkommen der Auswahl zusätzlich auswählen |
 | ⌃⌘G | alle Vorkommen auswählen |

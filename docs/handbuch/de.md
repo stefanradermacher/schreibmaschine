@@ -185,7 +185,7 @@ Ob eine Datei mit Tabs oder Leerzeichen eingerückt ist und wie breit, erkennt d
 
 ## Kommentare und Klammern
 
-⌘/ setzt oder entfernt Kommentarzeichen vor den Zeilen der Auswahl. Die Klammer neben der Einfügemarke und ihr Gegenstück werden hervorgehoben, ⇧⌘M springt zum Gegenstück.
+⌘/ setzt oder entfernt Kommentarzeichen vor den Zeilen der Auswahl. ⌥⌘/ schließt die Auswahl, ohne Auswahl die Zeile, in einen Blockkommentar wie /* … */ oder <!-- … --> ein; steht die Einfügemarke in einem Blockkommentar, nimmt es ihn wieder heraus. Sprachen ohne Blockkommentare bekommen Zeilenkommentare. Die Klammer neben der Einfügemarke und ihr Gegenstück werden hervorgehoben, ⇧⌘M springt zum Gegenstück.
 
 ## Faltung
 
@@ -198,7 +198,7 @@ Jede Sprache ist eine kleine YAML-Datei mit regulären Ausdrücken. „Format �
 ## Aufbau einer Definition
 
 - name, extensions, filenames und interpreters: wie die Sprache heißt und woran sie erkannt wird
-- comment: Zeichen für Zeilen- und Blockkommentare, für ⌘/
+- comment: Zeichen für Zeilen- und Blockkommentare, für ⌘/ und ⌥⌘/
 - indent: Breite der Einrückung und ob mit Tabs eingerückt wird
 - rules: die Regeln zum Färben, jede mit einem scope wie keyword, string oder comment
 
@@ -279,7 +279,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Zeilen verschieben | ⌥⇧↑, ⌥⇧↓ |
 | Zeilen verbinden | ⇧⌘J |
 | Einrücken, Ausrücken | ⌘], ⌘[ |
-| Kommentar umschalten, zur passenden Klammer | ⌘/, ⇧⌘M |
+| Zeilen-, Blockkommentar, passende Klammer | ⌘/, ⌥⌘/, ⇧⌘M |
 | Auswahl erweitern, verkleinern | ⌥↑, ⌥↓ |
 | Nächstes Vorkommen dazu auswählen | ⌃G |
 | Alle Treffer auswählen | ⌃⌘G |

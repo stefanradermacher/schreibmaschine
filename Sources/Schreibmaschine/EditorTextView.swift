@@ -652,24 +652,60 @@ final class EditorTextView: NSTextView {
                 }
             }
         } else if let (open, close) = language.blockComment {
-            let text = string as NSString
-            var range = selectedRange()
-            if range.length == 0 {
-                range = text.lineRange(for: range)
-                while range.length > 0, text.character(at: range.upperBound - 1) == 0x0A { range.length -= 1 }
-            }
-            let selected = text.substring(with: range)
-            let trimmed = selected.trimmingCharacters(in: .whitespaces)
-            if trimmed.hasPrefix(open) && trimmed.hasSuffix(close) && trimmed.count >= open.count + close.count {
-                var inner = String(trimmed.dropFirst(open.count).dropLast(close.count))
-                if inner.hasPrefix(" ") { inner.removeFirst() }
-                if inner.hasSuffix(" ") { inner.removeLast() }
-                let lead = selected.prefix { $0 == " " || $0 == "\t" }
-                replace(range, with: lead + inner)
+            toggleBlockComment(open: open, close: close)
+        }
+    }
+
+    /// ⌥⌘/: puts the selection, or the line, into a block comment, or takes it out of one. In a
+    /// language without block comments it comments the lines.
+    @objc func toggleBlockComment(_ sender: Any?) {
+        guard let language = language() else { return NSSound.beep() }
+        guard let (open, close) = language.blockComment else { return toggleComment(sender) }
+        currentCommandTitle = String(localized: "Blockkommentar umschalten")
+        defer { currentCommandTitle = nil }
+        toggleBlockComment(open: open, close: close)
+    }
+
+    private func toggleBlockComment(open: String, close: String) {
+        let text = string as NSString
+        var range = selectedRange()
+        if range.length == 0 {
+            // With the insertion point inside a block comment, that comment is taken away.
+            if let comment = blockComment(open: open, close: close, around: range.location) {
+                range = comment
             } else {
-                replace(range, with: open + " " + selected + " " + close)
+                range = text.lineRange(for: range)
             }
         }
+        // Spaces and line breaks around the selection stay outside the comment.
+        let selected = text.substring(with: range)
+        let lead = selected.prefix { $0 == " " || $0 == "\t" || $0 == "\n" }
+        let trail = selected.dropFirst(lead.count).reversed().prefix { $0 == " " || $0 == "\t" || $0 == "\n" }
+        let core = String(selected.dropFirst(lead.count).dropLast(trail.count))
+        guard !core.isEmpty else { return NSSound.beep() }
+        // One comment from end to end, not two that happen to start and end the text.
+        if core.hasPrefix(open) && core.hasSuffix(close) && core.count >= open.count + close.count,
+           !core.dropFirst(open.count).dropLast(close.count).contains(close) {
+            var inner = String(core.dropFirst(open.count).dropLast(close.count))
+            if inner.hasPrefix(" ") { inner.removeFirst() }
+            if inner.hasSuffix(" ") { inner.removeLast() }
+            replace(range, with: lead + inner + String(trail.reversed()))
+        } else {
+            replace(range, with: lead + open + " " + core + " " + close + String(trail.reversed()))
+        }
+    }
+
+    /// The block comment the offset lies in, from its opening to its closing mark.
+    private func blockComment(open: String, close: String, around offset: Int) -> NSRange? {
+        let text = string as NSString
+        let before = text.range(of: open, options: .backwards,
+                                range: NSRange(location: 0, length: min(offset + open.utf16.count, text.length)))
+        guard before.location != NSNotFound else { return nil }
+        let searchFrom = before.upperBound
+        // A comment closed before the offset is not the one it lies in.
+        let closing = text.range(of: close, range: NSRange(location: searchFrom, length: text.length - searchFrom))
+        guard closing.location != NSNotFound, closing.upperBound >= offset else { return nil }
+        return NSRange(location: before.location, length: closing.upperBound - before.location)
     }
 
     /// Goes to the partner of the bracket next to the insertion point.

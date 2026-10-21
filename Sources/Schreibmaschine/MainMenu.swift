@@ -204,6 +204,7 @@ enum MainMenu {
     private static func textMenu() -> NSMenu {
         let menu = NSMenu(title: String(localized: "Text"))
         menu.addItem(item(String(localized: "Kommentar umschalten"), #selector(EditorTextView.toggleComment(_:)), "/"))
+        menu.addItem(item(String(localized: "Blockkommentar umschalten"), #selector(EditorTextView.toggleBlockComment(_:)), "/", [.command, .option]))
         menu.addItem(.separator())
         for group in TextCommands.groups {
             let submenu = NSMenu(title: group.title)

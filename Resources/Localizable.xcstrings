@@ -831,6 +831,16 @@
         }
       }
     },
+    "Blockkommentar umschalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle Block Comment"
+          }
+        }
+      }
+    },
     "Breite %lld": {
       "localizations": {
         "en": {
