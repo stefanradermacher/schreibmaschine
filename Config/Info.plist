@@ -9,16 +9,14 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeIconFile</key>
-			<string>TextDocument.icns</string>
+			<key>CFBundleTypeIconSystemGenerated</key>
+			<true/>
 			<key>CFBundleTypeName</key>
 			<string>Text</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Alternate</string>
-			<!-- public.data deckt auch Dateien ohne oder mit unbekannter Endung ab
-			     (.env, Makefile, Protokolle); ob sie Text enthalten, prüft das Öffnen. -->
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.text</string>

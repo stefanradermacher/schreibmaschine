@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import AppKit
+import SwiftUI
 
 /// The editor of a document in its window or tab: find bar, the text in one or two panes
 /// (EditorPane.swift), the status bar, and the sidebar of the search in all documents.
@@ -289,6 +290,32 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                     item.representedObject = folder.appendingPathComponent(argument)
                     runUserScript(item)
                 }
+            case "frame":
+                // frame:1440,900 — the window at that size, in the middle of the screen
+                let size = argument.split(separator: ",").compactMap { Double($0) }
+                if size.count == 2, let window = view.window, let screen = window.screen ?? NSScreen.main {
+                    let visible = screen.visibleFrame
+                    let frame = NSRect(x: visible.midX - size[0] / 2, y: visible.midY - size[1] / 2, width: size[0], height: size[1])
+                    window.setFrame(frame, display: true)
+                }
+            case "find":
+                showFindBar(nil)
+                search.bar.searchField.stringValue = argument
+                search.findBarQueryDidChange(search.bar)
+            case "bookmark":
+                document.toggleBookmark(atLine: Int(argument) ?? 1)
+            case "top":
+                activePane?.scroll(toOffset: document.lineIndex.start(ofLine: Int(argument) ?? 1))
+            case "activate":
+                NSApp.activate()
+                view.window?.makeKeyAndOrderFront(nil)
+            case "offer":
+                if let window = view.window { DefaultAppOffer.showOffer(in: window) }
+            case "formats":
+                let sheet = NSHostingController(rootView: DefaultAppFormatsView())
+                presentAsSheet(sheet)
+            case "support":
+                (NSApp.delegate as? AppDelegate)?.showSupport(nil)
             case "cmd":
                 // cmd:<text command id>, as from the Text menu
                 let item = NSMenuItem()

@@ -75,6 +75,14 @@ private struct GeneralSettings: View {
             .pickerStyle(.radioGroup)
 
             Section {
+                DefaultAppSettingsRows()
+            } footer: {
+                Text("Für Text und Code: reiner Text, Markdown, JSON, YAML, Quelltexte und mehr. Mit „Anpassen …“ lässt sich jedes Format einzeln festlegen, auch HTML, CSV und Protokolle.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
                 Picker("Zeichenkodierung:", selection: $encoding) {
                     ForEach(TextEncoding.all, id: \.rawValue) { encoding in
                         Text(TextEncoding.name(of: encoding)).tag(Int(encoding.rawValue))

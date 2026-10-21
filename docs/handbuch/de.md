@@ -260,8 +260,11 @@ Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einr
 
 ## Einstellungen
 
-- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, Kodierung und Zeilenenden für neue Dokumente
+- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, die Standard-App für Text und Code, Kodierung und Zeilenenden für neue Dokumente
 - Editor: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung und Hervorhebung der aktuellen Zeile
+- Schreiben: Schreibmaschinen-Modus, Fokus-Modus und die Breite der Textspalte im ablenkungsfreien Modus
+
+Soll die Schreibmaschine Textdateien per Doppelklick öffnen, legt „Allgemein → Standard-App → Als Standard festlegen“ sie dafür fest: für reinen Text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, Shell-Skripte, SQL, Lua, TOML und INI sowie Diff. macOS fragt dabei für jedes Format einzeln nach. „Anpassen …“ zeigt alle Formate mit der App, die sie gerade öffnet, und legt jedes einzeln fest, auch HTML, CSV und Protokolle, die sonst meist in Browser, Tabellenkalkulation und Konsole bleiben. „Zurücksetzen“ gibt die Formate der App zurück, die sie vorher hatten. Nach einigen Tagen fragt die Schreibmaschine auch selbst einmal in einem Balken unter der Titelleiste nach, höchstens zweimal.
 
 Als Schrift ist SF Mono voreingestellt, die Monospace-Schrift von macOS. Weil macOS sie in der Schriftenpalette nicht anzeigt, führt der Knopf „Standard“ zu ihr zurück.
 

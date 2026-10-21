@@ -481,6 +481,16 @@
         }
       }
     },
+    "Alle Formate": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Formats"
+          }
+        }
+      }
+    },
     "Alle Lesezeichen entfernen": {
       "localizations": {
         "en": {
@@ -541,6 +551,16 @@
         }
       }
     },
+    "Alle zurücksetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset All"
+          }
+        }
+      }
+    },
     "Alles auswählen": {
       "localizations": {
         "en": {
@@ -581,6 +601,16 @@
         }
       }
     },
+    "Als Standard festlegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make Default"
+          }
+        }
+      }
+    },
     "Als Zitat markieren": {
       "localizations": {
         "en": {
@@ -607,6 +637,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hide Others"
+          }
+        }
+      }
+    },
+    "Anpassen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Customize…"
           }
         }
       }
@@ -1241,6 +1281,16 @@
         }
       }
     },
+    "Die Schreibmaschine als Standard-App für Text und Code verwenden?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use Schreibmaschine as the default app for text and code?"
+          }
+        }
+      }
+    },
     "Die Schreibmaschine hat kein Tracking, keine Analyse und keine Werbung und baut selbst keine Verbindungen ins Internet auf; nur ein freiwilliges Trinkgeld läuft über den App Store. Deine Texte und Einstellungen bleiben auf deinem Mac.": {
       "localizations": {
         "en": {
@@ -1551,6 +1601,16 @@
         }
       }
     },
+    "Einzelne Formate:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Individual formats:"
+          }
+        }
+      }
+    },
     "Entfalten": {
       "localizations": {
         "en": {
@@ -1721,6 +1781,16 @@
         }
       }
     },
+    "Für Text und Code: reiner Text, Markdown, JSON, YAML, Quelltexte und mehr. Mit „Anpassen …“ lässt sich jedes Format einzeln festlegen, auch HTML, CSV und Protokolle.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For text and code: plain text, Markdown, JSON, YAML, source code and more. “Customize…” sets each format on its own, HTML, CSV and logs included."
+          }
+        }
+      }
+    },
     "Für Text → Absätze → Umbrechen. Mit „Umbrechen bei Spalte …“ lässt sich jedes Mal eine andere Breite wählen.": {
       "localizations": {
         "en": {
@@ -1777,6 +1847,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mixed → %@"
+          }
+        }
+      }
+    },
+    "Gibt die Formate wieder den Apps, die sie vorher hatten, sonst TextEdit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gives the formats back to the apps they had before, otherwise TextEdit"
           }
         }
       }
@@ -1967,6 +2047,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not valid JSON: %@"
+          }
+        }
+      }
+    },
+    "Keine": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
           }
         }
       }
@@ -2431,6 +2521,16 @@
         }
       }
     },
+    "Nicht jetzt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Now"
+          }
+        }
+      }
+    },
     "Nicht sichern": {
       "localizations": {
         "en": {
@@ -2621,6 +2721,16 @@
         }
       }
     },
+    "Protokolle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        }
+      }
+    },
     "Rechtschreibung und Grammatik": {
       "localizations": {
         "en": {
@@ -2771,6 +2881,26 @@
         }
       }
     },
+    "Schreibmaschine": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine"
+          }
+        }
+      }
+    },
+    "Schreibmaschine für %lld von %lld Formaten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine for %1$lld of %2$lld formats"
+          }
+        }
+      }
+    },
     "Schreibmaschine im Web": {
       "localizations": {
         "en": {
@@ -2787,6 +2917,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Support Schreibmaschine"
+          }
+        }
+      }
+    },
+    "Schreibmaschine verwenden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use Schreibmaschine"
           }
         }
       }
@@ -2837,6 +2977,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Smaller"
+          }
+        }
+      }
+    },
+    "Shell-Skripte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shell scripts"
           }
         }
       }
@@ -2987,6 +3137,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Default"
+          }
+        }
+      }
+    },
+    "Standard-App nach Format": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default App by Format"
+          }
+        }
+      }
+    },
+    "Standard-App:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default app:"
           }
         }
       }
@@ -3317,6 +3487,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear Recent Searches"
+          }
+        }
+      }
+    },
+    "Verschiedene Apps": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Various apps"
           }
         }
       }
@@ -3851,12 +4031,32 @@
         }
       }
     },
+    "Zurück zu %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to %@"
+          }
+        }
+      }
+    },
     "Zurück zur gesicherten Version": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Revert to Saved"
+          }
+        }
+      }
+    },
+    "Zurücksetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
           }
         }
       }
@@ -3917,6 +4117,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "restore the last session"
+          }
+        }
+      }
+    },
+    "macOS fragt für jedes Format einzeln nach, bei allen Formaten also mehrmals hintereinander. Lehnst du einmal ab, fragt die Schreibmaschine nicht weiter. HTML, CSV und Protokolle gehören nicht zu „Alle Formate“, weil sie meist im Browser, in einer Tabellenkalkulation oder in der Konsole besser aufgehoben sind. Zurücksetzen gibt ein Format der App zurück, die es vorher hatte, sonst TextEdit.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS asks for each format separately, so for all formats several times in a row. If you decline once, Schreibmaschine stops asking. HTML, CSV and logs are not part of “All Formats”, as they are usually better off in the browser, a spreadsheet or Console. Reset gives a format back to the app it had before, otherwise TextEdit."
+          }
+        }
+      }
+    },
+    "macOS fragt für jedes Format einzeln nach; lehnst du einmal ab, fragt die Schreibmaschine nicht weiter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS asks for each format separately; if you decline once, Schreibmaschine stops asking"
           }
         }
       }

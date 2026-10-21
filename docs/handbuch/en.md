@@ -249,8 +249,11 @@ At the bottom of the window are line and column, the size of the selection, lang
 
 ## Settings
 
-- General: what happens when the app starts without a file, tabs or windows, encoding and line endings for new documents
+- General: what happens when the app starts without a file, tabs or windows, the default app for text and code, encoding and line endings for new documents
 - Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting and highlighting of the current line
+- Writing: typewriter mode, focus mode and the width of the text column in distraction-free mode
+
+To have text files open in Schreibmaschine with a double-click, “General → Default app → Make Default” makes it the default for plain text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, shell scripts, SQL, Lua, TOML and INI as well as diff. macOS asks for each format separately. “Customize…” lists all formats with the app that opens them now and sets each one on its own, including HTML, CSV and logs, which usually stay with the browser, a spreadsheet and Console. “Reset” gives the formats back to the apps they had before. After a few days, Schreibmaschine also asks once itself, in a bar below the title bar, at most twice.
 
 The default font is SF Mono, the monospaced font of macOS. Because macOS does not list it in the font panel, the “Default” button leads back to it.
 

@@ -59,6 +59,7 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
     /// screen if there is none.
     override func showWindow(_ sender: Any?) {
         guard let window, !window.isVisible else { return super.showWindow(sender) }
+        defer { DefaultAppOffer.offerIfDue(in: window) }
         let host = Self.frontDocumentWindow(excluding: window)
         if UserDefaults.standard.bool(forKey: Preferences.opensDocumentsInTabs), let host {
             host.addTabbedWindow(window, ordered: .above)
