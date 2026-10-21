@@ -102,6 +102,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 - **Idee für später, noch nicht entschieden: Farbthemen.** Bisher gelten die Farben des Standardthemas von Xcode, hell und dunkel. Als Format für eigene Themen böte sich Base16 an: eine kleine YAML-Datei mit 16 Farben und einer festen Zuordnung zu Hintergrund, Kommentaren, Schlüsselwörtern, Zeichenketten und so weiter, die fast eins zu eins auf unsere Scopes passt. Davon gibt es Hunderte, darunter Fassungen von Solarized, Gruvbox, Nord, Dracula und Tomorrow. Eigene Themen kämen wie eigene Sprachen in einen Ordner. Mitgeliefert würden nur wenige (Xcode hell und dunkel, vielleicht Solarized); bei mitgelieferten Dateien gehört der jeweilige Lizenzhinweis dazu, meist MIT.
 - Einrückung mit Tabs oder Leerzeichen und automatisches Einrücken, beides pro Sprache voreingestellt und pro Datei änderbar. Die Einrückung bestehender Dateien wird erkannt.
 - Passende Klammern hervorheben, zur passenden Klammer springen.
+- **Änderungen im Lineal:** ein schmaler Balken an Zeilen, die seit dem letzten Sichern neu oder geändert sind, ein Keil, wo Zeilen fehlen, wie in Xcode. Farben wählbar: aus, einfarbig, wie im Vergleich oder wie in VS Code.
 - **Code-Faltung** nach Einrückung und nach Klammern.
 - **Lesezeichen:** setzen und entfernen, zum nächsten und vorigen springen. Sie werden pro Datei gemerkt.
 - **Block- und Mehrfachauswahl:** ⌥-Ziehen wählt ein Rechteck aus, ⌘-Klick setzt weitere Cursor. Tippen wirkt an allen Cursorn gleichzeitig.
@@ -120,7 +121,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 - **Kodierung** wird erkannt und lässt sich umstellen (UTF-8, UTF-16, ISO-8859-1, Windows-1252, Mac Roman …), auch als „erneut öffnen mit Kodierung …“. BOM ja/nein.
 - **Zeilenenden** LF, CRLF oder CR werden erkannt und lassen sich umstellen. Gemischte Zeilenenden werden gemeldet.
 - Unsichtbare Zeichen einblenden (Leerzeichen, Tabs, Zeilenenden, geschützte und unsichtbare Unicode-Zeichen).
-- Wird eine Datei außerhalb der App geändert, lädt die App sie automatisch neu, sofern es im Editor keine ungesicherten Änderungen gibt. Sonst erscheint eine Leiste im Fenster (kein Dialog) mit „Neu laden“ und „Behalten“.
+- Wird eine Datei außerhalb der App geändert, lädt die App sie automatisch neu, sofern es im Editor keine ungesicherten Änderungen gibt. Sonst erscheint eine Leiste im Fenster (kein Dialog) mit „Vergleichen“ (eigener Text neben der geänderten Datei, Unterschiede übernehmbar), „Neu laden“ und „Behalten“. Wird die Datei gelöscht, bleibt der Text als ungesichert stehen.
 - **Große Dateien und lange Zeilen:** ohne Nachfrage. Große Dateien öffnen schnell (100 MB in etwa einer Sekunde), weil TextKit nur auslegt, was zu sehen ist, und weite Sprünge erst über die geschätzte Höhe in die Nähe gehen. Zeilen über 10.000 Zeichen bleiben ungefärbt; eine Datei mit einer Zeile über 100.000 Zeichen öffnet mit Umbruch, weil TextKit eine so lange Zeile sonst in einem Stück setzt (17 MB: 39 s und 5 GB statt 3 s). Ursprünglich war ein Dialog „Normal öffnen / Einfach öffnen / Abbrechen“ vorgesehen; nach den Messungen ist er überflüssig.
 
 ## 7. Benutzerskripte

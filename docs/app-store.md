@@ -6,8 +6,8 @@ Vorbereitete Texte und Angaben für den Eintrag in App Store Connect. Zeichenzah
 
 | Feld | Wert |
 |---|---|
-| Name (30) | Schreibmaschine (Deutsch), Schreibmaschine – Text Editor (Englisch) |
-| Untertitel (30) | Texteditor für Text und Code |
+| Name (30) | Schreibmaschine – Texteditor (Deutsch), Schreibmaschine – Text Editor (Englisch) |
+| Untertitel (30) | Für Text und Code |
 | Bundle-ID | com.stefanradermacher.schreibmaschine |
 | SKU | schreibmaschine-macos |
 | Primäre Sprache | Deutsch (zusätzlich Englisch) |
@@ -19,7 +19,7 @@ Vorbereitete Texte und Angaben für den Eintrag in App Store Connect. Zeichenzah
 | Marketing-URL | https://stefanradermacher.com/projects/schreibmaschine |
 | Datenschutz-URL | https://stefanradermacher.com/projects/schreibmaschine/datenschutz |
 
-Die englischen Fassungen, USA und UK, heißen „Schreibmaschine – Text Editor“, passend zu „Leser – PDF Reader“ und „Motiv – Image Viewer“; auf dem Mac und im deutschen Eintrag bleibt es „Schreibmaschine“. Beide Namen sind in App Store Connect eingetragen und damit reserviert.
+Die englischen Fassungen, USA und UK, heißen „Schreibmaschine – Text Editor“, passend zu „Leser – PDF Reader“ und „Motiv – Image Viewer“. Der deutsche Eintrag heißt entsprechend „Schreibmaschine – Texteditor“, wie „Leser – PDF-Betrachter“; das hilft bei der Suche, weil Apple den Namen stärker gewichtet als die Schlüsselwörter. Auf dem Mac selbst heißt die App weiterhin „Schreibmaschine“. In App Store Connect ist für Deutsch noch „Schreibmaschine“ eingetragen und muss umgestellt werden; der englische Name ist eingetragen und reserviert. Weil „Texteditor“ und „Editor“ schon im Namen stehen, wiederholen weder Untertitel noch Schlüsselwörter sie.
 
 ## Werbetext (170)
 
@@ -53,6 +53,7 @@ Zum Schreiben
 Vergleichen
 • Zwei Texte nebeneinander, Zeile für Zeile ausgerichtet: ein Dokument mit seiner gesicherten Fassung, der Zwischenablage, einem anderen Dokument oder einer Datei
 • Unterschiede mit einem Klick übernehmen, das Ergebnis als Unified Diff weitergeben
+• Das Lineal zeigt, welche Zeilen seit dem letzten Sichern neu oder geändert sind
 
 Eigene Skripte
 • Eigene Befehle als Skripte in jeder Sprache, die auf dem Mac läuft; sie bekommen die Auswahl oder das Dokument und geben Text zurück
@@ -65,6 +66,7 @@ Nichts geht verloren
 
 Für jede Datei
 • Erkennt Zeichenkodierung und Zeilenenden und behält sie beim Sichern bei
+• Ändert ein anderes Programm die Datei, lädt die Schreibmaschine sie neu oder fragt nach, wenn du selbst etwas geändert hast
 • Auch große Dateien mit vielen Megabyte öffnen in einem Augenblick
 • Tabs oder Fenster, schneller Wechsel zwischen allen offenen Dokumenten
 
@@ -76,7 +78,7 @@ Ehrlich und offen
 
 ## Schlüsselwörter (100, mit Komma, ohne Leerzeichen)
 
-Texteditor,Editor,Code,Markdown,JSON,Vergleich,Diff,Syntax,Suchen,Ersetzen,Notizen,UTF-8,werbefrei
+Code,Markdown,JSON,Vergleich,Diff,Syntax,Suchen,Ersetzen,Notizen,Skripte,Textverarbeitung,werbefrei
 
 ## Neue Funktionen (4000)
 
@@ -88,7 +90,7 @@ Für die Sprachen „Englisch (USA)“ und „Englisch (UK)“ in App Store Conn
 
 **Name (30):** Schreibmaschine – Text Editor
 
-**Untertitel (30):** An editor for text and code
+**Untertitel (30):** For text and code
 
 **Werbetext (170):**
 
@@ -122,6 +124,7 @@ For writing
 Compare
 • Two texts side by side, aligned line by line: a document with its saved version, the clipboard, another document or a file
 • Take over a difference with a click, pass the result on as a unified diff
+• The ruler shows which lines are new or changed since the last save
 
 Scripts of your own
 • Commands of your own as scripts in any language that runs on the Mac; they get the selection or the document and give back text
@@ -134,6 +137,7 @@ Nothing gets lost
 
 For every file
 • Recognizes text encoding and line endings and keeps them when saving
+• If another program changes the file, Schreibmaschine reloads it, or asks if you have changed something yourself
 • Even large files of many megabytes open in an instant
 • Tabs or windows, quick switching between all open documents
 
@@ -145,7 +149,7 @@ Honest and open
 
 **Schlüsselwörter (100):**
 
-text editor,code,markdown,json,compare,diff,syntax,find,replace,notes,utf-8,plain text,ad-free
+code,markdown,json,compare,diff,syntax,find,replace,notes,scripts,plain text,writing,utf-8,ad-free
 
 **Neue Funktionen:** First release.
 
