@@ -323,6 +323,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     }
 
     func splitViewDidResizeSubviews(_ notification: Notification) {
+        panes.forEach { $0.rewrapAfterResize() }
         SessionStore.shared.setNeedsSave()
     }
 

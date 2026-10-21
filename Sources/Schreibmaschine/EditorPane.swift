@@ -241,6 +241,21 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         ruler.needsDisplay = true
     }
 
+    /// While the divider of a split view is dragged, the pane is in a live resize, in which
+    /// TextKit waits with wrapping the lines anew until the mouse is released. The visible lines
+    /// are wrapped right away instead.
+    func rewrapAfterResize() {
+        guard wrapsLines, textView.inLiveResize || scrollView.inLiveResize else { return }
+        let width = scrollView.contentSize.width
+        if abs(textContainer.size.width - width) > 0.5 {
+            textContainer.size = NSSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+        }
+        let viewport = layoutManager.textViewportLayoutController
+        layoutManager.invalidateLayout(for: viewport.viewportRange ?? layoutManager.documentRange)
+        viewport.layoutViewport()
+        textView.needsDisplay = true
+    }
+
     private func applyWrapping() {
         let contentSize = scrollView.contentSize
         if wrapsLines {
