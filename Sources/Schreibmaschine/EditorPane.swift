@@ -149,9 +149,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         scrollView.contentView.postsBoundsChangedNotifications = true
         scrollView.postsFrameChangedNotifications = true
         observers = [
-            // The insets depend on the size of the window.
+            // The insets depend on the size of the window; a bigger window shows lines that were
+            // laid out in one go, uncolored.
             center.addObserver(forName: NSView.frameDidChangeNotification, object: scrollView, queue: .main) { [weak self] _ in
                 self?.updateInsets()
+                self?.colorVisibleFragments()
             },
             // Paragraphs coming into view get their colors.
             center.addObserver(forName: NSView.boundsDidChangeNotification, object: scrollView.contentView, queue: .main) { [weak self] _ in

@@ -304,6 +304,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 search.findBarQueryDidChange(search.bar)
             case "bookmark":
                 document.toggleBookmark(atLine: Int(argument) ?? 1)
+            case "bookmarks":
+                // bookmarks:13,84 — exactly these, whatever the file remembered
+                document.setBookmarkedLines(argument.split(separator: ",").compactMap { Int($0) })
             case "top":
                 activePane?.scroll(toOffset: document.lineIndex.start(ofLine: Int(argument) ?? 1))
             case "activate":
@@ -336,6 +339,18 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 NSLog("DEBUGSCRIPT revertmenu %@", menu.items.map { item in
                     item.isSeparatorItem ? "—" : "\(item.isAlternate ? "⌥" : "")\(item.title)\(item.action == nil ? " (aus)" : "")"
                 }.joined(separator: " | "))
+            case "comparewindow":
+                // comparewindow:1440,900 — the comparison at that size, at its first difference
+                let size = argument.split(separator: ",").compactMap { Double($0) }
+                if let window = NSApp.windows.first(where: { $0.windowController is CompareWindowController }),
+                   size.count == 2, let screen = window.screen ?? NSScreen.main {
+                    let visible = screen.visibleFrame
+                    window.setFrame(NSRect(x: visible.midX - size[0] / 2, y: visible.midY - size[1] / 2, width: size[0], height: size[1]), display: true)
+                    NSApp.sendAction(#selector(CompareViewController.nextDifference(_:)), to: window.contentViewController, from: nil)
+                    // Alone on screen, so that it is the key window once the app comes to the front.
+                    view.window?.orderOut(nil)
+                    window.makeKeyAndOrderFront(nil)
+                }
             case "close":
                 view.window?.performClose(nil)
             case "quit":

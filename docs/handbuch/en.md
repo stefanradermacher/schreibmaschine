@@ -83,7 +83,7 @@ For every file, Schreibmaschine remembers the selection, the visible part, wrapp
 
 ⌘F opens the find bar above the text, ⌥⌘F the replace row as well. The search runs as you type. All matches are marked in the text and as lines at the right edge, and next to the field you see which match is selected.
 
-![The find bar with every match in the text](docs/screenshots/en/2-find.jpg)
+![The find bar with every match in the text](docs/screenshots/en/2-search.png)
 
 ## Finding the next match
 
@@ -150,7 +150,7 @@ Without a selection, a command acts on what makes sense: sorting and encoding on
 
 “View → Split Side by Side” (⌃⌘T) or “Split Top and Bottom” (⌃⌥⌘T) shows the text a second time, with its own selection and its own visible part. That way you can write in one place and keep an eye on another. ⌥⌘J goes to the other half, ⌃⇧⌘W closes the split.
 
-![The split view](docs/screenshots/en/3-split.jpg)
+![The split view](docs/screenshots/en/5-split.png)
 
 # Writing
 
@@ -176,11 +176,13 @@ With “View → Focus Mode”, only the paragraph with the insertion point stay
 
 In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables, and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
 
+![A Markdown note with its preview](docs/screenshots/en/3-preview.png)
+
 # Code
 
 Schreibmaschine recognizes the language of a file from its name, extension, or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL, and Lua. The language can be chosen under “Format → Language” or in the status bar.
 
-![Swift with syntax highlighting, line numbers, and bookmarks](docs/screenshots/en/1-code.jpg)
+![Swift with syntax highlighting, line numbers, and bookmarks](docs/screenshots/en/1-code.png)
 
 ## Indentation
 
@@ -214,6 +216,8 @@ A rule names either words (words), a pattern within a line (match) or a region f
 # Comparing
 
 “File → Compare” puts two texts side by side: the document and its saved or an earlier version (with ⌥ under “File → Revert To”), the contents of the clipboard, another open document, or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
+
+![A document compared with its saved version](docs/screenshots/en/4-compare.png)
 
 Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Neither side counts as the older one: lines that exist on only one side are blue, whichever side; lines that differ are red, with the differing characters marked more strongly. If you like, equal lines are green as well (“Equal lines green” at the bottom right); otherwise, they stay white. The bar at the right edge shows all differences in the whole text; a click jumps there.
 

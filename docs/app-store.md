@@ -211,7 +211,7 @@ Any text file is suitable for testing; “Help → Schreibmaschine Manual” ope
 
 ## Screenshots
 
-Noch anzufertigen, 2880 × 1800 Pixel (Fenster mit 1440 × 900 Punkten, ohne Schatten), wie bei Leser. Die Inhalte liegen in `Testdateien/Screenshots/de` und `en`; die Debug-Schritte `frame:`, `find:`, `bookmark:`, `top:` und `support` richten die Fenster ein.
+In `docs/screenshots/` (deutsch) und `docs/screenshots/en/`, 2880 × 1800 Pixel (Fenster mit 1440 × 900 Punkten, ohne Schatten, Schrift 15 pt), wie bei Leser. Die Inhalte liegen in `Testdateien/Screenshots/de` und `en`; die Debug-Schritte `frame:`, `bookmarks:`, `top:`, `find:`, `comparewindow:` und `support` richten die Fenster ein, `.build/shoot.sh` nimmt sie auf (mit `ACTIVATE=1` als aktives Fenster).
 
 | Datei | Inhalt |
 |---|---|
@@ -220,11 +220,11 @@ Noch anzufertigen, 2880 × 1800 Pixel (Fenster mit 1440 × 900 Punkten, ohne Sch
 | 3-vorschau.png | Markdown-Notiz mit Vorschau daneben |
 | 4-vergleich.png | Vergleich mit der gesicherten Fassung, Unterschiede farbig |
 | 5-geteilt.png | Geteilte Ansicht mit zwei Stellen derselben Datei |
-| trinkgeld.png | Fenster „Schreibmaschine unterstützen“ als Prüfbild für die In-App-Käufe |
+| trinkgeld.png | Fenster „Schreibmaschine unterstützen“ als Prüfbild für die In-App-Käufe; noch offen, weil der Debug-Build keine Produkte lädt: aus Xcode mit StoreKit-Konfiguration oder aus dem TestFlight-Build aufnehmen |
 
 Für den englischen Eintrag derselbe Satz mit englischer Oberfläche in `docs/screenshots/en/` (`1-code.png`, `2-search.png`, `3-preview.png`, `4-compare.png`, `5-split.png`). Screenshots hängen in App Store Connect an der jeweiligen Lokalisierung: Der deutsche Satz gehört zu „Deutsch“, der englische zu „Englisch“.
 
-Das Handbuch verweist auf `1-code`, `2-suche` und `3-geteilt`; die Namen werden beim Aufnehmen angeglichen.
+Das Handbuch zeigt dieselben Bilder: Code, Suche, Vorschau, Vergleich und geteilte Ansicht.
 
 ## TestFlight
 
@@ -240,7 +240,7 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] Support- und Datenschutzseite online
 - [ ] Drei Verbrauchsartikel angelegt
 - [ ] Quellcode: Die Beschreibung und die Hilfe nennen die Schreibmaschine quelloffen; vor der Freigabe das GitHub-Repo öffentlich machen oder die Stellen anpassen
-- [ ] Screenshots aufgenommen
+- [x] Screenshots aufgenommen (außer trinkgeld.png)
 - [ ] Build-Nummer höher als beim letzten Upload
 - [ ] Archiv erstellt, validiert und hochgeladen
 

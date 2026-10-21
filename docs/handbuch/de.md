@@ -94,7 +94,7 @@ Für jede Datei merkt sich die Schreibmaschine Auswahl, sichtbaren Ausschnitt, U
 
 ⌘F öffnet die Suchleiste über dem Text, ⌥⌘F zusätzlich die Ersetzen-Zeile. Gesucht wird beim Tippen. Alle Treffer sind im Text markiert und am rechten Rand als Striche zu sehen, daneben steht, der wievielte Treffer gerade ausgewählt ist.
 
-![Die Suchleiste mit allen Treffern im Text](docs/screenshots/2-suche.jpg)
+![Die Suchleiste mit allen Treffern im Text](docs/screenshots/2-suche.png)
 
 ## Weitersuchen
 
@@ -161,7 +161,7 @@ Mit ⌘-Klick setzt du eine weitere Einfügemarke, mit ⌘-Ziehen eine weitere A
 
 „Darstellung → Nebeneinander teilen“ (⌃⌘T) oder „Untereinander teilen“ (⌃⌥⌘T) zeigt den Text ein zweites Mal, mit eigener Auswahl und eigenem Ausschnitt. So lässt sich an einer Stelle schreiben und eine andere im Blick behalten. ⌥⌘J wechselt zur anderen Hälfte, ⌃⇧⌘W hebt die Teilung auf.
 
-![Die geteilte Ansicht](docs/screenshots/3-geteilt.jpg)
+![Die geteilte Ansicht](docs/screenshots/5-geteilt.png)
 
 # Schreiben
 
@@ -187,11 +187,13 @@ Unter „Darstellung → Fokus-Modus“ bleibt nur der Absatz mit der Einfügema
 
 In einer Markdown-Datei zeigt „Darstellung → Markdown-Vorschau“ (⌥⌘P) rechts neben dem Text, wie er gesetzt aussieht: Überschriften, Hervorhebungen, Listen und Aufgabenlisten, Zitate, Codeblöcke, Tabellen und Links. Die Vorschau folgt dem Tippen nach einem kurzen Augenblick und scrollt mit, ausgerichtet an den Überschriften. Links öffnen sich im Browser. Die Vorschau lädt nichts aus dem Internet; Bilder neben der Datei zeigt sie nur, wenn die Schreibmaschine sie lesen darf, sonst steht an ihrer Stelle ihre Beschreibung.
 
+![Eine Markdown-Notiz mit Vorschau](docs/screenshots/3-vorschau.png)
+
 # Code
 
 Die Schreibmaschine erkennt die Sprache einer Datei an Name, Endung oder erster Zeile und färbt sie entsprechend. Mitgeliefert werden Swift, Markdown, PHP, JavaScript und TypeScript, Python, JSON, YAML, INI und TOML, Shell, HTML, XML, CSS, SQL und Lua. Die Sprache lässt sich unter „Format → Sprache“ oder in der Statusleiste wählen.
 
-![Swift mit Syntaxhervorhebung, Zeilennummern und Lesezeichen](docs/screenshots/1-code.jpg)
+![Swift mit Syntaxhervorhebung, Zeilennummern und Lesezeichen](docs/screenshots/1-code.png)
 
 ## Einrückung
 
@@ -225,6 +227,8 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 # Vergleichen
 
 „Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten oder einer früheren Fassung (mit ⌥ unter „Ablage → Zurück zu“), mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
+
+![Ein Dokument im Vergleich mit seiner gesicherten Fassung](docs/screenshots/4-vergleich.png)
 
 Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Zeilen, die es nur auf einer Seite gibt, egal auf welcher, sind blau; Zeilen, die sich unterscheiden, sind rot, die abweichenden Zeichen darin kräftiger. Auf Wunsch sind auch die gleichen Zeilen grün („Gleiche Zeilen grün“ unten rechts), sonst bleiben sie weiß. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
 
