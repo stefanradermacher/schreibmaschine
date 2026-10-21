@@ -1,9 +1,9 @@
 #!/bin/zsh
 # Erhöht die Build-Nummer in Config/Schreibmaschine.xcconfig um eins.
 #
-# Vor jedem Upload in den App Store einmal ausführen und das Ergebnis
-# mitcommitten: App Store Connect verlangt für jeden Upload eine höhere Nummer
-# als für den vorigen. Lokale Builds brauchen das nicht.
+# Vor jedem Neubau nach Änderungen ausführen und das Ergebnis mitcommitten, damit
+# sich installierte Builds unterscheiden lassen; App Store Connect verlangt
+# ohnehin für jeden Upload eine höhere Nummer als für den vorigen.
 set -euo pipefail
 cd "${0:A:h}/.."
 

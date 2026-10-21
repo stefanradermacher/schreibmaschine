@@ -289,6 +289,11 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                     item.representedObject = folder.appendingPathComponent(argument)
                     runUserScript(item)
                 }
+            case "cmd":
+                // cmd:<text command id>, as from the Text menu
+                let item = NSMenuItem()
+                item.representedObject = argument
+                textView.performTextCommand(item)
             case "call":
                 // call:<action> — straight to this editor, also when the window is not in front
                 _ = perform(NSSelectorFromString(argument), with: nil)
