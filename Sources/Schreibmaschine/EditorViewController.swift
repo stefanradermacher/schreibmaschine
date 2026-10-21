@@ -133,7 +133,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 guard let self else { return }
                 updateSidebar()
-                if currentFont != lastFont { applyFont() }
+                if currentFont != lastFont || Preferences.lineHeightValue != lastLineHeight { applyFont() }
             },
             center.addObserver(forName: AllDocumentsSearch.didChange, object: nil, queue: .main) { [weak self] _ in
                 self?.updateSidebar()
@@ -359,6 +359,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     // MARK: - Font
 
     private var lastFont: NSFont?
+    private var lastLineHeight = Preferences.lineHeightValue
 
     private var currentFont: NSFont {
         let base = Preferences.font
@@ -368,6 +369,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private func applyFont() {
         let font = currentFont
         lastFont = font
+        lastLineHeight = Preferences.lineHeightValue
         let attributes = EditorStyle.attributes(font: font, tabWidth: document.indentation.width)
         let storage = document.textStorage
         storage.beginEditing()

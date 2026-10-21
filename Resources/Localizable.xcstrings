@@ -3131,6 +3131,16 @@
         }
       }
     },
+    "Zeilenhöhe:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Line height:"
+          }
+        }
+      }
+    },
     "Zeilennummern": {
       "localizations": {
         "en": {

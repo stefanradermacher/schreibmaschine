@@ -195,7 +195,7 @@ Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einr
 ## Einstellungen
 
 - Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, Kodierung und Zeilenenden für neue Dokumente
-- Editor: Schrift, Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung und Hervorhebung der aktuellen Zeile
+- Editor: Schrift, Zeilenhöhe (das 1- bis 2-Fache dessen, was die Schrift braucht, voreingestellt 1,2), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung und Hervorhebung der aktuellen Zeile
 
 Als Schrift ist SF Mono voreingestellt, die Monospace-Schrift von macOS. Weil macOS sie in der Schriftenpalette nicht anzeigt, führt der Knopf „Standard“ zu ihr zurück.
 

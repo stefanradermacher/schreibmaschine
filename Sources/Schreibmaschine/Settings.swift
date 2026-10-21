@@ -101,6 +101,7 @@ private struct GeneralSettings: View {
 private struct EditorSettings: View {
     @AppStorage(Preferences.fontName) private var fontName = ""
     @AppStorage(Preferences.fontSize) private var fontSize = 13.0
+    @AppStorage(Preferences.lineHeight) private var lineHeight = 1.2
     @AppStorage(Preferences.tabWidth) private var tabWidth = 4
     @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
@@ -123,6 +124,9 @@ private struct EditorSettings: View {
             } label: {
                 Text("Schrift")
                 Text(fontDescription)
+            }
+            Stepper(value: $lineHeight, in: 1.0...2.0, step: 0.1) {
+                LabeledContent("Zeilenhöhe:", value: lineHeight.formatted(.number.precision(.fractionLength(1))))
             }
 
             Section {

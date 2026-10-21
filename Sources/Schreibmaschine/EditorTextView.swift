@@ -14,21 +14,38 @@
 
 import AppKit
 
-/// Text attributes of the editor: one font, tab stops every `tabWidth` spaces.
+/// Text attributes of the editor: one font, tab stops every `tabWidth` spaces, and lines
+/// `lineHeight` times as high as the font needs, with the text in the middle of each line.
 enum EditorStyle {
-    static func attributes(font: NSFont = Preferences.font, tabWidth: Int = Preferences.tabWidthValue) -> [NSAttributedString.Key: Any] {
-        [
+    static func attributes(font: NSFont = Preferences.font, tabWidth: Int = Preferences.tabWidthValue,
+                           lineHeight: Double = Preferences.lineHeightValue) -> [NSAttributedString.Key: Any] {
+        let natural = naturalLineHeight(of: font)
+        let height = lineHeightPoints(font: font, multiple: lineHeight)
+        return [
             .font: font,
-            .paragraphStyle: paragraphStyle(font: font, tabWidth: tabWidth),
+            .paragraphStyle: paragraphStyle(font: font, tabWidth: tabWidth, lineHeight: lineHeight),
             .foregroundColor: NSColor.textColor,
+            // TextKit puts the extra space above the text; half of it goes below instead.
+            .baselineOffset: ((height - natural) / 2).rounded(),
         ]
     }
 
-    static func paragraphStyle(font: NSFont, tabWidth: Int) -> NSParagraphStyle {
+    static func paragraphStyle(font: NSFont, tabWidth: Int, lineHeight: Double = Preferences.lineHeightValue) -> NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.tabStops = []
         style.defaultTabInterval = spaceWidth(of: font) * CGFloat(tabWidth)
+        let height = lineHeightPoints(font: font, multiple: lineHeight)
+        style.minimumLineHeight = height
+        style.maximumLineHeight = height
         return style
+    }
+
+    static func naturalLineHeight(of font: NSFont) -> CGFloat {
+        NSLayoutManager().defaultLineHeight(for: font)
+    }
+
+    static func lineHeightPoints(font: NSFont, multiple: Double) -> CGFloat {
+        (naturalLineHeight(of: font) * CGFloat(multiple)).rounded()
     }
 
     /// Background of a bracket and its partner next to the insertion point.

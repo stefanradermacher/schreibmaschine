@@ -86,6 +86,8 @@ final class LineNumberRuler: NSRulerView {
         let bookmarks = Set(bookmarkedLines())
         let folded = Set(foldedHeads())
         let marked: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: NSColor.white]
+        // The text is raised to sit in the middle of higher lines; the numbers follow it.
+        let raise = textView.typingAttributes[.baselineOffset] as? CGFloat ?? 0
 
         func drawNumber(_ number: Int, lineTop: CGFloat, lineHeight: CGFloat, baseline: CGFloat) {
             let label = String(number) as NSString
@@ -100,7 +102,7 @@ final class LineNumberRuler: NSRulerView {
                 drawFoldMark(foldMark(number), top: y, height: lineHeight)
             }
             // Align the number's baseline with the text's.
-            let top = y + baseline - font.ascender
+            let top = y + baseline - raise - font.ascender
             label.draw(at: NSPoint(x: ruleThickness - foldWidth - padding - size.width, y: top), withAttributes: attributes)
         }
 

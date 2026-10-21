@@ -28,6 +28,7 @@ enum Preferences {
     static let highlightsSyntax = "highlightsSyntax"
     static let showsDocumentList = "showsDocumentList"
     static let tabWidth = "tabWidth"
+    static let lineHeight = "lineHeight"
     static let wrapColumn = "wrapColumn"
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
@@ -54,6 +55,7 @@ enum Preferences {
             highlightsSyntax: true,
             showsDocumentList: false,
             tabWidth: 4,
+            lineHeight: 1.2,
             wrapColumn: 80,
             indentsWithSpaces: true,
             autoIndents: true,
@@ -82,6 +84,8 @@ enum Preferences {
     }
 
     static var tabWidthValue: Int { defaults.integer(forKey: tabWidth).clamped(to: 1...16) }
+    /// Line height as a multiple of what the font needs, in steps of 0.1.
+    static var lineHeightValue: Double { (defaults.double(forKey: lineHeight) * 10).rounded().clamped(to: 10...20) / 10 }
     static var wrapColumnValue: Int { defaults.integer(forKey: wrapColumn).clamped(to: 10...1000) }
     static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
     static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
