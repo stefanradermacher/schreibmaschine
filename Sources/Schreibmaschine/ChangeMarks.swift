@@ -39,25 +39,27 @@ enum ChangeMarkStyle: String, CaseIterable {
     }
 
     private static let steelBlue = NSColor(named: "AccentColor") ?? .controlAccentColor
+    /// As strong as the bands in the middle strip of the comparison: quiet beside the text.
+    private static let strength: CGFloat = 0.3
 
     var addedColor: NSColor {
         switch self {
-        case .off, .single: Self.steelBlue
-        case .compare: .systemBlue
-        case .colorful: .systemGreen
+        case .off, .single: Self.steelBlue.withAlphaComponent(Self.strength)
+        case .compare: .systemBlue.withAlphaComponent(Self.strength)
+        case .colorful: .systemGreen.withAlphaComponent(Self.strength)
         }
     }
 
     var changedColor: NSColor {
         switch self {
-        case .off, .single: Self.steelBlue
-        case .compare: .systemRed
-        case .colorful: .systemBlue
+        case .off, .single: Self.steelBlue.withAlphaComponent(Self.strength)
+        case .compare: .systemRed.withAlphaComponent(Self.strength)
+        case .colorful: .systemBlue.withAlphaComponent(Self.strength)
         }
     }
 
     var deletedColor: NSColor {
-        self == .single || self == .off ? Self.steelBlue : .systemRed
+        (self == .single || self == .off ? Self.steelBlue : NSColor.systemRed).withAlphaComponent(Self.strength)
     }
 }
 
