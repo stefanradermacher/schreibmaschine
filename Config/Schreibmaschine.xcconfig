@@ -12,4 +12,4 @@
 //
 // Vor jedem Upload in den App Store einmal ./scripts/bump-build.sh ausführen und
 // mitcommitten — App Store Connect verlangt für jeden Upload eine höhere Nummer.
-CURRENT_PROJECT_VERSION = 49
+CURRENT_PROJECT_VERSION = 50
