@@ -321,6 +321,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let item = NSMenuItem()
                 item.representedObject = argument
                 textView.performTextCommand(item)
+            case "dark":
+                NSApp.appearance = NSAppearance(named: .darkAqua)
             case "marks":
                 let changes = document.lineChanges
                 NSLog("DEBUGSCRIPT marks %@ neu=%@ geändert=%@ gelöscht=%@", argument,

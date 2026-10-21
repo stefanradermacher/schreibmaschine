@@ -188,8 +188,8 @@ struct ExternalChangeBar: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "exclamationmark.triangle")
-                .foregroundStyle(.secondary)
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
             switch change {
             case .modified:
                 Text("„\(name)“ wurde außerhalb der Schreibmaschine geändert.")
@@ -214,6 +214,9 @@ struct ExternalChangeBar: View {
         .controlSize(.small)
         .padding(.horizontal, 12)
         .padding(.vertical, 7)
+        // A warm tint over the bar material, as macOS marks notices: seen while typing, yet
+        // calm in light and dark appearance alike.
+        .background(Color(nsColor: .systemYellow).opacity(0.22))
         .background(.bar)
     }
 }
