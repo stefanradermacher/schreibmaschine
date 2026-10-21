@@ -296,7 +296,11 @@ struct DefaultAppSettingsRows: View {
                 if summary.isAll {
                     Label("Schreibmaschine", systemImage: "checkmark")
                 } else {
-                    Text(summary.text).foregroundStyle(.secondary)
+                    Text(summary.text)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .fixedSize()
+                        .help(summary.help)
                     Button("Als Standard festlegen") {
                         Task {
                             await DefaultAppOffer.makeDefault()
@@ -334,13 +338,16 @@ struct DefaultAppSettingsRows: View {
         var isAll = false
         var hasSchreibmaschine = false
         var text: String
+        var help = ""
 
         @MainActor static var current: Summary {
             let formats = TextFormat.all
             let own = formats.filter(\.isSchreibmaschineDefault).count
             if own == formats.count { return Summary(isAll: true, hasSchreibmaschine: true, text: "Schreibmaschine") }
             if own > 0 || DefaultAppOffer.isDefaultForAny {
-                return Summary(hasSchreibmaschine: true, text: String(localized: "Schreibmaschine für \(own) von \(formats.count) Formaten"))
+                // In the row "Default app:" the name goes without saying; it keeps the row on one line.
+                return Summary(hasSchreibmaschine: true, text: String(localized: "\(own) von \(formats.count) Formaten"),
+                               help: String(localized: "Die Schreibmaschine öffnet \(own) von \(formats.count) Formaten; „Anpassen …“ zeigt, welche."))
             }
             let names = Set(formats.compactMap { $0.currentApplication.map(DefaultAppOffer.name(of:)) })
             return Summary(text: names.count == 1 ? names.first! : String(localized: "Verschiedene Apps"))

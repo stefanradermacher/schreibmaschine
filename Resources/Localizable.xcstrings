@@ -321,6 +321,16 @@
         }
       }
     },
+    "%lld von %lld Formaten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld formats"
+          }
+        }
+      }
+    },
     "+%lld %": {
       "localizations": {
         "en": {
@@ -1307,6 +1317,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Schreibmaschine is an independent open source project and stays completely free. If you'd like to buy me something for its further development, I'd be happy:"
+          }
+        }
+      }
+    },
+    "Die Schreibmaschine öffnet %lld von %lld Formaten; „Anpassen …“ zeigt, welche.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine opens %1$lld of %2$lld formats; “Customize…” shows which."
           }
         }
       }
@@ -2887,16 +2907,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Schreibmaschine"
-          }
-        }
-      }
-    },
-    "Schreibmaschine für %lld von %lld Formaten": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schreibmaschine for %1$lld of %2$lld formats"
           }
         }
       }
