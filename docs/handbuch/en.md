@@ -8,19 +8,19 @@ Thema: Text editor for macOS
 Untertitel: Manual for the text editor for macOS
 Leitsatz: For text and code.
 Einleitung: Not an IDE, but a tool for writing: with a find bar, text commands and a session that forgets nothing.
-Free, ad-free and without data collection.
+Free, ad-free, and without data collection.
 
 # About this manual
 
-Schreibmaschine is a text editor for macOS: above all for plain text that is reshaped often, but just as useful for code. It does not want to be a development environment, but a tool for writing. In a few chapters, this manual describes what it can do and how to use it.
+Schreibmaschine is a text editor for macOS: first and foremost for plain text intended to be changed a lot, but just as useful for code. It doesn't want to be a development environment, just a tool for writing. In a few chapters, this manual describes what it can do and how to use it.
 
-## What makes Schreibmaschine
+## What makes Schreibmaschine special?
 
 - Find and replace in a bar above the text, not in a window of its own
 - A menu full of text commands and a command palette that finds every command
-- A session of its own that never loses windows, tabs or unsaved texts
-- Syntax highlighting, indentation, brackets and folding for code
-- Multiple insertion points, bookmarks and a split view
+- A session of its own that never loses windows, tabs, or unsaved texts
+- Syntax highlighting, indentation, brackets, and folding for code
+- Multiple insertion points, bookmarks, and a split view
 - Free and open source under the Apache License 2.0, no ads and no data collection
 - Apple frameworks only, no third-party components
 - German and English
@@ -37,21 +37,21 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 ## Switching between documents
 
-⌥⌘→ and ⌥⌘← go to the next and previous document, across all windows. ⌘1 to ⌘8 jump to the first eight documents, ⌘9 to the last one. “Window → Documents” shows the order. ⌃⇥ switches between the tabs of one window, as usual.
+⌥⌘→ and ⌥⌘← go to the next and previous document, across all windows. ⌘1 to ⌘8 jumps to the first eight documents, ⌘9 to the last one. “Window → Documents” shows the order. ⌃⇥ switches between the tabs of one window, as usual.
 
 ## The document list
 
 ⌃⌘S shows a list of all open documents on the left, grouped by window when there are several. A dot after the name marks unsaved changes; a click brings the document to the front.
 
-## Saving, encoding and line endings
+## Saving, encoding, and line endings
 
-Schreibmaschine writes a file only when you save it with ⌘S. It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu, every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
+Schreibmaschine writes a file only when you save it with ⌘S. It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu; every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
 
 If another program changes an open file, such as git or a second editor, Schreibmaschine reloads it by itself as long as you have nothing unsaved in it; the insertion point and the scroll position stay where they were. If you have unsaved changes, a bar below the title bar asks: “Reload” takes the file, “Keep” stays with your text, which ⌘S then writes over the file, and “Compare” puts both side by side: take differences from the file over into your text and save the result. If an open file is deleted or moved, your text is kept and counts as unsaved; “Save As…” puts it somewhere again.
 
 # The session
 
-Many Mac apps leave it to macOS to reopen what was open after a restart. Whether that works depends on system settings and on how the app was quit. Schreibmaschine therefore keeps a session of its own: all windows with their tabs, the files in them and every unsaved text.
+Many Mac apps leave it to macOS to reopen what was open after a restart. Whether that works depends on system settings and on how the app was quit. Schreibmaschine therefore keeps a session of its own: all windows with their tabs, the files in them, and every unsaved text.
 
 ## Nothing gets lost
 
@@ -65,7 +65,7 @@ Started without a file, Schreibmaschine restores the last session, opens a new d
 
 ## Every file remembers its state
 
-For every file, Schreibmaschine remembers the selection, the visible part, wrapping, line numbers, font size, bookmarks, folds and a split view. Next time you open it, everything is as you left it. The file itself stays untouched.
+For every file, Schreibmaschine remembers the selection, the visible part, wrapping, line numbers, font size, bookmarks, folds, and a split view. Next time you open it, everything is as you left it. The file itself stays untouched.
 
 # Find and replace
 
@@ -105,7 +105,7 @@ The “Text” menu holds commands that reshape text in one step. Every command 
 - White Space: remove trailing spaces, convert between tabs and spaces
 - Case: upper and lower case, also camelCase, snake_case and kebab-case
 - Columns: align at a character, format Markdown tables
-- Encode: URL, Base64 and HTML, format or minify JSON
+- Encode: URL, Base64, and HTML, format or minify JSON
 
 ## Without a selection
 
@@ -123,7 +123,7 @@ Without a selection, a command acts on what makes sense: sorting and encoding on
 
 ## Multiple insertion points
 
-⌘-click sets another insertion point, ⌘-drag adds another selection. Typing, deleting, ↩, ⇥, the arrow keys and pasting act at all of them at once. If the clipboard holds as many lines as there are insertion points, each one gets its own line. Esc or a plain click goes back to a single insertion point.
+⌘-click sets another insertion point, ⌘-drag adds another selection. Typing, deleting, ↩, ⇥, the arrow keys, and pasting act at all of them at once. If the clipboard holds as many lines as there are insertion points, each one gets its own line. Esc or a plain click goes back to a single insertion point.
 
 - ⌥-drag selects a block, with an insertion point or selection in every line
 - ⌃G selects the word at the insertion point and then adds the next occurrence each time
@@ -144,15 +144,15 @@ Without a selection, a command acts on what makes sense: sorting and encoding on
 
 ## Counting
 
-On the left of the status bar is the number of words in the text, with a selection for example “12 of 1,234 words”. A click on it shows all counts – words, characters, characters without spaces, lines and paragraphs – and lets you choose which one the bar shows.
+On the left of the status bar is the number of words in the text, with a selection, for example “12 of 1,234 words”. A click on it shows all counts – words, characters, characters without spaces, lines and paragraphs – and lets you choose which one the bar shows.
 
 ## Typewriter mode
 
-With “View → Typewriter Mode”, the line with the insertion point stays in the middle of the window and the text moves past it, like the paper in a typewriter. Your eyes always stay in the same place.
+With “View → Typewriter Mode”, the line with the insertion point stays in the middle of the window, and the text moves past it, like the paper in a typewriter. Your eyes always stay in the same place.
 
 ## Distraction-free mode
 
-“View → Distraction-Free Mode” (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. The width of the column is in the settings under “Writing”. The same command, or leaving full screen, brings everything back as it was.
+“View → Distraction-Free Mode” (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars, and line numbers. The width of the column is in the settings under “Writing”. The same command, or leaving full screen, brings everything back as it was.
 
 ## Focus mode
 
@@ -166,9 +166,9 @@ In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the t
 
 # Code
 
-Schreibmaschine recognizes the language of a file from its name, extension or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL and Lua. The language can be chosen under “Format → Language” or in the status bar.
+Schreibmaschine recognizes the language of a file from its name, extension, or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL and Lua. The language can be chosen under “Format → Language” or in the status bar.
 
-![Swift with syntax highlighting, line numbers and bookmarks](docs/screenshots/en/1-code.jpg)
+![Swift with syntax highlighting, line numbers, and bookmarks](docs/screenshots/en/1-code.jpg)
 
 ## Indentation
 
@@ -188,10 +188,10 @@ Every language is a small YAML file with regular expressions. “Format → Lang
 
 ## How a definition is built
 
-- name, extensions, filenames and interpreters: what the language is called and how it is recognized
+- name, extensions, filenames, and interpreters: what the language is called and how it is recognized
 - comment: the marks for line and block comments, used by ⌘/ and ⌥⌘/
 - indent: the width of the indentation and whether to indent with tabs
-- rules: the coloring rules, each with a scope such as keyword, string or comment
+- rules: the coloring rules, each with a scope such as keyword, string, or comment
 
 ## Rules
 
@@ -203,11 +203,11 @@ A rule names either words (words), a pattern within a line (match) or a region f
 
 “File → Compare” puts two texts side by side: the document and its saved version, the contents of the clipboard, another open document or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
 
-Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Neither side counts as the older one: lines that exist on only one side are blue, whichever side; lines that differ are red, with the differing characters marked more strongly. If you like, equal lines are green as well (“Equal lines green” at the bottom right); otherwise they stay white. The bar at the right edge shows all differences in the whole text; a click jumps there.
+Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Neither side counts as the older one: lines that exist on only one side are blue, whichever side; lines that differ are red, with the differing characters marked more strongly. If you like, equal lines are green as well (“Equal lines green” at the bottom right); otherwise, they stay white. The bar at the right edge shows all differences in the whole text; a click jumps there.
 
 ## Working through the differences
 
-⌃⌘↓ and ⌃⌘↑ or the arrows at the bottom left jump to the next and previous difference; beside them it says “Difference 3 of 12”. Both sides are ordinary editors, and the comparison follows your typing. A click on the left half of a block in the middle strip takes it over from right to left, a click on the right half the other way round; ⌘Z undoes it. ⌘S saves the side that holds the insertion point. The saved version and the clipboard are read only.
+⌃⌘↓ and ⌃⌘↑ or the arrows at the bottom left jump to the next and previous difference; beside them it says “Difference 3 of 12”. Both sides are ordinary editors, and the comparison follows your typing. A click on the left half of a block in the middle strip takes it over from right to left, a click on the right half vice versa; ⌘Z undoes it. ⌘S saves the side that holds the insertion point. The saved version and the clipboard are read only.
 
 ## Options and result
 
@@ -215,9 +215,9 @@ At the bottom right you can ignore whitespace and case. “Copy Differences” a
 
 # Scripts
 
-You can write your own transformations as scripts in any language that runs on the Mac: shell, Perl, Ruby, Swift or whatever else is installed. They live in the scripts folder, which “Scripts → Open Scripts Folder” shows in the Finder, and appear in the Scripts menu and in the command palette. New scripts are there right away. Subfolders become submenus; a number before the name only sets the order: “01 Sort.sh” is called “Sort” in the menu. “Install Example Scripts…” puts three examples into the folder.
+You can write your own transformations as scripts in any language that runs on the Mac: shell, Perl, Python, Ruby, Swift, or whatever else is installed. They live in the scripts folder, which “Scripts → Open Scripts Folder” shows in the Finder, and appear in the Scripts menu and in the command palette. New scripts are there right away. Subfolders become submenus; a number before the name only sets the order: “01 Sort.sh” is called “Sort” in the menu. “Install Example Scripts…” puts three examples into the folder.
 
-A script gets text on its standard input and gives text back on its standard output. It has to be executable (in Terminal: chmod +x) and start with a line such as #!/bin/zsh. Without further details it gets the selection, or the whole document if nothing is selected, and its result replaces exactly that. So two lines with sort already make a sort command of your own. It gets the path of the file as its first argument.
+A script gets text on its standard input and gives text back on its standard output. It has to be executable (in Terminal: chmod +x) and start with a line such as #!/bin/zsh. Without further details, it gets the selection, or the whole document if nothing is selected, and its result replaces exactly that. So two lines with sort already make a sort command of your own. It gets the path of the file as its first argument.
 
 ## Input and output
 
@@ -247,13 +247,13 @@ Page Up and Page Down scroll by the height of the window and take the insertion 
 
 ## The status bar
 
-At the bottom of the window are line and column, the size of the selection, language, indentation, text encoding and line endings. Everything except the position can be changed with a click.
+At the bottom of the window are line and column, the size of the selection, language, indentation, text encoding, and line endings. Everything except the position can be changed with a click.
 
 ## Settings
 
-- General: what happens when the app starts without a file, tabs or windows, the default app for text and code, encoding and line endings for new documents
-- Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting, highlighting of the current line and changes in the ruler
-- Writing: typewriter mode, focus mode and the width of the text column in distraction-free mode
+- General: what happens when the app starts without a file, tabs or windows, the default app for text and code, encoding, and line endings for new documents
+- Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting, highlighting of the current line, and changes in the ruler
+- Writing: typewriter mode, focus mode, and the width of the text column in distraction-free mode
 
 To have text files open in Schreibmaschine with a double-click, “General → Default app → Make Default” makes it the default for plain text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, shell scripts, SQL, Lua, TOML and INI as well as diff. macOS asks for each format separately. “Customize…” lists all formats with the app that opens them now and sets each one on its own, including HTML, CSV and logs, which usually stay with the browser, a spreadsheet and Console. “Reset” gives the formats back to the apps they had before. After a few days, Schreibmaschine also asks once itself, in a bar below the title bar, at most twice.
 
@@ -294,7 +294,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 
 ## Is Schreibmaschine a development environment?
 
-No, and it will stay that way. There are no projects, no auto-completion and no building or running. Schreibmaschine is a tool for writing and reshaping text, which may well be code.
+No, and it will stay that way. There are no projects, no auto-completion, and no building or running. Schreibmaschine is a tool for writing and reshaping text, which may well be code.
 
 ## Where do my unsaved texts go when I quit?
 

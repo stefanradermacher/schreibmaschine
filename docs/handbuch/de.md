@@ -214,7 +214,7 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 
 „Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten Fassung, mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
 
-Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Keine Seite gilt als die ältere: Zeilen, die es nur auf einer Seite gibt, sind blau, egal auf welcher; Zeilen, die sich unterscheiden, sind rot, die abweichenden Zeichen darin kräftiger. Auf Wunsch sind auch die gleichen Zeilen grün („Gleiche Zeilen grün“ unten rechts), sonst bleiben sie weiß. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
+Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Zeilen, die es nur auf einer Seite gibt, egal auf welcher, sind blau; Zeilen, die sich unterscheiden, sind rot, die abweichenden Zeichen darin kräftiger. Auf Wunsch sind auch die gleichen Zeilen grün („Gleiche Zeilen grün“ unten rechts), sonst bleiben sie weiß. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
 
 ## Unterschiede abarbeiten
 
@@ -226,7 +226,7 @@ Unten rechts lassen sich Leerraum und Groß-/Kleinschreibung ignorieren. „Unte
 
 # Skripte
 
-Eigene Umformungen lassen sich als Skripte in jeder Sprache schreiben, die auf dem Mac läuft: Shell, Perl, Ruby, Swift oder was sonst installiert ist. Sie liegen im Skriptordner, den „Skripte → Skriptordner öffnen“ im Finder zeigt, und erscheinen im Menü „Skripte“ und in der Befehlspalette. Neue Skripte sind sofort da. Unterordner werden zu Untermenüs, eine Nummer vor dem Namen bestimmt nur die Reihenfolge: „01 Sortieren.sh“ heißt im Menü „Sortieren“. „Beispielskripte installieren …“ legt drei Beispiele in den Ordner.
+Eigene Umformungen lassen sich als Skripte in jeder Sprache schreiben, die auf dem Mac läuft: Shell, Perl, Python, Ruby, Swift oder was sonst installiert ist. Sie liegen im Skriptordner, den „Skripte → Skriptordner öffnen“ im Finder zeigt, und erscheinen im Menü „Skripte“ und in der Befehlspalette. Neue Skripte sind sofort da. Unterordner werden zu Untermenüs, eine Nummer vor dem Namen bestimmt nur die Reihenfolge: „01 Sortieren.sh“ heißt im Menü „Sortieren“. „Beispielskripte installieren …“ legt drei Beispiele in den Ordner.
 
 Ein Skript bekommt Text über die Standardeingabe und gibt Text über die Standardausgabe zurück. Es muss ausführbar sein (im Terminal: chmod +x) und mit einer Zeile wie #!/bin/zsh beginnen. Ohne weitere Angaben bekommt es die Auswahl, ohne Auswahl das ganze Dokument, und sein Ergebnis ersetzt genau das. Ein Zweizeiler mit sort ist so schon ein eigener Sortierbefehl. Den Pfad der Datei bekommt es als erstes Argument.
 
@@ -305,7 +305,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 
 ## Ist die Schreibmaschine eine Entwicklungsumgebung?
 
-Nein, und das bleibt so. Es gibt keine Projekte, keine Autovervollständigung und kein Bauen oder Ausführen. Die Schreibmaschine ist ein Werkzeug zum Schreiben und Umformen von Text, der auch Code sein darf.
+Nein, und das bleibt so. Es gibt keine Projekte, keine Autovervollständigung und kein Bauen oder Ausführen. Die Schreibmaschine ist ein Werkzeug zum Schreiben und Umformen von Text, der aber gern auch Code sein darf.
 
 ## Wo bleiben meine ungesicherten Texte, wenn ich die App beende?
 
