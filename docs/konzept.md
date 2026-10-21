@@ -120,7 +120,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 - **Zeilenenden** LF, CRLF oder CR werden erkannt und lassen sich umstellen. Gemischte Zeilenenden werden gemeldet.
 - Unsichtbare Zeichen einblenden (Leerzeichen, Tabs, Zeilenenden, geschützte und unsichtbare Unicode-Zeichen).
 - Wird eine Datei außerhalb der App geändert, lädt die App sie automatisch neu, sofern es im Editor keine ungesicherten Änderungen gibt. Sonst erscheint eine Leiste im Fenster (kein Dialog) mit „Neu laden“ und „Behalten“.
-- **Große Dateien und lange Zeilen:** Beim Öffnen prüft die App die Dateigröße und die längste Zeile. Überschreitet eine davon einen Schwellenwert, fragt sie: „Normal öffnen“, „Einfach öffnen“ (ohne Hervorhebung, Umbruch und Faltung, Zeilennummern bleiben) oder „Abbrechen“. Die Schwellenwerte lassen sich einstellen. Ein Neustart wie bei KWrite ist nicht nötig, weil macOS keine feste Speichergrenze hat.
+- **Große Dateien und lange Zeilen:** ohne Nachfrage. Große Dateien öffnen schnell (100 MB in etwa einer Sekunde), weil TextKit nur auslegt, was zu sehen ist, und weite Sprünge erst über die geschätzte Höhe in die Nähe gehen. Zeilen über 10.000 Zeichen bleiben ungefärbt; eine Datei mit einer Zeile über 100.000 Zeichen öffnet mit Umbruch, weil TextKit eine so lange Zeile sonst in einem Stück setzt (17 MB: 39 s und 5 GB statt 3 s). Ursprünglich war ein Dialog „Normal öffnen / Einfach öffnen / Abbrechen“ vorgesehen; nach den Messungen ist er überflüssig.
 
 ## 7. Benutzerskripte
 

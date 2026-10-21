@@ -32,6 +32,12 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     private(set) var showsLineNumbers = UserDefaults.standard.bool(forKey: Preferences.showsLineNumbers)
     private(set) var wrapsLines = UserDefaults.standard.bool(forKey: Preferences.wrapsLines)
+    /// A text with a line longer than this opens wrapped: unwrapped, TextKit sets such a line in
+    /// one piece, which takes seconds and hundreds of megabytes per megabyte. ⌃⌘W still unwraps it.
+    static let veryLongLine = 100_000
+    /// Off for the comparison, whose sides have to stay unwrapped to be aligned.
+    var wrapsVeryLongLines = true
+    private var mustWrap: Bool { wrapsVeryLongLines && document.lineIndex.longestLineLength > Self.veryLongLine }
     var showsInvisibles: Bool { invisibles.showsInvisibles }
 
     /// Called when the pane's text gets the keyboard focus, and when its selection changes.
@@ -134,6 +140,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if mustWrap { wrapsLines = true }
         applyWrapping()
         textView.setSelectedRange(NSRange(location: 0, length: 0))
 
@@ -198,8 +205,9 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     }
 
     func apply(_ state: State) {
-        if state.wrapsLines != wrapsLines {
-            wrapsLines = state.wrapsLines
+        let wraps = state.wrapsLines || mustWrap
+        if wraps != wrapsLines {
+            wrapsLines = wraps
             applyWrapping()
         }
         showsLineNumbers = state.showsLineNumbers

@@ -75,6 +75,9 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
         self.right = right
         leftPane = EditorPane(document: left.document)
         rightPane = EditorPane(document: right.document)
+        // Unwrapped also with very long lines, or the sides could not be aligned.
+        leftPane.wrapsVeryLongLines = false
+        rightPane.wrapsVeryLongLines = false
         super.init(nibName: nil, bundle: nil)
     }
 

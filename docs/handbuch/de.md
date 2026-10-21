@@ -286,6 +286,10 @@ Sie bleiben in der Sitzung und kommen beim nächsten Start zurück. In eine Date
 
 Startet die Schreibmaschine wegen einer Datei, zeigt sie nur diese. „Fenster → Sitzung → Vorige Sitzung wiederherstellen“ holt die anderen Fenster zurück.
 
+## Wie groß darf eine Datei sein?
+
+So groß, wie der Arbeitsspeicher erlaubt. Eine Logdatei von 100 MB mit einer Million Zeilen öffnet in etwa einer Sekunde, und Sprünge an jede Stelle gehen sofort. Zeilen mit mehr als 10.000 Zeichen, etwa in minifiziertem JSON, bleiben ungefärbt. Enthält eine Datei eine Zeile mit mehr als 100.000 Zeichen, öffnet ihr Fenster mit Zeilenumbruch, weil eine so lange Zeile ohne Umbruch viel Zeit und Speicher kostet; ⌃⌘W schaltet ihn trotzdem ab.
+
 ## Warum sucht die Schreibmaschine nicht in Ordnern?
 
 Weil sie keine Projekte kennt. Die Suche in allen offenen Dokumenten deckt ab, was gerade in Arbeit ist; für Ordner gibt es den Finder und Werkzeuge auf der Kommandozeile.

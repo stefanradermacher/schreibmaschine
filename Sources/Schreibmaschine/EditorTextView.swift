@@ -444,10 +444,11 @@ final class EditorTextView: NSTextView {
         return content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
     }
 
+    /// Just the inset, as AppKit would give it too; but asked for it, AppKit lays out the whole
+    /// text under TextKit 2 at times (placing an unwrapped text view in a window, for one), which
+    /// takes a minute in a text of many megabytes.
     override var textContainerOrigin: NSPoint {
-        var origin = super.textContainerOrigin
-        origin.y += extraTopSpace
-        return origin
+        NSPoint(x: textContainerInset.width, y: textContainerInset.height + extraTopSpace)
     }
 
     override func drawBackground(in rect: NSRect) {

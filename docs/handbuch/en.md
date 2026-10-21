@@ -275,6 +275,10 @@ They stay in the session and come back at the next start. Files are only written
 
 When Schreibmaschine starts because of a file, it shows just that file. “Window → Session → Restore Previous Session” brings the other windows back.
 
+## How large may a file be?
+
+As large as your memory allows. A log file of 100 MB with a million lines opens in about a second, and jumps to any place are immediate. Lines of more than 10,000 characters, as in minified JSON, stay uncolored. If a file contains a line of more than 100,000 characters, its window opens with line wrapping, because such a long line costs a lot of time and memory unwrapped; ⌃⌘W turns wrapping off all the same.
+
 ## Why doesn't Schreibmaschine search folders?
 
 Because it has no notion of projects. The search in all open documents covers what you are working on; for folders there are the Finder and command-line tools.

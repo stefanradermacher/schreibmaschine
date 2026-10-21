@@ -39,6 +39,13 @@ final class LineIndex {
 
     var lineCount: Int { starts.count }
 
+    /// The length of the longest line in UTF-16 units, its line break included.
+    var longestLineLength: Int {
+        var longest = 0
+        for index in 1..<starts.count { longest = max(longest, starts[index] - starts[index - 1]) }
+        return max(longest, storage.length - starts[starts.count - 1])
+    }
+
     /// 1-based number of the line containing the UTF-16 offset.
     func lineNumber(at offset: Int) -> Int {
         lastStart(atOrBefore: offset) + 1
