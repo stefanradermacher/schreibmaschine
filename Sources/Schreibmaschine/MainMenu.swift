@@ -93,6 +93,22 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Alle sichern"), #selector(NSDocumentController.saveAllDocuments(_:)), "s", [.command, .option]))
         menu.addItem(item(String(localized: "Zurück zur gesicherten Version"), #selector(NSDocument.revertToSaved(_:))))
         menu.addItem(.separator())
+        let compare = NSMenu(title: String(localized: "Vergleichen"))
+        compare.addItem(item(String(localized: "Mit gesicherter Fassung"), #selector(EditorViewController.compareWithSaved(_:))))
+        compare.addItem(item(String(localized: "Mit Zwischenablage"), #selector(EditorViewController.compareWithClipboard(_:))))
+        let documents = NSMenu(title: String(localized: "Mit Dokument"))
+        documents.delegate = CompareDocumentsMenu.shared
+        compare.addItem(submenu(documents))
+        compare.addItem(item(String(localized: "Mit Datei …"), #selector(EditorViewController.compareWithFile(_:))))
+        compare.addItem(.separator())
+        let down = String(Character(UnicodeScalar(NSDownArrowFunctionKey)!))
+        let up = String(Character(UnicodeScalar(NSUpArrowFunctionKey)!))
+        compare.addItem(item(String(localized: "Nächster Unterschied"), #selector(CompareViewController.nextDifference(_:)), down, [.command, .control]))
+        compare.addItem(item(String(localized: "Voriger Unterschied"), #selector(CompareViewController.previousDifference(_:)), up, [.command, .control]))
+        compare.addItem(.separator())
+        compare.addItem(item(String(localized: "Unterschiede als neues Dokument"), #selector(CompareViewController.openUnifiedDiff(_:))))
+        compare.addItem(item(String(localized: "Unterschiede kopieren"), #selector(CompareViewController.copyUnifiedDiff(_:))))
+        menu.addItem(submenu(compare))
         menu.addItem(submenu(encodingMenu(
             title: String(localized: "Erneut öffnen mit Kodierung"),
             action: #selector(TextDocument.reinterpretEncoding(_:)))))
@@ -382,6 +398,27 @@ final class BookmarksMenu: NSObject, NSMenuDelegate {
             let item = NSMenuItem(title: title, action: #selector(EditorPane.goToBookmark(_:)), keyEquivalent: "")
             item.tag = line
             item.representedObject = marker
+            menu.addItem(item)
+        }
+    }
+}
+
+/// Ablage → Vergleichen → Mit Dokument: the other open documents.
+final class CompareDocumentsMenu: NSObject, NSMenuDelegate {
+    static let shared = CompareDocumentsMenu()
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let current = NSDocumentController.shared.currentDocument
+        let others = NSDocumentController.shared.documents.compactMap { $0 as? TextDocument }.filter { $0 !== current }
+        if others.isEmpty {
+            let empty = NSMenuItem(title: String(localized: "Keine anderen Dokumente"), action: nil, keyEquivalent: "")
+            empty.isEnabled = false
+            menu.addItem(empty)
+        }
+        for document in others {
+            let item = NSMenuItem(title: document.displayName, action: #selector(EditorViewController.compareWithDocument(_:)), keyEquivalent: "")
+            item.representedObject = document
             menu.addItem(item)
         }
     }

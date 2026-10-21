@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ (gesichert)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (saved)"
+          }
+        }
+      }
+    },
     "%@ Absätze": {
       "localizations": {
         "en": {
@@ -47,6 +57,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ matches in %2$@ documents"
+          }
+        }
+      }
+    },
+    "%@ Unterschiede": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ differences"
           }
         }
       }
@@ -221,6 +241,16 @@
         }
       }
     },
+    "%@ ↔ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ↔ %2$@"
+          }
+        }
+      }
+    },
     "%@-Handbuch": {
       "localizations": {
         "en": {
@@ -327,6 +357,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 match replaced"
+          }
+        }
+      }
+    },
+    "1 Unterschied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 difference"
           }
         }
       }
@@ -771,6 +811,16 @@
         }
       }
     },
+    "Block übernehmen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take Over Block"
+          }
+        }
+      }
+    },
     "Breite %lld": {
       "localizations": {
         "en": {
@@ -1037,6 +1087,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The file has mixed line endings. Saving gives every line %@."
+          }
+        }
+      }
+    },
+    "Die Datei ist nur in diesem Vergleich geöffnet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is open only in this comparison."
           }
         }
       }
@@ -1671,6 +1731,16 @@
         }
       }
     },
+    "Groß-/Kleinschreibung ignorieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignore case"
+          }
+        }
+      }
+    },
     "HTML-Entitäten auflösen": {
       "localizations": {
         "en": {
@@ -1831,6 +1901,26 @@
         }
       }
     },
+    "Keine Unterschiede": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No differences"
+          }
+        }
+      }
+    },
+    "Keine anderen Dokumente": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Other Documents"
+          }
+        }
+      }
+    },
     "Kodieren": {
       "localizations": {
         "en": {
@@ -1907,6 +1997,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "White Space"
+          }
+        }
+      }
+    },
+    "Leerraum ignorieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignore whitespace"
           }
         }
       }
@@ -2021,6 +2121,26 @@
         }
       }
     },
+    "Mit Datei …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With File…"
+          }
+        }
+      }
+    },
+    "Mit Dokument": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With Document"
+          }
+        }
+      }
+    },
     "Mit Leerzeichen": {
       "localizations": {
         "en": {
@@ -2047,6 +2167,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indent Using Tabs"
+          }
+        }
+      }
+    },
+    "Mit Zwischenablage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With Clipboard"
+          }
+        }
+      }
+    },
+    "Mit gesicherter Fassung": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With Saved Version"
+          }
+        }
+      }
+    },
+    "Mit welcher Datei vergleichen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which file do you want to compare with?"
           }
         }
       }
@@ -2151,6 +2301,16 @@
         }
       }
     },
+    "Nicht sichern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don’t Save"
+          }
+        }
+      }
+    },
     "Noch keine Suchbegriffe": {
       "localizations": {
         "en": {
@@ -2227,6 +2387,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next match (↩)"
+          }
+        }
+      }
+    },
+    "Nächster Unterschied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Difference"
+          }
+        }
+      }
+    },
+    "Nächster Unterschied (⌃⌘↓)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Difference (⌃⌘↓)"
           }
         }
       }
@@ -2931,6 +3111,46 @@
         }
       }
     },
+    "Unterschied %@ von %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difference %1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "Unterschiede als neues Dokument": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Differences as New Document"
+          }
+        }
+      }
+    },
+    "Unterschiede kopieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Differences"
+          }
+        }
+      }
+    },
+    "Vergleichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare"
+          }
+        }
+      }
+    },
     "Verlauf löschen": {
       "localizations": {
         "en": {
@@ -3077,6 +3297,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restore Previous Session"
+          }
+        }
+      }
+    },
+    "Voriger Unterschied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Difference"
+          }
+        }
+      }
+    },
+    "Voriger Unterschied (⌃⌘↑)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Difference (⌃⌘↑)"
           }
         }
       }
@@ -3461,6 +3701,16 @@
         }
       }
     },
+    "Zwischenablage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clipboard"
+          }
+        }
+      }
+    },
     "\\t steht für einen Tab, \\n für einen Zeilenumbruch.": {
       "localizations": {
         "en": {
@@ -3527,6 +3777,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "open nothing"
+          }
+        }
+      }
+    },
+    "nur lesen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "read only"
+          }
+        }
+      }
+    },
+    "Änderungen an „%@“ sichern?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do you want to save the changes to “%@”?"
           }
         }
       }

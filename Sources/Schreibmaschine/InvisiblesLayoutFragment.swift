@@ -24,6 +24,16 @@ final class InvisiblesLayoutFragment: NSTextLayoutFragment {
 
     var options: Options?
 
+    /// Extra space below the paragraph, only in the layout of this view: in the comparison it
+    /// stands for lines the other side has and this one has not.
+    var extraHeight: CGFloat = 0
+
+    override var layoutFragmentFrame: CGRect {
+        var frame = super.layoutFragmentFrame
+        frame.size.height += extraHeight
+        return frame
+    }
+
     private static func symbol(for character: unichar) -> String? {
         switch character {
         case 0x20: "·"

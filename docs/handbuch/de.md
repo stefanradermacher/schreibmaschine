@@ -208,6 +208,20 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 
 > Reguläre Ausdrücke stehen am besten in einfachen Anführungszeichen, darin gilt der Backslash als gewöhnliches Zeichen: '\d+' bleibt \d+.
 
+# Vergleichen
+
+„Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten Fassung, mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
+
+Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Geänderte Zeilen sind blau, gelöschte rot, eingefügte grün; innerhalb einer geänderten Zeile sind die abweichenden Zeichen kräftiger markiert. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
+
+## Unterschiede abarbeiten
+
+⌃⌘↓ und ⌃⌘↑ oder die Pfeile unten links springen zum nächsten und vorigen Unterschied; daneben steht „Unterschied 3 von 12“. Beide Seiten sind gewöhnliche Editoren, der Vergleich folgt dem Tippen. Ein Klick in die linke Hälfte eines Blocks im Mittelstreifen übernimmt ihn von rechts nach links, ein Klick in die rechte Hälfte umgekehrt; ⌘Z nimmt das zurück. ⌘S sichert die Seite, in der die Einfügemarke steht. Gesicherte Fassung und Zwischenablage sind nur zum Lesen da.
+
+## Optionen und Ergebnis
+
+Unten rechts lassen sich Leerraum und Groß-/Kleinschreibung ignorieren. „Unterschiede kopieren“ und „Unterschiede als neues Dokument“ geben den Vergleich als Unified Diff weiter, wie ihn `diff -u` schreibt.
+
 # Darstellung und Einstellungen
 
 Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
@@ -241,8 +255,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Zeilen verschieben | ⌥⇧↑, ⌥⇧↓ |
 | Zeilen verbinden | ⇧⌘J |
 | Einrücken, Ausrücken | ⌘], ⌘[ |
-| Kommentar umschalten | ⌘/ |
-| Zur passenden Klammer | ⇧⌘M |
+| Kommentar umschalten, zur passenden Klammer | ⌘/, ⇧⌘M |
 | Auswahl erweitern, verkleinern | ⌥↑, ⌥↓ |
 | Nächstes Vorkommen dazu auswählen | ⌃G |
 | Alle Treffer auswählen | ⌃⌘G |
@@ -252,6 +265,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Nebeneinander, untereinander teilen | ⌃⌘T, ⌃⌥⌘T |
 | Zur anderen Hälfte, Teilung aufheben | ⌥⌘J, ⌃⇧⌘W |
 | Dokumentliste | ⌃⌘S |
+| Nächster, voriger Unterschied im Vergleich | ⌃⌘↓, ⌃⌘↑ |
 | Markdown-Vorschau, ablenkungsfreier Modus | ⌥⌘P, ⌃⇧⌘F |
 | Nächstes, voriges Dokument | ⌥⌘→, ⌥⌘← |
 | Dokument 1 bis 8, letztes Dokument | ⌘1 – ⌘8, ⌘9 |

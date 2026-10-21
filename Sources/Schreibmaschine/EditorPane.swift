@@ -414,6 +414,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     // MARK: - Selection
 
+    /// The document's own undo manager, also where the pane is not in its document's window.
+    func undoManager(for view: NSTextView) -> UndoManager? {
+        document.undoManager
+    }
+
     func textViewDidChangeSelection(_ notification: Notification) {
         // A selection in folded text, from searching or going to a line, opens the fold.
         if !document.folds.isEmpty {
@@ -530,7 +535,88 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     func textLayoutManager(_ textLayoutManager: NSTextLayoutManager, textLayoutFragmentFor location: NSTextLocation, in textElement: NSTextElement) -> NSTextLayoutFragment {
         let fragment = InvisiblesLayoutFragment(textElement: textElement, range: textElement.elementRange)
         fragment.options = invisibles
+        if !lineFillers.isEmpty, let content = textLayoutManager.textContentManager, let range = textElement.elementRange {
+            let line = document.lineIndex.lineNumber(at: content.offset(from: content.documentRange.location, to: range.location))
+            fragment.extraHeight = lineFillers[line] ?? 0
+        }
         return fragment
+    }
+
+    // MARK: - Comparison
+
+    /// Room below lines (numbered from 1) for lines the other side of a comparison has and this
+    /// one has not; set by the comparison.
+    var lineFillers: [Int: CGFloat] = [:] {
+        didSet {
+            guard lineFillers != oldValue else { return }
+            let changed = Set(lineFillers.keys).union(oldValue.keys).filter { lineFillers[$0] != oldValue[$0] }
+            guard let content = layoutManager.textContentManager else { return }
+            for line in changed where line >= 1 && line <= document.lineIndex.lineCount {
+                let start = document.lineIndex.start(ofLine: line)
+                let end = line < document.lineIndex.lineCount ? document.lineIndex.start(ofLine: line + 1) : document.textStorage.length
+                if let from = content.location(content.documentRange.location, offsetBy: start),
+                   let to = content.location(from, offsetBy: max(end - start, 0)),
+                   let range = NSTextRange(location: from, end: to) {
+                    // TextKit keeps the fragments it has and only lays them out again, so the
+                    // room is set on them as well as on the ones still to come.
+                    if let fragment = layoutManager.textLayoutFragment(for: from) as? InvisiblesLayoutFragment {
+                        fragment.extraHeight = lineFillers[line] ?? 0
+                    }
+                    layoutManager.invalidateLayout(for: range)
+                }
+            }
+            scheduleFullLayout()
+            textView.needsDisplay = true
+            ruler.needsDisplay = true
+        }
+    }
+
+    /// The colors of the comparison: line backgrounds by line (from 1), the room below lines,
+    /// and the characters that differ within changed lines.
+    struct DiffMarks {
+        var lineColors: [Int: NSColor] = [:]
+        var fillerColor = NSColor.clear
+        var characters: [NSRange] = []
+        var characterColor = NSColor.clear
+    }
+
+    var diffMarks: DiffMarks? {
+        didSet {
+            textView.extraBackgrounds = diffMarks == nil ? nil : { [weak self] rect in self?.diffBackgrounds(in: rect) ?? [] }
+            textView.needsDisplay = true
+        }
+    }
+
+    private func diffBackgrounds(in rect: NSRect) -> [(rect: NSRect, color: NSColor)] {
+        guard let marks = diffMarks, let content = layoutManager.textContentManager else { return [] }
+        var result: [(rect: NSRect, color: NSColor)] = []
+        let origin = textView.textContainerOrigin
+        let width = textView.bounds.width
+        if textView.extraTopSpace > 0 {
+            result.append((NSRect(x: 0, y: origin.y - textView.extraTopSpace, width: width, height: textView.extraTopSpace), marks.fillerColor))
+        }
+        let start = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: max(rect.minY - origin.y, 0)))?.rangeInElement.location
+            ?? content.documentRange.location
+        layoutManager.enumerateTextLayoutFragments(from: start, options: [.ensuresLayout]) { fragment in
+            let frame = fragment.layoutFragmentFrame
+            if frame.minY + origin.y > rect.maxY { return false }
+            let extra = (fragment as? InvisiblesLayoutFragment)?.extraHeight ?? 0
+            let line = document.lineIndex.lineNumber(at: content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location))
+            let textHeight = frame.height - extra
+            if let color = marks.lineColors[line] {
+                result.append((NSRect(x: 0, y: frame.minY + origin.y, width: width, height: textHeight), color))
+            }
+            if extra > 0 {
+                result.append((NSRect(x: 0, y: frame.minY + origin.y + textHeight, width: width, height: extra), marks.fillerColor))
+            }
+            return true
+        }
+        for range in marks.characters {
+            for frame in textView.segmentFrames(of: range) where frame.intersects(rect) {
+                result.append((frame, marks.characterColor))
+            }
+        }
+        return result
     }
 
     // MARK: - Folding

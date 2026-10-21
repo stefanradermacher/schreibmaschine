@@ -368,8 +368,30 @@ final class EditorTextView: NSTextView {
 
     // MARK: - Current line
 
+    /// Extra backgrounds below the text, for the comparison: rectangles and their colors in the
+    /// area to draw.
+    var extraBackgrounds: ((NSRect) -> [(rect: NSRect, color: NSColor)])?
+
+    /// Room above the first line, for the comparison when the other side starts with lines this
+    /// one does not have.
+    var extraTopSpace: CGFloat = 0 {
+        didSet { if extraTopSpace != oldValue { needsLayout = true; needsDisplay = true } }
+    }
+
+    override var textContainerOrigin: NSPoint {
+        var origin = super.textContainerOrigin
+        origin.y += extraTopSpace
+        return origin
+    }
+
     override func drawBackground(in rect: NSRect) {
         super.drawBackground(in: rect)
+        if let extraBackgrounds {
+            for (frame, color) in extraBackgrounds(rect) {
+                color.setFill()
+                frame.intersection(rect).fill()
+            }
+        }
         if highlightsCurrentLine {
             EditorStyle.currentLineColor.setFill()
             for lineRect in currentLineRects() { lineRect.intersection(rect).fill() }
@@ -412,7 +434,7 @@ final class EditorTextView: NSTextView {
     }
 
     /// The frames of a range of text, in view coordinates.
-    private func segmentFrames(of range: NSRange) -> [NSRect] {
+    func segmentFrames(of range: NSRange) -> [NSRect] {
         guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
               let start = content.location(content.documentRange.location, offsetBy: range.location),
               let end = content.location(start, offsetBy: range.length),

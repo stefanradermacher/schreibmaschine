@@ -222,6 +222,31 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 textView.setCursorRanges(textView.editingRanges + [NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0)])
             case "key":
                 textView.doCommand(by: NSSelectorFromString(argument))
+            case "subtree":
+                for window in NSApp.windows where window.title.contains(argument) {
+                    if let text = window.contentView?.perform(NSSelectorFromString("_subtreeDescription"))?.takeUnretainedValue() as? String {
+                        NSLog("DEBUGSCRIPT subtree\n%@", String(text.prefix(6000)))
+                    }
+                }
+            case "takeover":
+                // takeover:<block from 0>,left|right
+                let parts = argument.split(separator: ",")
+                if let compare = NSApp.windows.compactMap({ $0.contentViewController as? CompareViewController }).first,
+                   let index = Int(parts[0]) {
+                    compare.takeOver(index, toLeft: parts.last == "left")
+                    NSLog("DEBUGSCRIPT takeover blocks=%d left=%@", compare.hunks.count,
+                          String(compare.left.document.textStorage.string.prefix(60)))
+                }
+            case "geom":
+                func walk(_ view: NSView) {
+                    if let scroll = view as? NSScrollView, let ruler = scroll.verticalRulerView, let text = scroll.documentView as? NSTextView {
+                        NSLog("DEBUGSCRIPT geom scroll %@ clip %@ bounds %@ ruler %@ dicke %.1f text %@ origin %@ sichtbar %d",
+                              NSStringFromRect(scroll.frame), NSStringFromRect(scroll.contentView.frame), NSStringFromRect(scroll.contentView.bounds),
+                              NSStringFromRect(ruler.frame), ruler.ruleThickness, NSStringFromRect(text.frame), NSStringFromPoint(text.textContainerOrigin), scroll.rulersVisible ? 1 : 0)
+                    }
+                    view.subviews.forEach(walk)
+                }
+                for window in NSApp.windows where window.title.contains(argument) { window.contentView.map(walk) }
             case "layoutall":
                 let started = Date()
                 activePane.layoutManager.ensureLayout(for: activePane.layoutManager.documentRange)
@@ -372,6 +397,65 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     func splitViewDidResizeSubviews(_ notification: Notification) {
         panes.forEach { $0.rewrapAfterResize() }
         SessionStore.shared.setNeedsSave()
+    }
+
+    // MARK: - Comparing
+
+    private var currentSide: CompareSide {
+        CompareSide(document: document, title: document.displayName, isReadOnly: false)
+    }
+
+    private func compare(with other: CompareSide) {
+        CompareWindowController(left: currentSide, right: other).showWindow(nil)
+    }
+
+    /// A document only for the comparison, with a text and the language of this one.
+    private func temporaryDocument(text: String) -> TextDocument {
+        let other = TextDocument()
+        other.restore(text: text, encoding: .utf8, hasBOM: false, lineEnding: .lf)
+        other.setLanguage(document.language, byUser: false)
+        return other
+    }
+
+    /// The text as it is saved on disk, against the text in the window.
+    @objc func compareWithSaved(_ sender: Any?) {
+        guard let url = document.fileURL, let type = document.fileType,
+              let saved = try? TextDocument(contentsOf: url, ofType: type)
+        else { return NSSound.beep() }
+        compare(with: CompareSide(document: saved, title: String(localized: "\(document.displayName ?? "") (gesichert)"), isReadOnly: true))
+    }
+
+    @objc func compareWithClipboard(_ sender: Any?) {
+        guard let text = NSPasteboard.general.string(forType: .string) else { return NSSound.beep() }
+        compare(with: CompareSide(document: temporaryDocument(text: text.normalizingLineEndings),
+                                  title: String(localized: "Zwischenablage"), isReadOnly: true))
+    }
+
+    /// An entry of "Compare With Document": its represented object is the other document.
+    @objc func compareWithDocument(_ sender: NSMenuItem) {
+        guard let other = sender.representedObject as? TextDocument else { return }
+        compare(with: CompareSide(document: other, title: other.displayName, isReadOnly: false))
+    }
+
+    @objc func compareWithFile(_ sender: Any?) {
+        let panel = NSOpenPanel()
+        panel.message = String(localized: "Mit welcher Datei vergleichen?")
+        panel.prompt = String(localized: "Vergleichen")
+        guard let window = view.window else { return }
+        panel.beginSheetModal(for: window) { [weak self] response in
+            guard let self, response == .OK, let url = panel.url else { return }
+            if let open = NSDocumentController.shared.document(for: url) as? TextDocument {
+                compare(with: CompareSide(document: open, title: open.displayName, isReadOnly: false))
+                return
+            }
+            do {
+                let type = try NSDocumentController.shared.typeForContents(of: url)
+                let other = try TextDocument(contentsOf: url, ofType: type)
+                compare(with: CompareSide(document: other, title: other.displayName, isReadOnly: false))
+            } catch {
+                presentError(error)
+            }
+        }
     }
 
     // MARK: - Markdown preview
@@ -648,6 +732,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             item.state = isSplit && splitView.isVertical ? .on : .off
         case #selector(splitStacked(_:)):
             item.state = isSplit && !splitView.isVertical ? .on : .off
+        case #selector(compareWithSaved(_:)):
+            return document.fileURL != nil
+        case #selector(compareWithClipboard(_:)):
+            return NSPasteboard.general.string(forType: .string) != nil
         case #selector(togglePreview(_:)):
             item.state = showsPreview ? .on : .off
             return showsPreview || document.language?.id == "markdown"

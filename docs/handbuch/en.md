@@ -197,6 +197,20 @@ A rule names either words (words), a pattern within a line (match) or a region f
 
 > Regular expressions are best put in single quotes, where the backslash is an ordinary character: '\d+' stays \d+.
 
+# Comparing
+
+“File → Compare” puts two texts side by side: the document and its saved version, the contents of the clipboard, another open document or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
+
+Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Changed lines are blue, deleted ones red, inserted ones green; within a changed line the differing characters are marked more strongly. The bar at the right edge shows all differences in the whole text; a click jumps there.
+
+## Working through the differences
+
+⌃⌘↓ and ⌃⌘↑ or the arrows at the bottom left jump to the next and previous difference; beside them it says “Difference 3 of 12”. Both sides are ordinary editors, and the comparison follows your typing. A click on the left half of a block in the middle strip takes it over from right to left, a click on the right half the other way round; ⌘Z undoes it. ⌘S saves the side that holds the insertion point. The saved version and the clipboard are read only.
+
+## Options and result
+
+At the bottom right you can ignore whitespace and case. “Copy Differences” and “Differences as New Document” pass the comparison on as a unified diff, the way `diff -u` writes it.
+
 # View and settings
 
 Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. ⌘+ and ⌘- change the font size, ⌘0 resets it.
@@ -230,8 +244,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Move lines | ⌥⇧↑, ⌥⇧↓ |
 | Join lines | ⇧⌘J |
 | Indent, outdent | ⌘], ⌘[ |
-| Toggle comment | ⌘/ |
-| Jump to matching bracket | ⇧⌘M |
+| Toggle comment, jump to matching bracket | ⌘/, ⇧⌘M |
 | Expand, shrink selection | ⌥↑, ⌥↓ |
 | Add the next occurrence | ⌃G |
 | Select all matches | ⌃⌘G |
@@ -241,6 +254,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Split side by side, top and bottom | ⌃⌘T, ⌃⌥⌘T |
 | Go to other half, close split | ⌥⌘J, ⌃⇧⌘W |
 | Document list | ⌃⌘S |
+| Next, previous difference in a comparison | ⌃⌘↓, ⌃⌘↑ |
 | Markdown preview, distraction-free mode | ⌥⌘P, ⌃⇧⌘F |
 | Next, previous document | ⌥⌘→, ⌥⌘← |
 | Documents 1 to 8, last document | ⌘1 – ⌘8, ⌘9 |
