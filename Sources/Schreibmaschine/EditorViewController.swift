@@ -282,6 +282,13 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                                                 isARepeat: false, keyCode: 0) {
                     textView.keyDown(with: event)
                 }
+            case "script":
+                // script:<file name in the scripts folder>
+                if let folder = UserScript.folder {
+                    let item = NSMenuItem()
+                    item.representedObject = folder.appendingPathComponent(argument)
+                    runUserScript(item)
+                }
             case "call":
                 // call:<action> — straight to this editor, also when the window is not in front
                 _ = perform(NSSelectorFromString(argument), with: nil)

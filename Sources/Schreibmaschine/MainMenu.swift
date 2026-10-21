@@ -25,6 +25,9 @@ enum MainMenu {
         main.addItem(submenu(viewMenu()))
         main.addItem(submenu(textMenu()))
         main.addItem(submenu(formatMenu()))
+        let scripts = NSMenu(title: String(localized: "Skripte"))
+        scripts.delegate = UserScriptsMenu.shared
+        main.addItem(submenu(scripts))
         let window = windowMenu()
         main.addItem(submenu(window))
         let help = helpMenu()

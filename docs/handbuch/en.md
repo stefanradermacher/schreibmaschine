@@ -211,6 +211,30 @@ Both sides scroll together. Where lines are missing on one side, Schreibmaschine
 
 At the bottom right you can ignore whitespace and case. “Copy Differences” and “Differences as New Document” pass the comparison on as a unified diff, the way `diff -u` writes it.
 
+# Scripts
+
+You can write your own transformations as scripts in any language that runs on the Mac: shell, Perl, Ruby, Swift or whatever else is installed. They live in the scripts folder, which “Scripts → Open Scripts Folder” shows in the Finder, and appear in the Scripts menu and in the command palette. New scripts are there right away. Subfolders become submenus; a number before the name only sets the order: “01 Sort.sh” is called “Sort” in the menu. “Install Example Scripts…” puts three examples into the folder.
+
+A script gets text on its standard input and gives text back on its standard output. It has to be executable (in Terminal: chmod +x) and start with a line such as #!/bin/zsh. Without further details it gets the selection, or the whole document if nothing is selected, and its result replaces exactly that. So two lines with sort already make a sort command of your own. It gets the path of the file as its first argument.
+
+## Input and output
+
+Two lines at the beginning of the script, in its comment syntax, change that:
+
+- @input selection: the selection, or the document if nothing is selected (the default)
+- @input document: always the whole document
+- @input none: nothing
+- @output replace-selection: replaces what went in (the default)
+- @output replace-document: replaces the whole document
+- @output insert: inserts after the selection
+- @output new-document: opens a new document
+- @output copy: puts the result on the clipboard
+- @output none: discards the result
+
+Replacing text with a result is one step that ⌘Z undoes. If a script ends with an error, Schreibmaschine shows what it wrote to its error output. If the text changes while a script runs, Schreibmaschine does not put the result in but offers it as a new document.
+
+> Scripts run outside Schreibmaschine's sandbox, with your rights; they can do anything a program in Terminal can. Only put scripts you trust into the folder.
+
 # View and settings
 
 Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. ⌘+ and ⌘- change the font size, ⌘0 resets it.

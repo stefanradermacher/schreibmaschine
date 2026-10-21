@@ -781,6 +781,16 @@
         }
       }
     },
+    "Beispielskripte installieren …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install Example Scripts…"
+          }
+        }
+      }
+    },
     "Betroffen sind: %@. Solange sie im Text stehen, lässt sich das Dokument in dieser Kodierung nicht sichern.": {
       "localizations": {
         "en": {
@@ -971,6 +981,26 @@
         }
       }
     },
+    "Das Ergebnis wurde deshalb nicht eingesetzt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So the result was not put in."
+          }
+        }
+      }
+    },
+    "Das Skript „%@“ ist fehlgeschlagen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The script “%@” failed."
+          }
+        }
+      }
+    },
     "Das doppelte Anführungszeichen ist nicht geschlossen.": {
       "localizations": {
         "en": {
@@ -987,6 +1017,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The single quote is not closed."
+          }
+        }
+      }
+    },
+    "Das ist nicht der Skriptordner.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is not the scripts folder."
           }
         }
       }
@@ -1061,6 +1101,16 @@
         }
       }
     },
+    "Der Text hat sich geändert, während „%@“ lief.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The text changed while “%@” was running."
+          }
+        }
+      }
+    },
     "Der Text ist kein gültiges Base64.": {
       "localizations": {
         "en": {
@@ -1081,12 +1131,32 @@
         }
       }
     },
+    "Die Beispielskripte kommen in den Skriptordner. Bestätige ihn mit „Installieren“.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The example scripts go into the scripts folder. Confirm it with “Install”."
+          }
+        }
+      }
+    },
     "Die Datei hat unterschiedliche Zeilenenden. Beim Sichern bekommen alle Zeilen %@.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "The file has mixed line endings. Saving gives every line %@."
+          }
+        }
+      }
+    },
+    "Die Datei ist nicht ausführbar. Im Terminal macht „chmod +x“ sie dazu.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is not executable. In Terminal, “chmod +x” makes it so."
           }
         }
       }
@@ -1841,6 +1911,26 @@
         }
       }
     },
+    "In neuem Dokument öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in New Document"
+          }
+        }
+      }
+    },
+    "Installieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install"
+          }
+        }
+      }
+    },
     "JSON formatieren": {
       "localizations": {
         "en": {
@@ -1897,6 +1987,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "No documents"
+          }
+        }
+      }
+    },
+    "Keine Skripte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Scripts"
           }
         }
       }
@@ -2277,6 +2377,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open new documents:"
+          }
+        }
+      }
+    },
+    "Nicht alle Beispielskripte ließen sich anlegen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not all example scripts could be created."
           }
         }
       }
@@ -2767,6 +2877,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Session"
+          }
+        }
+      }
+    },
+    "Skripte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scripts"
+          }
+        }
+      }
+    },
+    "Skripte findet die Schreibmaschine nur in %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibmaschine finds scripts only in %@."
+          }
+        }
+      }
+    },
+    "Skriptordner öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Scripts Folder"
           }
         }
       }

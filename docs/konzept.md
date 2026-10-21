@@ -124,7 +124,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 
 ## 7. Benutzerskripte
 
-Skripte in `~/Library/Application Scripts/<Bundle-ID>/` erscheinen in einem Menü **Skripte** und in der Befehlspalette. Das ist der Weg, den Apple für Sandbox-Apps vorsieht. Ein Skript kann in jeder Sprache geschrieben sein, die auf dem Mac läuft. Es bekommt die Auswahl oder das Dokument über die Standardeingabe und gibt Text zurück. Ein Kopfkommentar legt fest, ob der Text die Auswahl ersetzt, eingefügt wird oder ein neues Dokument wird. So lassen sich eigene Umformungen bauen, ohne dass sie in die App gehören.
+Skripte in `~/Library/Application Scripts/<Bundle-ID>/` erscheinen in einem Menü **Skripte** und in der Befehlspalette. Das ist der Weg, den Apple für Sandbox-Apps vorsieht. Ein Skript kann in jeder Sprache geschrieben sein, die auf dem Mac läuft. Es bekommt die Auswahl oder das Dokument über die Standardeingabe und gibt Text zurück. Zwei Kopfzeilen legen fest, was hineingeht (`@input selection | document | none`) und was mit dem Ergebnis geschieht (`@output replace-selection | replace-document | insert | new-document | copy | none`); ohne sie ist ein Skript ein Filter auf Auswahl oder Dokument. So lassen sich eigene Umformungen bauen, ohne dass sie in die App gehören.
 
 ## 8. Vergleichen
 

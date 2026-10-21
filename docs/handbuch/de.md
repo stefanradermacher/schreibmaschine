@@ -222,6 +222,30 @@ Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Sc
 
 Unten rechts lassen sich Leerraum und Groß-/Kleinschreibung ignorieren. „Unterschiede kopieren“ und „Unterschiede als neues Dokument“ geben den Vergleich als Unified Diff weiter, wie ihn `diff -u` schreibt.
 
+# Skripte
+
+Eigene Umformungen lassen sich als Skripte in jeder Sprache schreiben, die auf dem Mac läuft: Shell, Perl, Ruby, Swift oder was sonst installiert ist. Sie liegen im Skriptordner, den „Skripte → Skriptordner öffnen“ im Finder zeigt, und erscheinen im Menü „Skripte“ und in der Befehlspalette. Neue Skripte sind sofort da. Unterordner werden zu Untermenüs, eine Nummer vor dem Namen bestimmt nur die Reihenfolge: „01 Sortieren.sh“ heißt im Menü „Sortieren“. „Beispielskripte installieren …“ legt drei Beispiele in den Ordner.
+
+Ein Skript bekommt Text über die Standardeingabe und gibt Text über die Standardausgabe zurück. Es muss ausführbar sein (im Terminal: chmod +x) und mit einer Zeile wie #!/bin/zsh beginnen. Ohne weitere Angaben bekommt es die Auswahl, ohne Auswahl das ganze Dokument, und sein Ergebnis ersetzt genau das. Ein Zweizeiler mit sort ist so schon ein eigener Sortierbefehl. Den Pfad der Datei bekommt es als erstes Argument.
+
+## Eingabe und Ausgabe
+
+Zwei Zeilen am Anfang des Skripts, in seiner Kommentarschreibweise, ändern das:
+
+- @input selection: die Auswahl, ohne Auswahl das Dokument (so ohne Angabe)
+- @input document: immer das ganze Dokument
+- @input none: nichts
+- @output replace-selection: ersetzt, was hineinging (so ohne Angabe)
+- @output replace-document: ersetzt das ganze Dokument
+- @output insert: fügt hinter der Auswahl ein
+- @output new-document: öffnet ein neues Dokument
+- @output copy: legt das Ergebnis in die Zwischenablage
+- @output none: verwirft das Ergebnis
+
+Ein Ergebnis zu ersetzen ist ein Schritt, den ⌘Z zurücknimmt. Endet ein Skript mit einem Fehler, zeigt die Schreibmaschine, was es auf die Fehlerausgabe geschrieben hat. Ändert sich der Text, während ein Skript läuft, setzt sie das Ergebnis nicht ein, sondern bietet es als neues Dokument an.
+
+> Skripte laufen außerhalb der Sandbox der Schreibmaschine, mit deinen Rechten; sie können alles, was ein Programm im Terminal kann. Lege nur Skripte in den Ordner, denen du traust.
+
 # Darstellung und Einstellungen
 
 Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.

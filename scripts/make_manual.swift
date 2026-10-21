@@ -206,17 +206,37 @@ func endPage() {
     ctx.endPDFPage()
 }
 
-/// Height of the text, measured with the same line breaking that is used for drawing.
-/// boundingRect is too optimistic for justified text with hyphenation and clips the last line.
-func height(_ string: NSAttributedString, width: CGFloat = contentWidth) -> CGFloat {
+/// Text laid out at a width. Measuring and drawing go through the same layout: drawing an
+/// attributed string breaks justified, hyphenated lines differently at times and then needs
+/// one line more than measured, which is cut off.
+func layout(_ string: NSAttributedString, width: CGFloat) -> (NSLayoutManager, NSTextContainer, NSTextStorage) {
     let storage = NSTextStorage(attributedString: string)
     let container = NSTextContainer(size: CGSize(width: width, height: .greatestFiniteMagnitude))
     container.lineFragmentPadding = 0
-    let layout = NSLayoutManager()
-    layout.addTextContainer(container)
-    storage.addLayoutManager(layout)
-    layout.ensureLayout(for: container)
-    return ceil(layout.usedRect(for: container).height) + 3
+    let manager = NSLayoutManager()
+    manager.addTextContainer(container)
+    storage.addLayoutManager(manager)
+    manager.ensureLayout(for: container)
+    return (manager, container, storage)
+}
+
+func height(_ string: NSAttributedString, width: CGFloat = contentWidth) -> CGFloat {
+    let (manager, container, storage) = layout(string, width: width)
+    // The layout manager holds its text only weakly.
+    return withExtendedLifetime(storage) { ceil(manager.usedRect(for: container).height) + 3 }
+}
+
+/// Draws the text with its top left corner at the point, in the page's coordinates.
+func draw(_ string: NSAttributedString, x: CGFloat, top: CGFloat, width: CGFloat) {
+    let (manager, container, storage) = layout(string, width: width)
+    ctx.saveGState()
+    ctx.translateBy(x: x, y: top)
+    ctx.scaleBy(x: 1, y: -1)
+    NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
+    manager.drawGlyphs(forGlyphRange: manager.glyphRange(for: container), at: .zero)
+    NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: false)
+    ctx.restoreGState()
+    withExtendedLifetime(storage) {}
 }
 
 func place(_ string: NSAttributedString, indent: CGFloat = 0, gap: CGFloat = 0) {
@@ -226,8 +246,7 @@ func place(_ string: NSAttributedString, indent: CGFloat = 0, gap: CGFloat = 0) 
         endPage()
         beginPage()
     }
-    string.draw(with: CGRect(x: margin + indent, y: y - needed, width: width, height: needed),
-                options: [.usesLineFragmentOrigin, .usesFontLeading])
+    draw(string, x: margin + indent, top: y, width: width)
     y -= needed + gap
 }
 
@@ -289,8 +308,7 @@ func noteBox(_ string: String) {
     NSBezierPath(roundedRect: box, xRadius: 7, yRadius: 7).fill()
     accent.setFill()
     CGRect(x: box.minX, y: box.minY, width: 3.5, height: box.height).fill()
-    content.draw(with: CGRect(x: box.minX + 20, y: box.minY + 14, width: inner, height: needed - 28),
-                 options: [.usesLineFragmentOrigin, .usesFontLeading])
+    draw(content, x: box.minX + 20, top: box.maxY - 14, width: inner)
     y -= needed + 16
 }
 
@@ -389,8 +407,7 @@ for (index, block) in blocks.enumerated() {
             beginPage()
         }
         dot.draw(at: NSPoint(x: margin, y: y - needed + (needed - 14)))
-        line.draw(with: CGRect(x: margin + 18, y: y - needed, width: contentWidth - 18, height: needed),
-                  options: [.usesLineFragmentOrigin, .usesFontLeading])
+        draw(line, x: margin + 18, top: y, width: contentWidth - 18)
         y -= needed + 7
     case .note(let string):
         y -= 4
