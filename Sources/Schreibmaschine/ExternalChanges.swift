@@ -194,6 +194,12 @@ struct ExternalChangeBar: View {
             case .modified:
                 Text("„\(name)“ wurde außerhalb der Schreibmaschine geändert.")
                 Spacer(minLength: 8)
+                Button("Vergleichen") {
+                    // The comparison is for merging into the own text, which saving then writes.
+                    document.keepOwnText()
+                    document.editor?.compareWithFileOnDisk(title: String(localized: "\(name) (extern geändert)"))
+                }
+                .help("Zeigt deinen Text neben der geänderten Datei; Unterschiede lassen sich übernehmen")
                 Button("Neu laden") { document.reloadFromDisk() }
                     .help("Liest die Datei neu; deine ungesicherten Änderungen gehen verloren")
                 Button("Behalten") { document.keepOwnText() }

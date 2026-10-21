@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ (extern geändert)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (changed outside)"
+          }
+        }
+      }
+    },
     "%@ (gesichert)": {
       "localizations": {
         "en": {
@@ -3847,6 +3857,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Text encoding:"
+          }
+        }
+      }
+    },
+    "Zeigt deinen Text neben der geänderten Datei; Unterschiede lassen sich übernehmen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows your text beside the changed file; differences can be taken over"
           }
         }
       }

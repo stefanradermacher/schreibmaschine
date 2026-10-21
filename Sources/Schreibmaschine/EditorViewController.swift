@@ -326,6 +326,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 switch argument {
                 case "reload": document.reloadFromDisk()
                 case "keep": document.keepOwnText()
+                case "compare":
+                    document.keepOwnText()
+                    compareWithFileOnDisk(title: String(localized: "\(document.displayName ?? "") (extern geändert)"))
                 case "save": document.save(nil)
                 default: document.checkForExternalChange()
                 }
@@ -487,10 +490,16 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
 
     /// The text as it is saved on disk, against the text in the window.
     @objc func compareWithSaved(_ sender: Any?) {
+        compareWithFileOnDisk(title: String(localized: "\(document.displayName ?? "") (gesichert)"))
+    }
+
+    /// The file as it is on disk, against the text in the window; also for a file another
+    /// program changed meanwhile.
+    func compareWithFileOnDisk(title: String) {
         guard let url = document.fileURL, let type = document.fileType,
               let saved = try? TextDocument(contentsOf: url, ofType: type)
         else { return NSSound.beep() }
-        compare(with: CompareSide(document: saved, title: String(localized: "\(document.displayName ?? "") (gesichert)"), isReadOnly: true))
+        compare(with: CompareSide(document: saved, title: title, isReadOnly: true))
     }
 
     @objc func compareWithClipboard(_ sender: Any?) {
