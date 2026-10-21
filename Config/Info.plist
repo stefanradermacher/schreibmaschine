@@ -9,14 +9,12 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeIconSystemGenerated</key>
-			<true/>
 			<key>CFBundleTypeName</key>
 			<string>Text</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
-			<string>Default</string>
+			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.plain-text</string>
@@ -45,10 +43,10 @@
 			</array>
 			<key>NSDocumentClass</key>
 			<string>$(PRODUCT_MODULE_NAME).TextDocument</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>TextDocument.icns</string>
 		</dict>
 		<dict>
-			<key>CFBundleTypeIconSystemGenerated</key>
-			<true/>
 			<key>CFBundleTypeName</key>
 			<string>Data</string>
 			<key>CFBundleTypeRole</key>
@@ -61,6 +59,8 @@
 			</array>
 			<key>NSDocumentClass</key>
 			<string>$(PRODUCT_MODULE_NAME).TextDocument</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>TextDocument.icns</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -96,265 +96,6 @@
 	<array>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>public.plain-text</string>
-			<key>UTTypeDescription</key>
-			<string>Plain text document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>txt</string>
-					<string>text</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/plain</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Text-fill</string>
-				<key>UTTypeIconText</key>
-				<string>txt</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.apple.log</string>
-			<key>UTTypeDescription</key>
-			<string>Log file</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.plain-text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>log</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Text-fill</string>
-				<key>UTTypeIconText</key>
-				<string>log</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.json</string>
-			<key>UTTypeDescription</key>
-			<string>JSON document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>json</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/json</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>JSON</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.netscape.javascript-source</string>
-			<key>UTTypeDescription</key>
-			<string>JavaScript script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>js</string>
-					<string>mjs</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/javascript</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>js</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.css</string>
-			<key>UTTypeDescription</key>
-			<string>CSS style sheet</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>css</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/css</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>CSS</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.python-script</string>
-			<key>UTTypeDescription</key>
-			<string>Python script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>py</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>Python</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.php-script</string>
-			<key>UTTypeDescription</key>
-			<string>PHP script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>php</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>PHP</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.shell-script</string>
-			<key>UTTypeDescription</key>
-			<string>Shell script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>sh</string>
-					<string>command</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>sh</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.zsh-script</string>
-			<key>UTTypeDescription</key>
-			<string>Zsh script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.shell-script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>zsh</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>zsh</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.bash-script</string>
-			<key>UTTypeDescription</key>
-			<string>Bash script</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.shell-script</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>bash</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>bash</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
 			<string>org.iso.sql</string>
 			<key>UTTypeDescription</key>
 			<string>SQL source</string>
@@ -373,13 +114,6 @@
 					<string>application/sql</string>
 				</array>
 			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>SQL</string>
-			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeIdentifier</key>
@@ -396,99 +130,6 @@
 				<array>
 					<string>lua</string>
 				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Code-fill</string>
-				<key>UTTypeIconText</key>
-				<string>Lua</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.html</string>
-			<key>UTTypeDescription</key>
-			<string>HTML document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>html</string>
-					<string>htm</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/html</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Markup-fill</string>
-				<key>UTTypeIconText</key>
-				<string>HTML</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.xml</string>
-			<key>UTTypeDescription</key>
-			<string>XML document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>xml</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/xml</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Markup-fill</string>
-				<key>UTTypeIconText</key>
-				<string>XML</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.yaml</string>
-			<key>UTTypeDescription</key>
-			<string>YAML document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>yaml</string>
-					<string>yml</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/x-yaml</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Config-fill</string>
-				<key>UTTypeIconText</key>
-				<string>YAML</string>
 			</dict>
 		</dict>
 		<dict>
@@ -511,13 +152,6 @@
 					<string>application/toml</string>
 				</array>
 			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Config-fill</string>
-				<key>UTTypeIconText</key>
-				<string>TOML</string>
-			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeIdentifier</key>
@@ -534,94 +168,6 @@
 				<array>
 					<string>ini</string>
 				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Config-fill</string>
-				<key>UTTypeIconText</key>
-				<string>ini</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.comma-separated-values-text</string>
-			<key>UTTypeDescription</key>
-			<string>CSV document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.delimited-values-text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>csv</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/csv</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Data-fill</string>
-				<key>UTTypeIconText</key>
-				<string>CSV</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.tab-separated-values-text</string>
-			<key>UTTypeDescription</key>
-			<string>TSV document</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.delimited-values-text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>tsv</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>text/tab-separated-values</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Data-fill</string>
-				<key>UTTypeIconText</key>
-				<string>TSV</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>public.patch-file</string>
-			<key>UTTypeDescription</key>
-			<string>Diff</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.text</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>diff</string>
-					<string>patch</string>
-				</array>
-			</dict>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconBackgroundName</key>
-				<string>Diff-fill</string>
-				<key>UTTypeIconText</key>
-				<string>diff</string>
 			</dict>
 		</dict>
 	</array>
