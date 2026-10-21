@@ -429,6 +429,8 @@ struct DefaultAppFormatsView: View {
         }
         .padding(20)
         .frame(width: 480)
+        // The buttons in the app's steel blue, as in Motiv's sheet in its petrol.
+        .tint(Color("AccentColor"))
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             generation += 1
         }
