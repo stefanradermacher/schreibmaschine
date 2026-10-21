@@ -68,6 +68,14 @@ final class TextDocument: NSDocument {
     var lineChangesWork: DispatchWorkItem?
     var lineChangesGeneration = 0
 
+    // Saving automatically and the history of earlier states (Autosave.swift).
+    var autosaveWork: DispatchWorkItem?
+    var isAutosavingFile = false
+    /// The state the file had when it was opened, for File → Revert To.
+    var openedVersion: VersionHistory.Version?
+    /// The text as read, until a window shows the document and it goes into the history.
+    var openedText: String?
+
     /// Other programs that take part in file coordination report their writes here.
     override func presentedItemDidChange() {
         DispatchQueue.main.async { [weak self] in self?.scheduleExternalCheck() }
@@ -75,6 +83,7 @@ final class TextDocument: NSDocument {
 
     /// Moved in the Finder: NSDocument follows the file, the watcher follows it too.
     override func presentedItemDidMove(to newURL: URL) {
+        if let fileURL { VersionHistory.shared.move(from: fileURL, to: newURL) }
         super.presentedItemDidMove(to: newURL)
         DispatchQueue.main.async { [weak self] in self?.watchFile() }
     }
@@ -128,6 +137,7 @@ final class TextDocument: NSDocument {
         SessionStore.shared.setNeedsSave()
         if textStorage.editedMask.contains(.editedCharacters) {
             scheduleLineChanges()
+            if !isReplacingText { scheduleAutosave() }
             // The edited line may now end in a different state; the lines after it start anew.
             let line = lineIndex.lineNumber(at: textStorage.editedRange.location)
             highlighter.invalidate(fromLine: line)
@@ -208,6 +218,7 @@ final class TextDocument: NSDocument {
 
     override func makeWindowControllers() {
         addWindowController(DocumentWindowController())
+        recordOpenedVersion()
     }
 
     override func read(from url: URL, ofType typeName: String) throws {
@@ -217,10 +228,12 @@ final class TextDocument: NSDocument {
         // An encoding chosen by hand for this file before is used again, as long as it fits.
         if let chosen = FileStateStore.shared.encoding(for: url), (try? load(data, as: chosen)) != nil {
             setUpLanguageAndIndentation(for: url)
+            openedText = textStorage.string
             return
         }
         try load(data, as: nil)
         setUpLanguageAndIndentation(for: url)
+        openedText = textStorage.string
     }
 
     // MARK: - Language and indentation
@@ -295,8 +308,14 @@ final class TextDocument: NSDocument {
             self.isSavingFile = false
             if error == nil, saveOperation != .autosaveElsewhereOperation {
                 self.clearExternalChange()
-                self.savedText = self.textStorage.string
-                self.scheduleLineChanges()
+                // Saved automatically, the marks keep showing what changed since the own ⌘S.
+                if !self.isAutosavingFile {
+                    self.savedText = self.textStorage.string
+                    self.scheduleLineChanges()
+                }
+                if saveOperation == .saveOperation || saveOperation == .saveAsOperation {
+                    self.recordSavedVersion(automatically: self.isAutosavingFile)
+                }
                 // "Save As" gives the document another file.
                 self.watchFile()
             }
@@ -342,6 +361,7 @@ final class TextDocument: NSDocument {
         }
         fileWatcher = nil
         externalCheck?.cancel()
+        autosaveWork?.cancel()
         super.close()
         stopSecurityScope()
         SessionStore.shared.setNeedsSave()

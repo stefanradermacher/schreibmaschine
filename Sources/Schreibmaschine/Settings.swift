@@ -52,6 +52,8 @@ private struct GeneralSettings: View {
     @AppStorage(Preferences.defaultEncoding) private var encoding = Int(String.Encoding.utf8.rawValue)
     @AppStorage(Preferences.writesUTF8BOM) private var writesBOM = false
     @AppStorage(Preferences.defaultLineEnding) private var lineEnding = LineEnding.lf.rawValue
+    @AppStorage(Preferences.autosave) private var autosave = AutosaveMode.off.rawValue
+    @AppStorage(Preferences.historyLength) private var historyLength = 20
 
     var body: some View {
         Form {
@@ -73,6 +75,23 @@ private struct GeneralSettings: View {
                 Text("in einem neuen Fenster").tag(false)
             }
             .pickerStyle(.radioGroup)
+
+            Section {
+                Picker("Automatisch sichern:", selection: $autosave) {
+                    ForEach(AutosaveMode.allCases, id: \.rawValue) { mode in
+                        Text(mode.title).tag(mode.rawValue)
+                    }
+                }
+                Picker("Frühere Fassungen aufbewahren:", selection: $historyLength) {
+                    ForEach(VersionHistory.lengths, id: \.self) { length in
+                        Text("\(length) je Datei").tag(length)
+                    }
+                }
+            } footer: {
+                Text("Automatisch gesichert wird, wenn Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder ein Dokument geschlossen wird; auf Wunsch auch nach 15 Sekunden Schreibpause. Die Änderungen im Lineal zeigen weiter, was seit dem letzten ⌘S geändert ist. Unter Ablage → Zurück zu stehen die früheren Fassungen der letzten 14 Tage; mit ⌥ lassen sie sich vergleichen.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
             Section {
                 DefaultAppSettingsRows()

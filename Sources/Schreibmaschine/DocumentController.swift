@@ -44,6 +44,7 @@ final class DocumentController: NSDocumentController {
     /// keeps the unsaved texts; only if they cannot be written does the usual review run.
     override func reviewUnsavedDocuments(withAlertTitle title: String?, cancellable: Bool, delegate: Any?,
                                          didReviewAllSelector: Selector?, contextInfo: UnsafeMutableRawPointer?) {
+        for case let document as TextDocument in documents { document.autosaveBeforeQuitting() }
         guard SessionStore.shared.save(cleanExit: true) else {
             return super.reviewUnsavedDocuments(withAlertTitle: title, cancellable: cancellable, delegate: delegate,
                                                 didReviewAllSelector: didReviewAllSelector, contextInfo: contextInfo)

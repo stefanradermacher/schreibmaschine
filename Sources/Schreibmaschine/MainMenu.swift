@@ -94,7 +94,9 @@ enum MainMenu {
         menu.addItem(item(String(localized: "Sichern"), #selector(NSDocument.save(_:)), "s"))
         menu.addItem(item(String(localized: "Sichern unter …"), #selector(NSDocument.saveAs(_:)), "s", [.command, .shift]))
         menu.addItem(item(String(localized: "Alle sichern"), #selector(NSDocumentController.saveAllDocuments(_:)), "s", [.command, .option]))
-        menu.addItem(item(String(localized: "Zurück zur gesicherten Version"), #selector(NSDocument.revertToSaved(_:))))
+        let revert = NSMenu(title: String(localized: "Zurück zu"))
+        revert.delegate = RevertMenu.shared
+        menu.addItem(submenu(revert))
         menu.addItem(.separator())
         let compare = NSMenu(title: String(localized: "Vergleichen"))
         compare.addItem(item(String(localized: "Mit gesicherter Fassung"), #selector(EditorViewController.compareWithSaved(_:))))

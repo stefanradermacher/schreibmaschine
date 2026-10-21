@@ -323,6 +323,41 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 textView.performTextCommand(item)
             case "dark":
                 NSApp.appearance = NSAppearance(named: .darkAqua)
+            case "autosave":
+                // autosave:off|onLeave|onLeaveAndPause — the setting; autosave alone saves now
+                if argument.isEmpty {
+                    document.autosaveToFile { saved in NSLog("DEBUGSCRIPT autosave saved=%d", saved ? 1 : 0) }
+                } else {
+                    UserDefaults.standard.set(argument, forKey: Preferences.autosave)
+                }
+            case "revertmenu":
+                let menu = NSMenu()
+                RevertMenu.shared.fill(menu, for: document)
+                NSLog("DEBUGSCRIPT revertmenu %@", menu.items.map { item in
+                    item.isSeparatorItem ? "—" : "\(item.isAlternate ? "⌥" : "")\(item.title)\(item.action == nil ? " (aus)" : "")"
+                }.joined(separator: " | "))
+            case "close":
+                view.window?.performClose(nil)
+            case "quit":
+                NSApp.terminate(nil)
+            case "resign":
+                // As when another window comes to the front.
+                NotificationCenter.default.post(name: NSWindow.didResignKeyNotification, object: view.window)
+            case "history":
+                let opened = document.openedVersion
+                let versions = document.fileURL.map { VersionHistory.shared.versions(for: $0) } ?? []
+                let list = versions.map { version in
+                    "\(version.entry.kind.rawValue)\(version.entry.id == opened?.entry.id ? "*" : "")=\((VersionHistory.shared.text(of: version) ?? "?").debugDescription)"
+                }
+                NSLog("DEBUGSCRIPT history %@ edited=%d saved=%@ [%@]", argument, document.isDocumentEdited ? 1 : 0,
+                      (document.savedText ?? "nil").debugDescription, list.joined(separator: ", "))
+            case "revert":
+                // revert:n — the nth newest kept state, revert:opened — the state at opening
+                let versions = document.fileURL.map { VersionHistory.shared.versions(for: $0) } ?? []
+                let version = argument == "opened" ? document.openedVersion : versions.reversed().dropFirst(Int(argument) ?? 0).first
+                let item = NSMenuItem()
+                item.representedObject = version?.entry.id
+                revertToVersion(item)
             case "marks":
                 let changes = document.lineChanges
                 NSLog("DEBUGSCRIPT marks %@ neu=%@ geändert=%@ gelöscht=%@", argument,
@@ -496,9 +531,16 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         return other
     }
 
-    /// The text as it is saved on disk, against the text in the window.
+    /// The text as last saved with ⌘S, against the text in the window. Saving automatically
+    /// does not count, as for the marks in the ruler.
     @objc func compareWithSaved(_ sender: Any?) {
-        compareWithFileOnDisk(title: String(localized: "\(document.displayName ?? "") (gesichert)"))
+        guard let saved = document.savedText else { return NSSound.beep() }
+        compareWithText(saved, title: String(localized: "\(document.displayName ?? "") (gesichert)"))
+    }
+
+    /// Another text in the language of this document, read-only, against the text in the window.
+    func compareWithText(_ text: String, title: String) {
+        compare(with: CompareSide(document: temporaryDocument(text: text), title: title, isReadOnly: true))
     }
 
     /// The file as it is on disk, against the text in the window; also for a file another

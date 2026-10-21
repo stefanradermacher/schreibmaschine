@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         TipJar.shared.startListening()
+        AutosaveTrigger.shared.start()
         // Started to open files (Finder, Open With, Dock, `open`): then exactly these files appear,
         // and the stored session is kept as the previous one. NSApplicationLaunchIsDefaultLaunchKey
         // cannot tell, it is false for a plain `open -a` too.

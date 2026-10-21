@@ -42,6 +42,10 @@ enum Preferences {
     static let focusMode = "focusMode"
     /// Whether the comparison marks equal lines green as well.
     static let compareMarksEqualLines = "compareMarksEqualLines"
+    /// When changed files are written without ⌘S (AutosaveMode).
+    static let autosave = "autosave"
+    /// How many earlier states of each file File → Revert To keeps.
+    static let historyLength = "historyLength"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
@@ -74,6 +78,8 @@ enum Preferences {
             textColumn: 70,
             focusMode: false,
             compareMarksEqualLines: false,
+            autosave: AutosaveMode.off.rawValue,
+            historyLength: 20,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
@@ -114,6 +120,7 @@ enum Preferences {
     /// The focus mode: everything but the paragraph with the insertion point fades.
     static var focusModeValue: Bool { defaults.bool(forKey: focusMode) }
     static var compareMarksEqualLinesValue: Bool { defaults.bool(forKey: compareMarksEqualLines) }
+    static var historyLengthValue: Int { defaults.integer(forKey: historyLength).clamped(to: 1...100) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
     static var highlightsSyntaxValue: Bool { defaults.bool(forKey: highlightsSyntax) }
 

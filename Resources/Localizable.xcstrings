@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
     "%@ (extern geändert)": {
       "localizations": {
         "en": {
@@ -241,12 +251,52 @@
         }
       }
     },
+    "%@ – automatisch gesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – saved automatically"
+          }
+        }
+      }
+    },
+    "%@ – gesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – saved"
+          }
+        }
+      }
+    },
+    "%@ – geöffnet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – opened"
+          }
+        }
+      }
+    },
     "%@ – ungesichert": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ – unsaved"
+          }
+        }
+      }
+    },
+    "%@ – vergleichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – compare"
           }
         }
       }
@@ -327,6 +377,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld characters in %2$lld lines selected"
+          }
+        }
+      }
+    },
+    "%lld je Datei": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld per file"
           }
         }
       }
@@ -781,6 +841,26 @@
         }
       }
     },
+    "Automatisch gesichert wird, wenn Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder ein Dokument geschlossen wird; auf Wunsch auch nach 15 Sekunden Schreibpause. Die Änderungen im Lineal zeigen weiter, was seit dem letzten ⌘S geändert ist. Unter Ablage → Zurück zu stehen die früheren Fassungen der letzten 14 Tage; mit ⌥ lassen sie sich vergleichen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files are saved automatically when the window or tab loses focus, Schreibmaschine goes to the background, or a document is closed; if you like, also after a 15-second pause in typing. The marks in the ruler keep showing what changed since the last ⌘S. File → Revert To lists the earlier versions of the last 14 days; with ⌥, you can compare them."
+          }
+        }
+      }
+    },
+    "Automatisch sichern:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save automatically:"
+          }
+        }
+      }
+    },
     "Base64 dekodieren": {
       "localizations": {
         "en": {
@@ -861,6 +941,26 @@
         }
       }
     },
+    "Beim Verlassen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When switching away"
+          }
+        }
+      }
+    },
+    "Beim Verlassen und in Schreibpausen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When switching away and when pausing"
+          }
+        }
+      }
+    },
     "Beim Öffnen erkennt die Schreibmaschine Kodierung und Zeilenenden der Datei und behält sie beim Sichern bei. Die Standardkodierung wird außerdem zuerst versucht, wenn eine Datei kein UTF-8 ist.": {
       "localizations": {
         "en": {
@@ -896,7 +996,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Page Up/Down, Home and End move the insertion point"
+            "value": "Page Up/Down, Home, and End move the insertion point"
           }
         }
       }
@@ -1076,7 +1176,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "View → Distraction-Free Mode (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers."
+            "value": "View → Distraction-Free Mode (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars, and line numbers."
           }
         }
       }
@@ -1346,7 +1446,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Schreibmaschine has no tracking, no analytics and no ads, and never connects to the internet by itself; only a voluntary tip goes through the App Store. Your texts and settings stay on your Mac."
+            "value": "Schreibmaschine has no tracking, no analytics, and no ads, and never connects to the internet by itself; only a voluntary tip goes through the App Store. Your texts and settings stay on your Mac."
           }
         }
       }
@@ -1397,6 +1497,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The decoded data is not UTF-8 text."
+          }
+        }
+      }
+    },
+    "Die früheren Fassungen dieser Datei werden entfernt. Die Datei selbst bleibt, wie sie ist.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The earlier versions of this file are removed. The file itself stays as it is."
           }
         }
       }
@@ -1851,12 +1961,22 @@
         }
       }
     },
+    "Frühere Fassungen aufbewahren:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep earlier versions:"
+          }
+        }
+      }
+    },
     "Für Text und Code: reiner Text, Markdown, JSON, YAML, Quelltexte und mehr. Mit „Anpassen …“ lässt sich jedes Format einzeln festlegen, auch HTML, CSV und Protokolle.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For text and code: plain text, Markdown, JSON, YAML, source code and more. “Customize…” sets each format on its own, HTML, CSV and logs included."
+            "value": "For text and code: plain text, Markdown, JSON, YAML, source code, and more. “Customize…” sets each format on its own, HTML, CSV, and logs included."
           }
         }
       }
@@ -2201,6 +2321,16 @@
         }
       }
     },
+    "Keine früheren Fassungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Earlier Versions"
+          }
+        }
+      }
+    },
     "Kodieren": {
       "localizations": {
         "en": {
@@ -2487,6 +2617,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Which file do you want to compare with?"
+          }
+        }
+      }
+    },
+    "Mit zuletzt gesicherter Fassung vergleichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare with Last Saved"
+          }
+        }
+      }
+    },
+    "Mit zuletzt geöffneter Fassung vergleichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare with Last Opened"
           }
         }
       }
@@ -3116,7 +3266,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It does not seem to contain text: it contains null bytes, as found in programs, images or archives."
+            "value": "It does not seem to contain text: it contains null bytes, as found in programs, images, or archives."
           }
         }
       }
@@ -3591,6 +3741,26 @@
         }
       }
     },
+    "Verlauf löschen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear History…"
+          }
+        }
+      }
+    },
+    "Verlauf von „%@“ löschen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the history of “%@”?"
+          }
+        }
+      }
+    },
     "Verschiedene Apps": {
       "localizations": {
         "en": {
@@ -3866,7 +4036,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Words, characters, lines and paragraphs; separately for the selection"
+            "value": "Words, characters, lines, and paragraphs; separately for the selection"
           }
         }
       }
@@ -3946,7 +4116,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Line, line:column, +lines or -lines"
+            "value": "Line, line:column, +lines, or -lines"
           }
         }
       }
@@ -4111,6 +4281,36 @@
         }
       }
     },
+    "Zuletzt gesichert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Saved"
+          }
+        }
+      }
+    },
+    "Zuletzt geöffnet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Opened"
+          }
+        }
+      }
+    },
+    "Zuletzt geöffnet (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Opened (%@)"
+          }
+        }
+      }
+    },
     "Zuordnungen in geschweiften Klammern werden nicht unterstützt; bitte eingerückt schreiben.": {
       "localizations": {
         "en": {
@@ -4141,6 +4341,16 @@
         }
       }
     },
+    "Zurück zu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revert To"
+          }
+        }
+      }
+    },
     "Zurück zu %@": {
       "localizations": {
         "en": {
@@ -4151,12 +4361,12 @@
         }
       }
     },
-    "Zurück zur gesicherten Version": {
+    "Zurück zu früherer Fassung": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Revert to Saved"
+            "value": "Revert to Earlier Version"
           }
         }
       }
@@ -4236,7 +4446,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS asks for each format separately, so for all formats several times in a row. If you decline once, Schreibmaschine stops asking. HTML, CSV and logs are not part of “All Formats”, as they are usually better off in the browser, a spreadsheet or Console. Reset gives a format back to the app it had before, otherwise TextEdit."
+            "value": "macOS asks for each format separately, so for all formats several times in a row. If you decline once, Schreibmaschine stops asking. HTML, CSV, and logs are not part of “All Formats”, as they are usually better off in the browser, a spreadsheet, or Console. Reset gives a format back to the app it had before, otherwise TextEdit."
           }
         }
       }
