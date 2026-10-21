@@ -118,6 +118,13 @@ final class StatusBar: NSView, NSMenuDelegate {
             item.tag = Int(encoding.rawValue)
             encodings.addItem(item)
         }
+        encodings.addItem(.separator())
+        encodings.addItem(TextEncoding.moreEncodingsItem { encoding in
+            let item = NSMenuItem(title: TextEncoding.name(of: encoding), action: #selector(encodingChosen(_:)), keyEquivalent: "")
+            item.target = self
+            item.tag = Int(encoding.rawValue)
+            return item
+        })
         encodingButton.menu = encodings
 
         let endings = NSMenu()
@@ -159,9 +166,24 @@ final class StatusBar: NSView, NSMenuDelegate {
         indentationButton.synchronizeTitleAndSelectedItem()
         let bom = document.hasBOM ? String(localized: " mit BOM") : ""
         encodingButton.menu?.items.first?.title = TextEncoding.name(of: document.encoding) + bom
-        for item in encodingButton.menu?.items.dropFirst() ?? [] {
-            item.state = item.tag == Int(document.encoding.rawValue) ? .on : .off
+        // The current encoding gets a check mark; the groups of "More Encodings" that contain
+        // it get a dash, so it can be found.
+        let current = Int(document.encoding.rawValue)
+        func mark(_ items: [NSMenuItem]) -> Bool {
+            var contains = false
+            for item in items {
+                if let submenu = item.submenu {
+                    let inside = mark(submenu.items)
+                    item.state = inside ? .mixed : .off
+                    contains = contains || inside
+                } else if !item.isSeparatorItem {
+                    item.state = item.tag == current ? .on : .off
+                    contains = contains || item.tag == current
+                }
+            }
+            return contains
         }
+        _ = mark(Array(encodingButton.menu?.items.dropFirst() ?? []))
 
         let ending = document.lineEnding
         for item in lineEndingButton.menu?.items.dropFirst() ?? [] {

@@ -241,6 +241,8 @@ enum MainMenu {
             }
             menu.addItem(item(TextEncoding.name(of: encoding), action, tag: Int(encoding.rawValue)))
         }
+        menu.addItem(.separator())
+        menu.addItem(TextEncoding.moreEncodingsItem { item(TextEncoding.name(of: $0), action, tag: Int($0.rawValue)) })
         return menu
     }
 

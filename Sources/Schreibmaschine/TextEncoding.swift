@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Foundation
+import AppKit
 
 /// The character encodings the app offers, and recognizing the encoding of a file.
 enum TextEncoding {
@@ -28,6 +28,48 @@ enum TextEncoding {
     ]
 
     static let all: [String.Encoding] = menuItems.compactMap { $0 }
+
+    /// Every other encoding macOS knows, grouped by script for "More Encodings". The group is
+    /// the part of the name before the parenthesis ("Greek (ISO 8859-7)"), which macOS already
+    /// gives in the language of the app. Symbol sets and internal encodings are left out.
+    static let moreGroups: [(title: String, encodings: [String.Encoding])] = {
+        let excluded: Set<CFStringEncoding> = [
+            CFStringEncoding(CFStringEncodings.macSymbol.rawValue),
+            CFStringEncoding(CFStringEncodings.macDingbats.rawValue),
+            0x29, // keyboard symbols
+            0x0BFF, // non-lossy ASCII
+        ]
+        var groups: [String: [(name: String, encoding: String.Encoding)]] = [:]
+        guard var pointer = CFStringGetListOfAvailableEncodings() else { return [] }
+        while pointer.pointee != kCFStringEncodingInvalidId {
+            let cf = pointer.pointee
+            pointer += 1
+            let candidate = TextEncoding.encoding(cf)
+            guard !excluded.contains(cf), !all.contains(candidate) else { continue }
+            let name = TextEncoding.name(of: candidate)
+            guard !name.isEmpty else { continue }
+            let group = name.range(of: " (").map { String(name[..<$0.lowerBound]) } ?? name
+            groups[group, default: []].append((name, candidate))
+        }
+        return groups
+            .map { group in (group.key, group.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }.map(\.encoding)) }
+            .sorted { $0.0.localizedStandardCompare($1.0) == .orderedAscending }
+    }()
+
+    /// "More Encodings": a submenu per script with the encodings not in the short list.
+    static func moreEncodingsItem(makeItem: (String.Encoding) -> NSMenuItem) -> NSMenuItem {
+        let more = NSMenu(title: String(localized: "Weitere Kodierungen"))
+        for (title, encodings) in moreGroups {
+            let group = NSMenu(title: title)
+            encodings.forEach { group.addItem(makeItem($0)) }
+            let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+            item.submenu = group
+            more.addItem(item)
+        }
+        let item = NSMenuItem(title: more.title, action: nil, keyEquivalent: "")
+        item.submenu = more
+        return item
+    }
 
     static let latin9 = encoding(CFStringEncoding(CFStringEncodings.isoLatin9.rawValue))
     static let koi8r = encoding(CFStringEncoding(CFStringEncodings.KOI8_R.rawValue))

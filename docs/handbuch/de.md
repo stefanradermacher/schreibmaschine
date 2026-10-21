@@ -56,7 +56,7 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 ## Sichern, Kodierung und Zeilenenden
 
-Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst. Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
+Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst. Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
 
 # Die Sitzung
 

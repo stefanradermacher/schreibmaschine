@@ -2851,6 +2851,16 @@
         }
       }
     },
+    "Weitere Kodierungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More Encodings"
+          }
+        }
+      }
+    },
     "Weitere Werkzeuge von mir": {
       "localizations": {
         "en": {

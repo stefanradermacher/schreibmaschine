@@ -45,7 +45,7 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 ## Saving, encoding and line endings
 
-Schreibmaschine writes a file only when you save it with ⌘S. It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
+Schreibmaschine writes a file only when you save it with ⌘S. It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu, every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
 
 # The session
 
