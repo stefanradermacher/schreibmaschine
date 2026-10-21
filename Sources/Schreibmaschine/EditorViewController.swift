@@ -200,13 +200,29 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 textView.setCursorRanges(textView.editingRanges + [NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0)])
             case "key":
                 textView.doCommand(by: NSSelectorFromString(argument))
+            case "press":
+                // press:home, press:end+shift, press:home+cmd, press:pagedown
+                let parts = argument.split(separator: "+").map(String.init)
+                let keys = ["home": NSHomeFunctionKey, "end": NSEndFunctionKey, "pageup": NSPageUpFunctionKey, "pagedown": NSPageDownFunctionKey]
+                guard let code = keys[parts[0]], let scalar = UnicodeScalar(code) else { break }
+                var flags: NSEvent.ModifierFlags = [.function]
+                if parts.contains("shift") { flags.insert(.shift) }
+                if parts.contains("cmd") { flags.insert(.command) }
+                if let event = NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0,
+                                                windowNumber: view.window?.windowNumber ?? 0, context: nil,
+                                                characters: String(Character(scalar)), charactersIgnoringModifiers: String(Character(scalar)),
+                                                isARepeat: false, keyCode: 0) {
+                    textView.keyDown(with: event)
+                }
             case "sel":
                 NSApp.sendAction(NSSelectorFromString(argument), to: nil, from: nil)
             case "type":
                 textView.insertText(argument.replacingOccurrences(of: "\\n", with: "\n"), replacementRange: NSRange(location: NSNotFound, length: 0))
             case "dump":
                 let ranges = textView.editingRanges.map { "\($0.location),\($0.length)" }.joined(separator: " ")
-                NSLog("DEBUGSCRIPT %@ panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, panes.count,
+                let caretY = textView.caretRect(at: textView.selectedRange().upperBound).minY - textView.visibleRect.minY
+                let caretLine = document.lineIndex.lineNumber(at: textView.selectedRange().upperBound)
+                NSLog("DEBUGSCRIPT %@ line=%d y=%.1f panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, caretLine, caretY, panes.count,
                       panes.firstIndex { $0 === activePane } ?? -1, ranges, document.bookmarkedLines.description,
                       document.foldedHeads.description, textView.string.count < 300 ? textView.string.debugDescription : "…")
             default:

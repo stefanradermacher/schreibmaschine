@@ -102,6 +102,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.fontName) private var fontName = ""
     @AppStorage(Preferences.fontSize) private var fontSize = 13.0
     @AppStorage(Preferences.lineHeight) private var lineHeight = 1.2
+    @AppStorage(Preferences.navigationMovesCaret) private var navigationMovesCaret = true
     @AppStorage(Preferences.tabWidth) private var tabWidth = 4
     @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
@@ -140,6 +141,14 @@ private struct EditorSettings: View {
                 Text("Einrückung")
             } footer: {
                 Text("Gilt für neue Dokumente und Sprachen ohne eigene Vorgabe. Vorhandene Dateien behalten ihre Einrückung; unter Format → Einrückung lässt sie sich für jedes Dokument ändern.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Bild ↑/↓, Pos1 und Ende bewegen die Einfügemarke", isOn: $navigationMovesCaret)
+            } footer: {
+                Text("Wie in den meisten Code-Editoren: Bild ↑/↓ blättert mit der Einfügemarke, Pos1 und Ende gehen an Anfang und Ende der Zeile, mit ⌘ an Anfang und Ende des Dokuments. Pos1 und ⌘← springen zuerst hinter die Einrückung. Ausgeschaltet gilt das Verhalten von macOS: Diese Tasten blättern nur.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

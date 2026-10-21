@@ -32,6 +32,7 @@ enum Preferences {
     static let wrapColumn = "wrapColumn"
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
+    static let navigationMovesCaret = "navigationMovesCaret"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
@@ -59,6 +60,7 @@ enum Preferences {
             wrapColumn: 80,
             indentsWithSpaces: true,
             autoIndents: true,
+            navigationMovesCaret: true,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
@@ -89,6 +91,9 @@ enum Preferences {
     static var wrapColumnValue: Int { defaults.integer(forKey: wrapColumn).clamped(to: 10...1000) }
     static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
     static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
+    /// Page Up/Down, Home and End move the insertion point, as in most code editors, instead of
+    /// only scrolling as on the Mac.
+    static var navigationMovesCaretValue: Bool { defaults.bool(forKey: navigationMovesCaret) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
     static var highlightsSyntaxValue: Bool { defaults.bool(forKey: highlightsSyntax) }
 

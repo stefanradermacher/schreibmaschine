@@ -188,6 +188,10 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 
 Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
 
+## Blättern und springen
+
+Bild ↑ und Bild ↓ blättern um eine Fensterhöhe und nehmen die Einfügemarke mit. Pos1 und Ende gehen an Anfang und Ende der Zeile, ⌘Pos1 und ⌘Ende (wie ⌘↑ und ⌘↓) an Anfang und Ende des Dokuments; mit ⇧ wird jeweils ausgewählt. Pos1 und ⌘← springen zuerst hinter die Einrückung, ein zweites Mal an den echten Zeilenanfang. Wer das Verhalten von macOS bevorzugt, bei dem diese Tasten nur blättern, schaltet es in den Einstellungen unter Editor aus.
+
 ## Die Statusleiste
 
 Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einrückung, Zeichenkodierung und Zeilenenden. Alles außer der Position lässt sich per Klick ändern.

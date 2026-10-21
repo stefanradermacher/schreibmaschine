@@ -156,6 +156,7 @@ extension EditorTextView {
         "moveToBeginningOfDocument:", "moveToEndOfDocument:", "moveToBeginningOfDocumentAndModifySelection:",
         "moveToEndOfDocumentAndModifySelection:", "pageUp:", "pageDown:", "pageUpAndModifySelection:",
         "pageDownAndModifySelection:", "scrollPageUp:", "scrollPageDown:",
+        "movePageUp:", "movePageDown:", "movePageUpAndModifySelection:", "movePageDownAndModifySelection:",
     ]
 
     /// Key commands at several insertion points. Returns false for the ones NSTextView handles.

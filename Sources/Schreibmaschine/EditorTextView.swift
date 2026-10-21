@@ -129,8 +129,142 @@ final class EditorTextView: NSTextView {
     // MARK: - Several insertion points
 
     override func doCommand(by selector: Selector) {
+        var selector = Preferences.navigationMovesCaretValue ? Self.editorNavigation[selector] ?? selector : selector
+        // NSTextView's own page movements do not move the insertion point under TextKit 2.
+        selector = Self.pageMovements[selector] ?? selector
         if performMultiCursorCommand(selector) { return }
         super.doCommand(by: selector)
+    }
+
+    // MARK: - Navigation keys
+
+    /// With "Page Up/Down, Home and End move the insertion point" on: Page Up and Down move the
+    /// insertion point instead of only scrolling, and ⌘← goes to the smart start of the line.
+    private static let editorNavigation: [Selector: Selector] = [
+        #selector(scrollPageUp(_:)): #selector(movePageUp(_:)),
+        #selector(scrollPageDown(_:)): #selector(movePageDown(_:)),
+        #selector(moveToBeginningOfLine(_:)): #selector(moveToSmartLineStart(_:)),
+        #selector(moveToLeftEndOfLine(_:)): #selector(moveToSmartLineStart(_:)),
+        #selector(moveToBeginningOfLineAndModifySelection(_:)): #selector(moveToSmartLineStartAndModifySelection(_:)),
+        #selector(moveToLeftEndOfLineAndModifySelection(_:)): #selector(moveToSmartLineStartAndModifySelection(_:)),
+    ]
+
+    /// Home and End are read from the key itself: macOS binds ⇧Home to the same command as ⌘⇧↑,
+    /// which has to keep selecting to the start of the document. Home and End go to the start
+    /// and end of the line, with ⌘ to the start and end of the document, with ⇧ selecting.
+    override func keyDown(with event: NSEvent) {
+        let modifiers = event.modifierFlags.intersection([.command, .shift, .option, .control])
+        guard Preferences.navigationMovesCaretValue, !modifiers.contains(.option), !modifiers.contains(.control),
+              let key = event.specialKey, key == .home || key == .end
+        else { return super.keyDown(with: event) }
+        let extend = modifiers.contains(.shift)
+        let selector: Selector
+        switch (key == .home, modifiers.contains(.command), extend) {
+        case (true, true, false): selector = #selector(moveToBeginningOfDocument(_:))
+        case (true, true, true): selector = #selector(moveToBeginningOfDocumentAndModifySelection(_:))
+        case (false, true, false): selector = #selector(moveToEndOfDocument(_:))
+        case (false, true, true): selector = #selector(moveToEndOfDocumentAndModifySelection(_:))
+        case (true, false, false): selector = #selector(moveToSmartLineStart(_:))
+        case (true, false, true): selector = #selector(moveToSmartLineStartAndModifySelection(_:))
+        case (false, false, false): selector = #selector(moveToEndOfLine(_:))
+        case (false, false, true): selector = #selector(moveToEndOfLineAndModifySelection(_:))
+        }
+        if performMultiCursorCommand(selector) { return }
+        super.doCommand(by: selector)
+    }
+
+    private static let pageMovements: [Selector: Selector] = [
+        #selector(pageUp(_:)): #selector(movePageUp(_:)),
+        #selector(pageDown(_:)): #selector(movePageDown(_:)),
+        #selector(pageUpAndModifySelection(_:)): #selector(movePageUpAndModifySelection(_:)),
+        #selector(pageDownAndModifySelection(_:)): #selector(movePageDownAndModifySelection(_:)),
+    ]
+
+    @objc func movePageUp(_ sender: Any?) { movePage(down: false, extend: false) }
+    @objc func movePageDown(_ sender: Any?) { movePage(down: true, extend: false) }
+    @objc func movePageUpAndModifySelection(_ sender: Any?) { movePage(down: false, extend: true) }
+    @objc func movePageDownAndModifySelection(_ sender: Any?) { movePage(down: true, extend: true) }
+
+    /// Moves the insertion point by the lines that fit in the window, less one to keep one's
+    /// bearings, and scrolls so that it stays at the same place in the window. Counted in lines,
+    /// not points: below the visible part TextKit only estimates heights, so a point found
+    /// there drifted by a line now and then.
+    private func movePage(down: Bool, extend: Bool) {
+        guard let scrollView = enclosingScrollView else { return }
+        let before = selectedRange()
+        let caret = down ? before.upperBound : before.location
+        let caretFrame = caretRect(at: caret)
+        let visible = scrollView.documentVisibleRect
+        let offsetInWindow = caretFrame.minY - visible.minY
+        let lineHeight = max(caretFrame.height, 1)
+        let lines = max(Int(visible.height / lineHeight) - 1, 1)
+
+        for _ in 0..<lines {
+            switch (down, extend) {
+            case (true, false): super.moveDown(nil)
+            case (false, false): super.moveUp(nil)
+            case (true, true): super.moveDownAndModifySelection(nil)
+            case (false, true): super.moveUpAndModifySelection(nil)
+            }
+        }
+        // On the first or last line already: on to the very start or end.
+        let after = selectedRange()
+        if after == before {
+            let length = (string as NSString).length
+            if extend {
+                setSelectedRange(down ? NSRange(location: before.location, length: length - before.location)
+                                      : NSRange(location: 0, length: before.upperBound))
+            } else {
+                setSelectedRange(NSRange(location: down ? length : 0, length: 0))
+            }
+        }
+
+        let moved = selectedRange()
+        let newCaret = down ? moved.upperBound : moved.location
+        if let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+           let location = content.location(content.documentRange.location, offsetBy: newCaret) {
+            layoutManager.ensureLayout(for: NSTextRange(location: location))
+        }
+        let maxY = max(frame.height - visible.height, 0)
+        let y = (caretRect(at: newCaret).minY - offsetInWindow).clamped(to: 0...maxY)
+        scrollView.contentView.scroll(to: NSPoint(x: visible.minX, y: y))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    /// Home: the first character after the indentation, and from there the very start of the
+    /// line. In a wrapped line it first goes to the start of the visual line.
+    @objc func moveToSmartLineStart(_ sender: Any?) {
+        setSelectedRange(NSRange(location: smartLineStart(from: selectedRange().location), length: 0))
+        scrollRangeToVisible(selectedRange())
+    }
+
+    @objc func moveToSmartLineStartAndModifySelection(_ sender: Any?) {
+        let selection = selectedRange()
+        // The end that stays is the one away from the start of the line.
+        let anchor = selection.upperBound
+        let target = smartLineStart(from: selection.location)
+        setSelectedRange(NSRange(location: min(target, anchor), length: abs(anchor - target)))
+        scrollRangeToVisible(NSRange(location: target, length: 0))
+    }
+
+    private func smartLineStart(from caret: Int) -> Int {
+        let text = string as NSString
+        let lineStart = text.lineRange(for: NSRange(location: caret, length: 0)).location
+        var indentEnd = lineStart
+        while indentEnd < text.length, [0x20, 0x09].contains(text.character(at: indentEnd)) { indentEnd += 1 }
+        // The start of the visual line, from TextKit.
+        var visualStart = caret
+        if let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+           let location = content.location(content.documentRange.location, offsetBy: caret),
+           let fragment = layoutManager.textLayoutFragment(for: location) {
+            let fragmentStart = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+            let inFragment = caret - fragmentStart
+            if let line = fragment.textLineFragments.last(where: { $0.characterRange.location <= inFragment }) {
+                visualStart = fragmentStart + line.characterRange.location
+            }
+        }
+        if visualStart > indentEnd && caret != visualStart { return visualStart }
+        return caret == indentEnd ? lineStart : indentEnd
     }
 
     override func insertText(_ string: Any, replacementRange: NSRange) {

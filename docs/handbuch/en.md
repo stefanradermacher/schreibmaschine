@@ -177,6 +177,10 @@ A rule names either words (words), a pattern within a line (match) or a region f
 
 Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. ⌘+ and ⌘- change the font size, ⌘0 resets it.
 
+## Scrolling and jumping
+
+Page Up and Page Down scroll by the height of the window and take the insertion point along. Home and End go to the start and end of the line, ⌘Home and ⌘End (like ⌘↑ and ⌘↓) to the start and end of the document; with ⇧ they select. Home and ⌘← first go to the end of the indentation, and a second time to the very start of the line. If you prefer the macOS behavior, where these keys only scroll, switch it off in the settings under Editor.
+
 ## The status bar
 
 At the bottom of the window are line and column, the size of the selection, language, indentation, text encoding and line endings. Everything except the position can be changed with a click.

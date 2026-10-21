@@ -601,6 +601,16 @@
         }
       }
     },
+    "Bild ↑/↓, Pos1 und Ende bewegen die Einfügemarke": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page Up/Down, Home and End move the insertion point"
+          }
+        }
+      }
+    },
     "Bitte eine Spaltenzahl angeben, zum Beispiel 72.": {
       "localizations": {
         "en": {
@@ -2887,6 +2897,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Undo"
+          }
+        }
+      }
+    },
+    "Wie in den meisten Code-Editoren: Bild ↑/↓ blättert mit der Einfügemarke, Pos1 und Ende gehen an Anfang und Ende der Zeile, mit ⌘ an Anfang und Ende des Dokuments. Pos1 und ⌘← springen zuerst hinter die Einrückung. Ausgeschaltet gilt das Verhalten von macOS: Diese Tasten blättern nur.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As in most code editors: Page Up/Down scroll together with the insertion point, Home and End go to the start and end of the line, with ⌘ to the start and end of the document. Home and ⌘← first go to the end of the indentation. When off, the macOS behavior applies: these keys only scroll."
           }
         }
       }
