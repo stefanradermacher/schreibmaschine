@@ -62,6 +62,7 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
     private let statusLabel = NSTextField(labelWithString: "")
     private let whitespaceToggle = NSButton(checkboxWithTitle: String(localized: "Leerraum ignorieren"), target: nil, action: nil)
     private let caseToggle = NSButton(checkboxWithTitle: String(localized: "Groß-/Kleinschreibung ignorieren"), target: nil, action: nil)
+    private let equalToggle = NSButton(checkboxWithTitle: String(localized: "Gleiche Zeilen grün"), target: nil, action: nil)
     private var observers: [NSObjectProtocol] = []
     private var diff: TextDiff?
     private var generation = 0
@@ -94,6 +95,11 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
             toggle.target = self
             toggle.action = #selector(optionsChanged(_:))
         }
+        equalToggle.controlSize = .small
+        equalToggle.font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        equalToggle.target = self
+        equalToggle.action = #selector(equalLinesChanged(_:))
+        equalToggle.state = Preferences.compareMarksEqualLinesValue ? .on : .off
         let previous = NSButton(image: NSImage(systemSymbolName: "chevron.up", accessibilityDescription: String(localized: "Voriger Unterschied"))!,
                                 target: self, action: #selector(previousDifference(_:)))
         let next = NSButton(image: NSImage(systemSymbolName: "chevron.down", accessibilityDescription: String(localized: "Nächster Unterschied"))!,
@@ -104,7 +110,7 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
         }
         previous.toolTip = String(localized: "Voriger Unterschied (⌃⌘↑)")
         next.toolTip = String(localized: "Nächster Unterschied (⌃⌘↓)")
-        let bottom = NSStackView(views: [previous, next, statusLabel, NSView(), whitespaceToggle, caseToggle])
+        let bottom = NSStackView(views: [previous, next, statusLabel, NSView(), equalToggle, whitespaceToggle, caseToggle])
         bottom.spacing = 10
         bottom.edgeInsets = NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 10)
         let separator = NSBox()
@@ -217,6 +223,12 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
 
     @objc private func optionsChanged(_ sender: Any?) { compare() }
 
+    /// Remembered for all comparisons; only the colors change.
+    @objc private func equalLinesChanged(_ sender: Any?) {
+        UserDefaults.standard.set(equalToggle.state == .on, forKey: Preferences.compareMarksEqualLines)
+        if let diff { show(diff) }
+    }
+
     private var pending: DispatchWorkItem?
 
     private func scheduleComparison() {
@@ -275,9 +287,10 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
         rightPane.lineFillers = rightFillers
         leftPane.textView.extraTopSpace = leftTop
         rightPane.textView.extraTopSpace = rightTop
-        leftPane.diffMarks = EditorPane.DiffMarks(lineColors: leftColors, fillerColor: Self.fillerColor,
+        let equalColor = equalToggle.state == .on ? Self.equalColor : nil
+        leftPane.diffMarks = EditorPane.DiffMarks(lineColors: leftColors, equalColor: equalColor, fillerColor: Self.fillerColor,
                                                   characters: diff.leftCharacters, characterColor: Self.characterColor)
-        rightPane.diffMarks = EditorPane.DiffMarks(lineColors: rightColors, fillerColor: Self.fillerColor,
+        rightPane.diffMarks = EditorPane.DiffMarks(lineColors: rightColors, equalColor: equalColor, fillerColor: Self.fillerColor,
                                                    characters: diff.rightCharacters, characterColor: Self.characterColor)
         if let current = currentHunk, current >= diff.hunks.count { currentHunk = nil }
         updateStatus()
@@ -285,18 +298,19 @@ final class CompareViewController: NSViewController, NSMenuItemValidation {
         overview.needsDisplay = true
     }
 
+    /// Neither side counts as the older one: lines on only one side are blue, whichever side,
+    /// lines that differ are red, equal lines optionally green.
     static func colors(for kind: TextDiff.Hunk.Kind) -> (NSColor, NSColor) {
         switch kind {
         case .changed: (changedColor, changedColor)
-        case .deleted: (deletedColor, deletedColor)
-        case .inserted: (insertedColor, insertedColor)
+        case .deleted, .inserted: (oneSideColor, oneSideColor)
         }
     }
 
-    static let changedColor = NSColor.systemBlue.withAlphaComponent(0.13)
-    static let deletedColor = NSColor.systemRed.withAlphaComponent(0.14)
-    static let insertedColor = NSColor.systemGreen.withAlphaComponent(0.15)
-    static let characterColor = NSColor.systemBlue.withAlphaComponent(0.32)
+    static let changedColor = NSColor.systemRed.withAlphaComponent(0.13)
+    static let oneSideColor = NSColor.systemBlue.withAlphaComponent(0.14)
+    static let equalColor = NSColor.systemGreen.withAlphaComponent(0.09)
+    static let characterColor = NSColor.systemRed.withAlphaComponent(0.30)
     static let fillerColor = NSColor.secondaryLabelColor.withAlphaComponent(0.07)
 
     private func updateStatus() {

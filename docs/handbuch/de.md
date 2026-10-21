@@ -212,7 +212,7 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 
 „Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten Fassung, mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
 
-Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Geänderte Zeilen sind blau, gelöschte rot, eingefügte grün; innerhalb einer geänderten Zeile sind die abweichenden Zeichen kräftiger markiert. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
+Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Keine Seite gilt als die ältere: Zeilen, die es nur auf einer Seite gibt, sind blau, egal auf welcher; Zeilen, die sich unterscheiden, sind rot, die abweichenden Zeichen darin kräftiger. Auf Wunsch sind auch die gleichen Zeilen grün („Gleiche Zeilen grün“ unten rechts), sonst bleiben sie weiß. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
 
 ## Unterschiede abarbeiten
 

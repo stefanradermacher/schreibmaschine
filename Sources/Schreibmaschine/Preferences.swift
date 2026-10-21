@@ -38,6 +38,8 @@ enum Preferences {
     static let typewriterMode = "typewriterMode"
     static let textColumn = "textColumn"
     static let focusMode = "focusMode"
+    /// Whether the comparison marks equal lines green as well.
+    static let compareMarksEqualLines = "compareMarksEqualLines"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
@@ -68,6 +70,7 @@ enum Preferences {
             navigationMovesCaret: true,
             textColumn: 70,
             focusMode: false,
+            compareMarksEqualLines: false,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
@@ -107,6 +110,7 @@ enum Preferences {
     static var textColumnValue: Int { defaults.integer(forKey: textColumn).clamped(to: 40...140) }
     /// The focus mode: everything but the paragraph with the insertion point fades.
     static var focusModeValue: Bool { defaults.bool(forKey: focusMode) }
+    static var compareMarksEqualLinesValue: Bool { defaults.bool(forKey: compareMarksEqualLines) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
     static var highlightsSyntaxValue: Bool { defaults.bool(forKey: highlightsSyntax) }
 

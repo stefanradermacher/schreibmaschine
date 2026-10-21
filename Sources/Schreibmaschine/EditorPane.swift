@@ -571,10 +571,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         }
     }
 
-    /// The colors of the comparison: line backgrounds by line (from 1), the room below lines,
-    /// and the characters that differ within changed lines.
+    /// The colors of the comparison: line backgrounds by line (from 1), all other lines, the room
+    /// below lines, and the characters that differ within changed lines.
     struct DiffMarks {
         var lineColors: [Int: NSColor] = [:]
+        var equalColor: NSColor?
         var fillerColor = NSColor.clear
         var characters: [NSRange] = []
         var characterColor = NSColor.clear
@@ -603,7 +604,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             let extra = (fragment as? InvisiblesLayoutFragment)?.extraHeight ?? 0
             let line = document.lineIndex.lineNumber(at: content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location))
             let textHeight = frame.height - extra
-            if let color = marks.lineColors[line] {
+            if let color = marks.lineColors[line] ?? marks.equalColor {
                 result.append((NSRect(x: 0, y: frame.minY + origin.y, width: width, height: textHeight), color))
             }
             if extra > 0 {

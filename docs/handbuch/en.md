@@ -201,7 +201,7 @@ A rule names either words (words), a pattern within a line (match) or a region f
 
 “File → Compare” puts two texts side by side: the document and its saved version, the contents of the clipboard, another open document or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
 
-Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Changed lines are blue, deleted ones red, inserted ones green; within a changed line the differing characters are marked more strongly. The bar at the right edge shows all differences in the whole text; a click jumps there.
+Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Neither side counts as the older one: lines that exist on only one side are blue, whichever side; lines that differ are red, with the differing characters marked more strongly. If you like, equal lines are green as well (“Equal lines green” at the bottom right); otherwise they stay white. The bar at the right edge shows all differences in the whole text; a click jumps there.
 
 ## Working through the differences
 

@@ -1711,6 +1711,16 @@
         }
       }
     },
+    "Gleiche Zeilen grün": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equal lines green"
+          }
+        }
+      }
+    },
     "Grammatik mit Rechtschreibung prüfen": {
       "localizations": {
         "en": {
