@@ -591,16 +591,6 @@
         }
       }
     },
-    "Benutzte Dokumente": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Recent"
-          }
-        }
-      }
-    },
     "Betroffen sind: %@. Solange sie im Text stehen, lässt sich das Dokument in dieser Kodierung nicht sichern.": {
       "localizations": {
         "en": {
@@ -1227,16 +1217,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Settings…"
-          }
-        }
-      }
-    },
-    "Einträge löschen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear Menu"
           }
         }
       }

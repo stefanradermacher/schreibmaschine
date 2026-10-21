@@ -84,10 +84,8 @@ enum MainMenu {
         let menu = NSMenu(title: String(localized: "Ablage"))
         menu.addItem(item(String(localized: "Neu"), #selector(NSDocumentController.newDocument(_:)), "n"))
         menu.addItem(item(String(localized: "Öffnen …"), #selector(NSDocumentController.openDocument(_:)), "o"))
-        // AppKit fills the menu that contains "Clear Menu".
-        let recent = NSMenu(title: String(localized: "Benutzte Dokumente"))
-        recent.addItem(item(String(localized: "Einträge löschen"), #selector(NSDocumentController.clearRecentDocuments(_:))))
-        menu.addItem(submenu(recent))
+        // "Open Recent" is added by AppKit itself, right after "Open…"; a menu of our own would
+        // only appear twice.
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "Schließen"), #selector(NSWindow.performClose(_:)), "w"))
         menu.addItem(item(String(localized: "Sichern"), #selector(NSDocument.save(_:)), "s"))
