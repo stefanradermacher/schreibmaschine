@@ -22,6 +22,7 @@ final class SettingsWindowController: NSWindowController {
         tabs.tabStyle = .toolbar
         tabs.addTabViewItem(Self.pane(GeneralSettings(), title: String(localized: "Allgemein"), symbol: "gearshape"))
         tabs.addTabViewItem(Self.pane(EditorSettings(), title: String(localized: "Editor"), symbol: "character.cursor.ibeam"))
+        tabs.addTabViewItem(Self.pane(WritingSettings(), title: String(localized: "Schreiben"), symbol: "pencil.line"))
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
@@ -95,6 +96,39 @@ private struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+private struct WritingSettings: View {
+    @AppStorage(Preferences.typewriterMode) private var typewriterMode = false
+    @AppStorage(Preferences.textColumn) private var textColumn = 70
+    @AppStorage(Preferences.dimsOtherLines) private var dimsOtherLines = false
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Schreibmaschinen-Modus", isOn: $typewriterMode)
+            } footer: {
+                Text("Die Zeile mit der Einfügemarke bleibt in der Mitte des Fensters stehen; der Text läuft an ihr vorbei.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Stepper(value: $textColumn, in: 40...140, step: 5) {
+                    LabeledContent("Breite der Textspalte:", value: String(localized: "\(textColumn) Zeichen"))
+                }
+                Toggle("Andere Zeilen abdunkeln", isOn: $dimsOtherLines)
+            } header: {
+                Text("Ablenkungsfreier Modus")
+            } footer: {
+                Text("Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Beim Abdunkeln bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext ist das der ganze Absatz.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
     }
 }
 

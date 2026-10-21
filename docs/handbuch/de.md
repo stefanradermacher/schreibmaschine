@@ -149,6 +149,22 @@ Mit ⌘-Klick setzt du eine weitere Einfügemarke, mit ⌘-Ziehen eine weitere A
 
 ![Die geteilte Ansicht](docs/screenshots/3-geteilt.jpg)
 
+# Schreiben
+
+## Zählen
+
+Links in der Statusleiste steht, wie viele Wörter der Text hat, bei einer Auswahl etwa „12 von 1.234 Wörtern“. Ein Klick darauf zeigt alle Zählungen, also Wörter, Zeichen, Zeichen ohne Leerzeichen, Zeilen und Absätze, und lässt wählen, welche in der Leiste steht.
+
+## Schreibmaschinen-Modus
+
+Unter „Darstellung → Schreibmaschinen-Modus“ bleibt die Zeile mit der Einfügemarke in der Mitte des Fensters stehen, und der Text läuft an ihr vorbei, wie das Papier in einer Schreibmaschine. Der Blick bleibt dabei immer an derselben Stelle.
+
+## Ablenkungsfreier Modus
+
+„Darstellung → Ablenkungsfreier Modus“ (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Mit „Andere Zeilen abdunkeln“ bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext, in dem jeder Absatz eine Zeile ist, ist das der ganze Absatz. Die Breite der Spalte steht in den Einstellungen unter „Schreiben“. Derselbe Befehl oder das Verlassen des Vollbilds bringt alles zurück, wie es vorher war.
+
+> Schreibmaschinen-Modus und ablenkungsfreier Modus lassen sich verbinden: dann steht die aktuelle Zeile mitten im Bildschirm, und alles andere tritt zurück.
+
 # Code
 
 Die Schreibmaschine erkennt die Sprache einer Datei an Name, Endung oder erster Zeile und färbt sie entsprechend. Mitgeliefert werden Swift, Markdown, PHP, JavaScript und TypeScript, Python, JSON, YAML, INI und TOML, Shell, HTML, XML, CSS, SQL und Lua. Die Sprache lässt sich unter „Format → Sprache“ oder in der Statusleiste wählen.
@@ -228,6 +244,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Nebeneinander, untereinander teilen | ⌃⌘T, ⌃⌥⌘T |
 | Zur anderen Hälfte, Teilung aufheben | ⌥⌘J, ⌃⇧⌘W |
 | Dokumentliste | ⌃⌘S |
+| Ablenkungsfreier Modus | ⌃⇧⌘F |
 | Nächstes, voriges Dokument | ⌥⌘→, ⌥⌘← |
 | Dokument 1 bis 8, letztes Dokument | ⌘1 – ⌘8, ⌘9 |
 | Schrift vergrößern, verkleinern, zurücksetzen | ⌘+, ⌘-, ⌘0 |

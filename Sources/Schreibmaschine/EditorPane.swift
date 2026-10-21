@@ -115,7 +115,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         ruler = LineNumberRuler(textView: textView, lineIndex: document.lineIndex)
         scrollView.verticalRulerView = ruler
         scrollView.hasVerticalRuler = true
-        scrollView.rulersVisible = showsLineNumbers
+        updateRuler()
         ruler.bookmarkedLines = { [weak document] in document?.bookmarkedLines ?? [] }
         ruler.onClickLine = { [weak document] line in document?.toggleBookmark(atLine: line) }
         ruler.foldMark = { [weak document] line in
@@ -136,7 +136,12 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
         let center = NotificationCenter.default
         scrollView.contentView.postsBoundsChangedNotifications = true
+        scrollView.postsFrameChangedNotifications = true
         observers = [
+            // The insets depend on the size of the window.
+            center.addObserver(forName: NSView.frameDidChangeNotification, object: scrollView, queue: .main) { [weak self] _ in
+                self?.updateInsets()
+            },
             // Paragraphs coming into view get their colors.
             center.addObserver(forName: NSView.boundsDidChangeNotification, object: scrollView.contentView, queue: .main) { [weak self] _ in
                 self?.colorVisibleFragments()
@@ -166,6 +171,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     override func viewDidAppear() {
         super.viewDidAppear()
+        updateInsets()
         scheduleFullLayout()
     }
 
@@ -192,7 +198,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             applyWrapping()
         }
         showsLineNumbers = state.showsLineNumbers
-        scrollView.rulersVisible = showsLineNumbers
+        updateRuler()
         if state.showsInvisibles != invisibles.showsInvisibles {
             toggleInvisibles(nil)
         }
@@ -238,8 +244,14 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     private var lastHighlightsSyntax = Preferences.highlightsSyntaxValue
 
+    private var lastTypewriterMode = Preferences.typewriterModeValue
+
     private func preferencesDidChange() {
         textView.highlightsCurrentLine = Preferences.highlightsCurrentLineValue
+        if Preferences.typewriterModeValue != lastTypewriterMode {
+            lastTypewriterMode = Preferences.typewriterModeValue
+            updateInsets()
+        }
         if Preferences.highlightsSyntaxValue != lastHighlightsSyntax {
             lastHighlightsSyntax = Preferences.highlightsSyntaxValue
             recolor(fromLine: 1)
@@ -302,6 +314,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         let range = fragment.rangeInElement
         layoutManager.removeRenderingAttribute(.foregroundColor, for: range)
         layoutManager.removeRenderingAttribute(.underlineStyle, for: range)
+        defer {
+            if isDimmed(fragment, in: content) {
+                layoutManager.addRenderingAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, for: range)
+            }
+        }
         guard Preferences.highlightsSyntaxValue, document.language != nil else { return }
         let start = content.offset(from: content.documentRange.location, to: range.location)
         let end = content.offset(from: content.documentRange.location, to: range.endLocation)
@@ -398,6 +415,109 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         updateBrackets()
         ruler.needsDisplay = true
         onSelectionChange?(self)
+        updateFocusedFragment()
+        if Preferences.typewriterModeValue {
+            // After TextKit has finished with the edit or movement that changed the selection.
+            DispatchQueue.main.async { [weak self] in self?.centerInsertionPoint() }
+        }
+    }
+
+    // MARK: - Writing modes
+
+    /// The distraction-free mode as far as the pane is concerned: a column of text without line
+    /// numbers, always wrapped, and on request everything but the current line dimmed.
+    struct Focus: Equatable {
+        var columnWidth: CGFloat
+        var dimsOtherLines: Bool
+    }
+
+    var focus: Focus? {
+        didSet {
+            guard focus != oldValue else { return }
+            if focus != nil, oldValue == nil {
+                wrappedBeforeFocus = wrapsLines
+                if !wrapsLines { wrapsLines = true; applyWrapping() }
+            } else if focus == nil, let wrapped = wrappedBeforeFocus {
+                wrappedBeforeFocus = nil
+                if wrapped != wrapsLines { wrapsLines = wrapped; applyWrapping() }
+            }
+            updateRuler()
+            textColumnWidth = focus?.columnWidth
+            if focus?.dimsOtherLines != oldValue?.dimsOtherLines {
+                coloredFragments.removeAllObjects()
+                colorVisibleFragments()
+            }
+        }
+    }
+    private var wrappedBeforeFocus: Bool?
+
+    private func updateRuler() {
+        scrollView.rulersVisible = showsLineNumbers && focus == nil
+    }
+
+    /// The paragraph with the insertion point, the one left bright when the others are dimmed.
+    private weak var focusedFragment: NSTextLayoutFragment?
+
+    private func isDimmed(_ fragment: NSTextLayoutFragment, in content: NSTextContentManager) -> Bool {
+        guard focus?.dimsOtherLines == true else { return false }
+        let caret = textView.selectedRange().location
+        let start = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+        let end = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.endLocation)
+        let isLast = fragment.rangeInElement.endLocation.compare(content.documentRange.endLocation) != .orderedAscending
+        return !(caret >= start && (caret < end || (isLast && caret == end)))
+    }
+
+    /// When the insertion point moves to another paragraph, the old and the new one are colored anew.
+    private func updateFocusedFragment() {
+        guard focus?.dimsOtherLines == true, let content = layoutManager.textContentManager,
+              let location = content.location(content.documentRange.location, offsetBy: textView.selectedRange().location)
+        else { return }
+        let current = layoutManager.textLayoutFragment(for: location)
+        guard current !== focusedFragment else { return }
+        if let old = focusedFragment { coloredFragments.remove(old) }
+        if let current { coloredFragments.remove(current) }
+        focusedFragment = current
+        colorVisibleFragments()
+    }
+
+    /// The width of the text column in the distraction-free mode, nil otherwise; set by the editor.
+    var textColumnWidth: CGFloat? {
+        didSet { if textColumnWidth != oldValue { updateInsets() } }
+    }
+
+    /// The space around the text: in the typewriter mode half a window above and below, so
+    /// that the first and last lines can stand in the middle too; in the distraction-free mode
+    /// as much at the sides as leaves a column of the chosen width.
+    func updateInsets() {
+        guard let scrollView else { return }
+        let size = scrollView.contentSize
+        let lineHeight = EditorStyle.lineHeightPoints(font: textView.font ?? Preferences.font, multiple: Preferences.lineHeightValue)
+        let vertical = Preferences.typewriterModeValue ? max((size.height - lineHeight) / 2, 6) : 6
+        let horizontal = textColumnWidth.map { max((size.width - $0) / 2, 4) } ?? 4
+        let inset = NSSize(width: horizontal.rounded(), height: vertical.rounded())
+        guard inset != textView.textContainerInset else { return }
+        let widthChanged = inset.width != textView.textContainerInset.width
+        keepingTopLine {
+            textView.textContainerInset = inset
+            if wrapsLines {
+                textContainer.size = NSSize(width: max(size.width - 2 * inset.width, 50), height: CGFloat.greatestFiniteMagnitude)
+            }
+        }
+        if widthChanged { scheduleFullLayout() }
+        if Preferences.typewriterModeValue { centerInsertionPoint() }
+    }
+
+    /// The typewriter mode: the line with the insertion point stays in the middle of the window.
+    func centerInsertionPoint() {
+        guard Preferences.typewriterModeValue, view.window != nil else { return }
+        let caret = textView.caretRect(at: textView.selectedRange().upperBound)
+        guard caret.height > 0 else { return }
+        let clip = scrollView.contentView
+        let maxY = max(textView.frame.height - clip.bounds.height, 0)
+        let y = (caret.midY - clip.bounds.height / 2).clamped(to: 0...maxY)
+        guard abs(y - clip.bounds.minY) > 0.5 else { return }
+        clip.scroll(to: NSPoint(x: clip.bounds.minX, y: y))
+        scrollView.reflectScrolledClipView(clip)
     }
 
     // MARK: - NSTextLayoutManagerDelegate
@@ -562,7 +682,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
 
     @objc func toggleLineNumbers(_ sender: Any?) {
         showsLineNumbers.toggle()
-        scrollView.rulersVisible = showsLineNumbers
+        updateRuler()
     }
 
     @objc func toggleWrapping(_ sender: Any?) {

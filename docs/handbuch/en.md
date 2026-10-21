@@ -138,6 +138,22 @@ Without a selection, a command acts on what makes sense: sorting and encoding on
 
 ![The split view](docs/screenshots/en/3-split.jpg)
 
+# Writing
+
+## Counting
+
+On the left of the status bar is the number of words in the text, with a selection for example “12 of 1,234 words”. A click on it shows all counts – words, characters, characters without spaces, lines and paragraphs – and lets you choose which one the bar shows.
+
+## Typewriter mode
+
+With “View → Typewriter Mode”, the line with the insertion point stays in the middle of the window and the text moves past it, like the paper in a typewriter. Your eyes always stay in the same place.
+
+## Distraction-free mode
+
+“View → Distraction-Free Mode” (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. With “Dim Other Lines”, only the line with the insertion point stays strong; in running text, where every paragraph is one line, that is the whole paragraph. The width of the column is in the settings under “Writing”. The same command, or leaving full screen, brings everything back as it was.
+
+> Typewriter mode and distraction-free mode can be combined: then the current line stands in the middle of the screen, and everything else steps back.
+
 # Code
 
 Schreibmaschine recognizes the language of a file from its name, extension or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL and Lua. The language can be chosen under “Format → Language” or in the status bar.
@@ -217,6 +233,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Split side by side, top and bottom | ⌃⌘T, ⌃⌥⌘T |
 | Go to other half, close split | ⌥⌘J, ⌃⇧⌘W |
 | Document list | ⌃⌘S |
+| Distraction-free mode | ⌃⇧⌘F |
 | Next, previous document | ⌥⌘→, ⌥⌘← |
 | Documents 1 to 8, last document | ⌘1 – ⌘8, ⌘9 |
 | Bigger, smaller, actual size text | ⌘+, ⌘-, ⌘0 |

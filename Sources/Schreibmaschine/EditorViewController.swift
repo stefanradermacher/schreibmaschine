@@ -35,6 +35,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private var editorBesideList: NSLayoutConstraint!
     private var textBelowBar: NSLayoutConstraint!
     private var marksConstraints: [NSLayoutConstraint] = []
+    private var textAboveStatusBar: NSLayoutConstraint!
+    private var textToBottom: NSLayoutConstraint!
     private var observers: [NSObjectProtocol] = []
 
     /// Change of the font size against the settings, in points.
@@ -72,6 +74,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         }
         // The text starts below the find bar while it is shown, at the top otherwise.
         textBelowBar = splitView.topAnchor.constraint(equalTo: bar.bottomAnchor)
+        textAboveStatusBar = statusBar.topAnchor.constraint(equalTo: splitView.bottomAnchor)
+        textToBottom = splitView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         textAtTop = splitView.topAnchor.constraint(equalTo: container.topAnchor)
         NSLayoutConstraint.activate([
             bar.topAnchor.constraint(equalTo: container.topAnchor),
@@ -80,7 +84,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             textAtTop,
             splitView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             splitView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            statusBar.topAnchor.constraint(equalTo: splitView.bottomAnchor),
+            textAboveStatusBar,
             statusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             statusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             statusBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
@@ -133,6 +137,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 guard let self else { return }
                 updateSidebar()
+                if isDistractionFree { applyFocus() }
                 if currentFont != lastFont || Preferences.lineHeightValue != lastLineHeight { applyFont() }
             },
             center.addObserver(forName: AllDocumentsSearch.didChange, object: nil, queue: .main) { [weak self] _ in
@@ -260,6 +265,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             return true
         }
         panes.append(pane)
+        if isDistractionFree { pane.focus = focus }
         if let font = lastFont { pane.takeFont(font, attributes: EditorStyle.attributes(font: font, tabWidth: document.indentation.width)) }
         return pane
     }
@@ -354,6 +360,63 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         SessionStore.shared.setNeedsSave()
     }
 
+    // MARK: - Distraction-free mode
+
+    /// Full screen without status bar, sidebars and line numbers, the text in a narrow column.
+    private(set) var isDistractionFree = false
+    /// Whether entering the mode also made the window full screen, so leaving it ends that too.
+    private var enteredFullScreen = false
+    private var fullScreenObserver: NSObjectProtocol?
+
+    private var focus: EditorPane.Focus {
+        let font = currentFont
+        let width = EditorStyle.spaceWidth(of: font) * CGFloat(Preferences.textColumnValue) + 8
+        return EditorPane.Focus(columnWidth: width.rounded(), dimsOtherLines: Preferences.dimsOtherLinesValue)
+    }
+
+    @objc func toggleDistractionFree(_ sender: Any?) {
+        isDistractionFree ? leaveDistractionFree(endFullScreen: true) : enterDistractionFree()
+    }
+
+    private func enterDistractionFree() {
+        guard let window = view.window else { return }
+        isDistractionFree = true
+        search.close()
+        textAboveStatusBar.isActive = false
+        statusBar.isHidden = true
+        textToBottom.isActive = true
+        updateSidebar()
+        applyFocus()
+        enteredFullScreen = !window.styleMask.contains(.fullScreen)
+        if enteredFullScreen { window.toggleFullScreen(nil) }
+        // Leaving full screen in any other way ends the mode as well.
+        fullScreenObserver = NotificationCenter.default.addObserver(forName: NSWindow.didExitFullScreenNotification, object: window, queue: .main) { [weak self] _ in
+            self?.leaveDistractionFree(endFullScreen: false)
+        }
+        view.window?.makeFirstResponder(textView)
+    }
+
+    private func leaveDistractionFree(endFullScreen: Bool) {
+        guard isDistractionFree else { return }
+        isDistractionFree = false
+        if let fullScreenObserver { NotificationCenter.default.removeObserver(fullScreenObserver) }
+        fullScreenObserver = nil
+        textToBottom.isActive = false
+        statusBar.isHidden = false
+        textAboveStatusBar.isActive = true
+        panes.forEach { $0.focus = nil }
+        updateSidebar()
+        if endFullScreen, enteredFullScreen, let window = view.window, window.styleMask.contains(.fullScreen) {
+            window.toggleFullScreen(nil)
+        }
+        enteredFullScreen = false
+    }
+
+    private func applyFocus() {
+        let focus = focus
+        panes.forEach { $0.focus = focus }
+    }
+
     // MARK: - View state
 
     /// Applied when the view first appears: the state the file was last shown with.
@@ -443,6 +506,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             selectedLines = lineIndex.lineNumber(at: last) - line + 1
         }
         statusBar.updatePosition(line: line, column: column, selectedCharacters: selectedCharacters, selectedLines: selectedLines)
+        statusBar.updateCounts(text: textView.string, selections: textView.editingRanges)
     }
 
     // MARK: - Find menu
@@ -468,8 +532,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     }
 
     private func updateSidebar() {
-        let active = AllDocumentsSearch.shared.isActive
-        let showsList = !active && UserDefaults.standard.bool(forKey: Preferences.showsDocumentList)
+        let active = AllDocumentsSearch.shared.isActive && !isDistractionFree
+        let showsList = !active && !isDistractionFree && UserDefaults.standard.bool(forKey: Preferences.showsDocumentList)
         guard allDocumentsView.isHidden == active || documentList.isHidden == showsList else { return }
         allDocumentsView.isHidden = !active
         documentList.isHidden = !showsList
@@ -490,6 +554,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             item.state = isSplit && splitView.isVertical ? .on : .off
         case #selector(splitStacked(_:)):
             item.state = isSplit && !splitView.isVertical ? .on : .off
+        case #selector(toggleDistractionFree(_:)):
+            item.state = isDistractionFree ? .on : .off
         case #selector(closeSplit(_:)), #selector(focusOtherPane(_:)):
             return isSplit
         default:

@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ Absätze": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ paragraphs"
+          }
+        }
+      }
+    },
     "%@ Treffer": {
       "localizations": {
         "en": {
@@ -37,6 +47,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ matches in %2$@ documents"
+          }
+        }
+      }
+    },
+    "%@ Wörter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ words"
+          }
+        }
+      }
+    },
+    "%@ Zeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ characters"
+          }
+        }
+      }
+    },
+    "%@ Zeichen ohne Leerzeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ characters without spaces"
+          }
+        }
+      }
+    },
+    "%@ Zeilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ lines"
           }
         }
       }
@@ -97,6 +147,56 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "%@ von %@ Absätzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ paragraphs"
+          }
+        }
+      }
+    },
+    "%@ von %@ Wörtern": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ words"
+          }
+        }
+      }
+    },
+    "%@ von %@ Zeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ characters"
+          }
+        }
+      }
+    },
+    "%@ von %@ Zeichen ohne Leerzeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ characters without spaces"
+          }
+        }
+      }
+    },
+    "%@ von %@ Zeilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ lines"
           }
         }
       }
@@ -201,6 +301,16 @@
         }
       }
     },
+    "1 Absatz": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 paragraph"
+          }
+        }
+      }
+    },
     "1 Treffer": {
       "localizations": {
         "en": {
@@ -217,6 +327,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 match replaced"
+          }
+        }
+      }
+    },
+    "1 Wort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 word"
+          }
+        }
+      }
+    },
+    "1 Zeichen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 character"
+          }
+        }
+      }
+    },
+    "1 Zeile": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 line"
           }
         }
       }
@@ -247,6 +387,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "File"
+          }
+        }
+      }
+    },
+    "Ablenkungsfreier Modus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distraction-Free Mode"
           }
         }
       }
@@ -407,6 +557,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Align at Character…"
+          }
+        }
+      }
+    },
+    "Andere Zeilen abdunkeln": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dim Other Lines"
           }
         }
       }
@@ -671,6 +831,16 @@
         }
       }
     },
+    "Breite der Textspalte:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Width of the text column:"
+          }
+        }
+      }
+    },
     "Byte Order Mark (BOM) schreiben": {
       "localizations": {
         "en": {
@@ -747,6 +917,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "View"
+          }
+        }
+      }
+    },
+    "Darstellung → Ablenkungsfreier Modus (⌃⇧⌘F) zeigt den Text im Vollbild in einer schmalen Spalte, ohne Statusleiste, Seitenleisten und Zeilennummern. Beim Abdunkeln bleibt nur die Zeile mit der Einfügemarke kräftig; in Fließtext ist das der ganze Absatz.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View → Distraction-Free Mode (⌃⇧⌘F) shows the text full screen in a narrow column, without status bar, sidebars and line numbers. When dimming, only the line with the insertion point stays strong; in running text that is the whole paragraph."
           }
         }
       }
@@ -957,6 +1137,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "The language definition contains an error."
+          }
+        }
+      }
+    },
+    "Die Zeile mit der Einfügemarke bleibt in der Mitte des Fensters stehen; der Text läuft an ihr vorbei.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The line with the insertion point stays in the middle of the window; the text moves past it."
           }
         }
       }
@@ -2241,6 +2431,16 @@
         }
       }
     },
+    "Schreiben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Writing"
+          }
+        }
+      }
+    },
     "Schreibmaschine im Web": {
       "localizations": {
         "en": {
@@ -2257,6 +2457,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Support Schreibmaschine"
+          }
+        }
+      }
+    },
+    "Schreibmaschinen-Modus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typewriter Mode"
           }
         }
       }
@@ -2947,6 +3157,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Title Case"
+          }
+        }
+      }
+    },
+    "Wörter, Zeichen, Zeilen und Absätze; für die Auswahl getrennt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Words, characters, lines and paragraphs; separately for the selection"
           }
         }
       }

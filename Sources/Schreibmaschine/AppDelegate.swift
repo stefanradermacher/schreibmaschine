@@ -70,6 +70,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         defaults.set(!defaults.bool(forKey: Preferences.showsDocumentList), forKey: Preferences.showsDocumentList)
     }
 
+    /// The typewriter mode, for all windows.
+    @objc func toggleTypewriterMode(_ sender: Any?) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: Preferences.typewriterMode), forKey: Preferences.typewriterMode)
+    }
+
+    @objc func toggleDimsOtherLines(_ sender: Any?) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: Preferences.dimsOtherLines), forKey: Preferences.dimsOtherLines)
+    }
+
     @objc func showLanguageFolder(_ sender: Any?) {
         NSWorkspace.shared.activateFileViewerSelecting([LanguageRegistry.userFolder])
     }
@@ -123,6 +134,12 @@ extension AppDelegate: NSMenuItemValidation {
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         if item.action == #selector(toggleDocumentList(_:)) {
             item.state = UserDefaults.standard.bool(forKey: Preferences.showsDocumentList) ? .on : .off
+        }
+        if item.action == #selector(toggleTypewriterMode(_:)) {
+            item.state = Preferences.typewriterModeValue ? .on : .off
+        }
+        if item.action == #selector(toggleDimsOtherLines(_:)) {
+            item.state = Preferences.dimsOtherLinesValue ? .on : .off
         }
         return true
     }

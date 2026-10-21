@@ -33,6 +33,11 @@ enum Preferences {
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
     static let navigationMovesCaret = "navigationMovesCaret"
+    /// What the count in the status bar shows: words, characters, lines …
+    static let statusCountUnit = "statusCountUnit"
+    static let typewriterMode = "typewriterMode"
+    static let textColumn = "textColumn"
+    static let dimsOtherLines = "dimsOtherLines"
     static let defaultEncoding = "defaultEncoding"          // String.Encoding.rawValue
     static let writesUTF8BOM = "writesUTF8BOM"
     static let defaultLineEnding = "defaultLineEnding"      // LineEnding.rawValue
@@ -61,6 +66,8 @@ enum Preferences {
             indentsWithSpaces: true,
             autoIndents: true,
             navigationMovesCaret: true,
+            textColumn: 70,
+            dimsOtherLines: false,
             defaultEncoding: Int(String.Encoding.utf8.rawValue),
             writesUTF8BOM: false,
             defaultLineEnding: LineEnding.lf.rawValue,
@@ -94,6 +101,12 @@ enum Preferences {
     /// Page Up/Down, Home and End move the insertion point, as in most code editors, instead of
     /// only scrolling as on the Mac.
     static var navigationMovesCaretValue: Bool { defaults.bool(forKey: navigationMovesCaret) }
+    /// The line with the insertion point stays in the middle of the window.
+    static var typewriterModeValue: Bool { defaults.bool(forKey: typewriterMode) }
+    /// Width of the text column in the distraction-free mode, in characters.
+    static var textColumnValue: Int { defaults.integer(forKey: textColumn).clamped(to: 40...140) }
+    /// In the distraction-free mode, everything but the line with the insertion point is dimmed.
+    static var dimsOtherLinesValue: Bool { defaults.bool(forKey: dimsOtherLines) }
     static var highlightsCurrentLineValue: Bool { defaults.bool(forKey: highlightsCurrentLine) }
     static var highlightsSyntaxValue: Bool { defaults.bool(forKey: highlightsSyntax) }
 

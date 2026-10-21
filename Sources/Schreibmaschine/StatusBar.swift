@@ -18,6 +18,7 @@ import AppKit
 /// ending on the right, each changeable with a click.
 final class StatusBar: NSView, NSMenuDelegate {
     private let position = NSTextField(labelWithString: "")
+    private let countButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private let languageButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private let indentationButton = NSPopUpButton(frame: .zero, pullsDown: true)
     private let encodingButton = NSPopUpButton(frame: .zero, pullsDown: true)
@@ -34,12 +35,15 @@ final class StatusBar: NSView, NSMenuDelegate {
         position.lineBreakMode = .byTruncatingTail
         position.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
-        for button in [languageButton, indentationButton, encodingButton, lineEndingButton] {
+        for button in [countButton, languageButton, indentationButton, encodingButton, lineEndingButton] {
             button.isBordered = false
             button.font = font
             button.controlSize = .small
             (button.cell as? NSPopUpButtonCell)?.arrowPosition = .arrowAtBottom
         }
+        countButton.toolTip = String(localized: "Wörter, Zeichen, Zeilen und Absätze; für die Auswahl getrennt")
+        countButton.menu = NSMenu()
+        countButton.menu?.addItem(NSMenuItem())
         languageButton.toolTip = String(localized: "Sprache für Hervorhebung, Kommentare und Einrückung")
         indentationButton.toolTip = String(localized: "Einrückung dieses Dokuments")
         encodingButton.toolTip = String(localized: "Zeichenkodierung beim Sichern")
@@ -49,7 +53,7 @@ final class StatusBar: NSView, NSMenuDelegate {
         let separator = NSBox()
         separator.boxType = .separator
 
-        let stack = NSStackView(views: [position, NSView(), languageButton, indentationButton, encodingButton, lineEndingButton])
+        let stack = NSStackView(views: [position, countButton, NSView(), languageButton, indentationButton, encodingButton, lineEndingButton])
         stack.orientation = .horizontal
         stack.spacing = 12
         stack.edgeInsets = NSEdgeInsets(top: 0, left: 10, bottom: 0, right: 6)
@@ -210,6 +214,65 @@ final class StatusBar: NSView, NSMenuDelegate {
                 : String(localized: "\(selectedCharacters) Zeichen ausgewählt")
         }
         position.stringValue = text
+    }
+
+    // MARK: - Counting
+
+    private var countUnit: TextStatistics.Unit {
+        get { TextStatistics.Unit(rawValue: UserDefaults.standard.string(forKey: Preferences.statusCountUnit) ?? "") ?? .words }
+        set { UserDefaults.standard.set(newValue.rawValue, forKey: Preferences.statusCountUnit) }
+    }
+    private var total = TextStatistics()
+    private var selected: TextStatistics?
+    private var pendingCount: DispatchWorkItem?
+    private var countGeneration = 0
+
+    /// Counts the text and the selection a moment after the last change, away from the main
+    /// thread, so that typing in a long text is not slowed down.
+    func updateCounts(text: String, selections: [NSRange]) {
+        pendingCount?.cancel()
+        countGeneration += 1
+        let generation = countGeneration
+        let selectedText = selections.contains { $0.length > 0 }
+            ? selections.filter { $0.length > 0 }.map { (text as NSString).substring(with: $0) }.joined(separator: "\n")
+            : nil
+        let work = DispatchWorkItem { [weak self] in
+            let total = TextStatistics(of: text)
+            let selected = selectedText.map(TextStatistics.init(of:))
+            DispatchQueue.main.async {
+                guard let self, generation == self.countGeneration else { return }
+                self.total = total
+                self.selected = selected
+                self.showCounts()
+            }
+        }
+        pendingCount = work
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.15, execute: work)
+    }
+
+    private func showCounts() {
+        guard let menu = countButton.menu else { return }
+        func title(_ unit: TextStatistics.Unit) -> String {
+            if let selected { return unit.part(selected.value(unit), of: total.value(unit)) }
+            return unit.total(total.value(unit))
+        }
+        while menu.items.count > 1 { menu.removeItem(at: 1) }
+        for unit in TextStatistics.Unit.allCases {
+            let item = NSMenuItem(title: title(unit), action: #selector(countUnitChosen(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = unit.rawValue
+            item.state = unit == countUnit ? .on : .off
+            menu.addItem(item)
+        }
+        menu.items.first?.title = title(countUnit)
+        countButton.synchronizeTitleAndSelectedItem()
+    }
+
+    @objc private func countUnitChosen(_ sender: NSMenuItem) {
+        if let raw = sender.representedObject as? String, let unit = TextStatistics.Unit(rawValue: raw) {
+            countUnit = unit
+            showCounts()
+        }
     }
 
     @objc private func encodingChosen(_ sender: NSMenuItem) {
