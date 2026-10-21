@@ -378,6 +378,72 @@ final class EditorTextView: NSTextView {
         didSet { if extraTopSpace != oldValue { needsLayout = true; needsDisplay = true } }
     }
 
+    // MARK: - Far jumps
+
+    /// How far, in characters, TextKit may lay out on its own to reach a place.
+    private static let farDistance = 200_000
+
+    /// TextKit lays out everything between the visible part and the place it scrolls to, which
+    /// takes seconds across many megabytes, and going back it may start from the beginning. A
+    /// far place, or one above, is first approached by the estimated height, as when dragging
+    /// the scroller, which lays out only what comes into view. It aims a little before the
+    /// place, so that TextKit has only a short way forward left.
+    func approach(_ offset: Int) {
+        guard let layoutManager = textLayoutManager, let clip = enclosingScrollView?.contentView,
+              let length = textStorage?.length, length > Self.farDistance
+        else { return }
+        func isClose(_ top: Int) -> Bool { top <= offset && offset - top <= Self.farDistance }
+        // Before anything is laid out, the view stands at the beginning.
+        guard !isClose(visibleTopOffset() ?? 0) else { return }
+        let height = frame.height
+        let room = max(height - clip.bounds.height, 0)
+        let aim = max(offset - Self.farDistance / 2, 0)
+        var y = height * CGFloat(aim) / CGFloat(length)
+        for _ in 0..<6 {
+            guard y.isFinite else { return }
+            clip.scroll(to: NSPoint(x: clip.bounds.minX, y: y.clamped(to: 0...room)))
+            enclosingScrollView?.reflectScrolledClipView(clip)
+            layoutManager.textViewportLayoutController.layoutViewport()
+            // Where it landed tells how far off the estimate was.
+            guard let landed = visibleTopOffset(), !isClose(landed) else { return }
+            y = clip.bounds.minY + height * CGFloat(aim - landed) / CGFloat(length)
+        }
+    }
+
+    // Going to either end of a long text, AppKit lays out the whole way before it scrolls.
+    override func moveToBeginningOfDocument(_ sender: Any?) {
+        approach(0)
+        super.moveToBeginningOfDocument(sender)
+    }
+
+    override func moveToBeginningOfDocumentAndModifySelection(_ sender: Any?) {
+        approach(0)
+        super.moveToBeginningOfDocumentAndModifySelection(sender)
+    }
+
+    override func moveToEndOfDocument(_ sender: Any?) {
+        approach(textStorage?.length ?? 0)
+        super.moveToEndOfDocument(sender)
+    }
+
+    override func moveToEndOfDocumentAndModifySelection(_ sender: Any?) {
+        approach(textStorage?.length ?? 0)
+        super.moveToEndOfDocumentAndModifySelection(sender)
+    }
+
+    override func scrollRangeToVisible(_ range: NSRange) {
+        approach(range.location)
+        super.scrollRangeToVisible(range)
+    }
+
+    /// The offset of the first line laid out at the top of the visible part.
+    func visibleTopOffset() -> Int? {
+        guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+              let fragment = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: visibleRect.minY - textContainerOrigin.y))
+        else { return nil }
+        return content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+    }
+
     override var textContainerOrigin: NSPoint {
         var origin = super.textContainerOrigin
         origin.y += extraTopSpace

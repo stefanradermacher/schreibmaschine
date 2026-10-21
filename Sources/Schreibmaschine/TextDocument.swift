@@ -244,7 +244,10 @@ final class TextDocument: NSDocument {
     /// The indentation the text uses; for a text without any, the language's or the settings'.
     func detectIndentation(byUser: Bool) {
         let fallback = language?.indentation ?? .preferred
-        let detected = Indentation.detect(in: textStorage.string, fallbackWidth: fallback.width) ?? fallback
+        // The beginning tells enough, also of a text with very long lines.
+        let text = textStorage.string as NSString
+        let beginning = text.substring(to: min(text.length, 256 * 1024))
+        let detected = Indentation.detect(in: beginning, fallbackWidth: fallback.width) ?? fallback
         if byUser, let fileURL { FileStateStore.shared.recordIndentation(nil, for: fileURL) }
         setIndentation(detected, byUser: false)
     }

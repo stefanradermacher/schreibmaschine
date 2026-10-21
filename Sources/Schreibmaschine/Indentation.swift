@@ -33,10 +33,8 @@ struct Indentation: Equatable, Codable {
         var tabLines = 0, spaceLines = 0
         var steps: [Int: Int] = [:]
         var previous = 0
-        var checked = 0
-        for line in text.split(separator: "\n", omittingEmptySubsequences: true) {
-            checked += 1
-            if checked > 5000 { break }
+        // Only the first lines are split off; the rest stays one piece, however long the text.
+        for line in text.split(separator: "\n", maxSplits: 5000, omittingEmptySubsequences: true).prefix(5000) {
             guard line.contains(where: { !$0.isWhitespace }) else { continue }
             if line.hasPrefix("\t") {
                 tabLines += 1

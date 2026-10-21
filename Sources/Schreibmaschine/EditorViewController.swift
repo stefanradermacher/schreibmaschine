@@ -210,10 +210,27 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 DispatchQueue.main.asyncAfter(deadline: .now() + (Double(argument) ?? 1)) { [weak self] in self?.runDebugScript(rest) }
                 return
             }
+            let started = Date()
+            defer {
+                let elapsed = Date().timeIntervalSince(started)
+                if elapsed > 0.1 { NSLog("DEBUGSCRIPT   %@ dauerte %.2f s", step, elapsed) }
+            }
             switch command {
             case "at":
                 let parts = argument.split(separator: ",").compactMap { Int($0) }
                 textView.setSelectedRange(NSRange(location: parts[0], length: parts.count > 1 ? parts[1] : 0))
+            case "scrollto":
+                activePane.scroll(toOffset: Int(argument) ?? 0)
+            case "scrolly":
+                // scrolly:0.5 — like dragging the scroller to half the height
+                let started = Date()
+                guard let pane = activePane else { break }
+                let clip = pane.scrollView.contentView
+                let y = (Double(argument) ?? 0) * (pane.textView.frame.height - clip.bounds.height)
+                clip.scroll(to: NSPoint(x: clip.bounds.minX, y: y))
+                pane.scrollView.reflectScrolledClipView(clip)
+                pane.layoutManager.textViewportLayoutController.layoutViewport()
+                NSLog("DEBUGSCRIPT scrolly %@ top=%d %.2f s", argument, pane.topOffset, Date().timeIntervalSince(started))
             case "line":
                 textView.setSelectedRange(NSRange(location: document.lineIndex.start(ofLine: Int(argument) ?? 1), length: 0))
                 textView.scrollRangeToVisible(textView.selectedRange())
@@ -265,6 +282,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                                                 isARepeat: false, keyCode: 0) {
                     textView.keyDown(with: event)
                 }
+            case "call":
+                // call:<action> — straight to this editor, also when the window is not in front
+                _ = perform(NSSelectorFromString(argument), with: nil)
             case "sel":
                 NSApp.sendAction(NSSelectorFromString(argument), to: nil, from: nil)
             case "type":
@@ -275,7 +295,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let caretLine = document.lineIndex.lineNumber(at: textView.selectedRange().upperBound)
                 NSLog("DEBUGSCRIPT %@ height=%.0f line=%d y=%.1f panes=%d active=%d ranges=[%@] marks=%@ folds=%@ text=%@", argument, textView.frame.height, caretLine, caretY, panes.count,
                       panes.firstIndex { $0 === activePane } ?? -1, ranges, document.bookmarkedLines.description,
-                      document.foldedHeads.description, textView.string.count < 300 ? textView.string.debugDescription : "…")
+                      document.foldedHeads.description, document.textStorage.length < 300 ? textView.string.debugDescription : "… top=\(activePane?.topOffset ?? -1) visibleLine=\(document.lineIndex.lineNumber(at: activePane?.topOffset ?? 0))")
             default:
                 NSLog("DEBUGSCRIPT unknown step %@", step)
             }

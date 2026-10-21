@@ -26,6 +26,8 @@ final class SyntaxHighlighter {
         let scope: SyntaxScope
     }
 
+    static let longestColoredLine = 10_000
+
     private(set) var language: LanguageDefinition?
     private unowned let storage: NSTextStorage
     private let lineIndex: LineIndex
@@ -74,6 +76,9 @@ final class SyntaxHighlighter {
         guard let language else { return ([], nil) }
         let string = storage.string
         let lineRange = range(ofLine: line)
+        // A line of many thousand characters, like minified JSON, stays uncolored: going through
+        // it rule by rule would take minutes. It passes on the state it starts in.
+        guard lineRange.length <= Self.longestColoredLine else { return ([], state) }
         var tokens: [Token] = []
         var position = lineRange.location
         let end = lineRange.upperBound

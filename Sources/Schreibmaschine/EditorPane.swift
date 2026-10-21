@@ -62,12 +62,16 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             coloredFragments.add(fragment)
         }
         layoutManager.textContainer = textContainer
+
+        let textView = EditorTextView(frame: NSRect(x: 0, y: 0, width: 600, height: 400), textContainer: textContainer)
+        let scrollView = NSScrollView()
+        scrollView.documentView = textView
+        // Joined to the text only now: placing the text view in the scroll view sizes it, and
+        // with the text already there, TextKit would lay out all of it at once.
         document.contentStorage.addTextLayoutManager(layoutManager)
         if document.contentStorage.primaryTextLayoutManager == nil {
             document.contentStorage.primaryTextLayoutManager = layoutManager
         }
-
-        let textView = EditorTextView(frame: NSRect(x: 0, y: 0, width: 600, height: 400), textContainer: textContainer)
         textView.delegate = self
         textView.isRichText = false
         textView.importsGraphics = false
@@ -106,8 +110,6 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         }
         self.textView = textView
 
-        let scrollView = NSScrollView()
-        scrollView.documentView = textView
         scrollView.hasVerticalScroller = true
         scrollView.autohidesScrollers = true
         scrollView.drawsBackground = false
@@ -213,12 +215,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     }
 
     /// The offset of the first line visible at the top.
-    var topOffset: Int {
-        guard let content = layoutManager.textContentManager,
-              let fragment = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: textView.visibleRect.minY - textView.textContainerOrigin.y))
-        else { return 0 }
-        return content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
-    }
+    var topOffset: Int { textView.visibleTopOffset() ?? 0 }
 
     /// Scrolls so that the line at the offset is the first one visible. TextKit lays out only
     /// around the visible part and estimates the rest; relocating the viewport lays out from the
@@ -228,6 +225,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
               let location = content.location(content.documentRange.location, offsetBy: offset)
         else { return }
         let viewport = layoutManager.textViewportLayoutController
+        if offset > 0 { textView.approach(offset) }
         let y = offset == 0 ? 0 : viewport.relocateViewport(to: location) + textView.textContainerOrigin.y
         scrollView.contentView.scroll(to: NSPoint(x: scrollView.contentView.bounds.minX, y: y))
         scrollView.reflectScrolledClipView(scrollView.contentView)
@@ -391,8 +389,9 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         guard let content = layoutManager.textContentManager else { return }
         let visible = textView.visibleRect
         let origin = textView.textContainerOrigin
-        let start = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: visible.minY - origin.y))?.rangeInElement.location
-            ?? content.documentRange.location
+        // Nothing laid out there yet: TextKit colors the lines itself as it lays them out.
+        guard let start = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: visible.minY - origin.y))?.rangeInElement.location
+        else { return }
         var colored = false
         layoutManager.enumerateTextLayoutFragments(from: start, options: [.ensuresLayout]) { fragment in
             if fragment.layoutFragmentFrame.minY + origin.y > visible.maxY { return false }
@@ -633,7 +632,10 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     private var isLayingOutEverything = false
     private var fullLayoutScheduled = false
 
-    /// Beyond this size the text is left to TextKit's estimates (milestone 9: large files).
+    /// Beyond this many lines the text is left to TextKit's estimates: laying out costs about
+    /// 20 µs a line, and the whole text is laid out in one go, so at most about a second.
+    private static let fullLayoutLineLimit = 50_000
+    /// A few very long lines can be as costly.
     private static let fullLayoutLimit = 20_000_000
 
     func scheduleFullLayout() {
@@ -647,7 +649,9 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     }
 
     private func layOutEverything() {
-        guard view.window != nil, document.textStorage.length <= Self.fullLayoutLimit else { return }
+        guard view.window != nil, document.lineIndex.lineCount <= Self.fullLayoutLineLimit,
+              document.textStorage.length <= Self.fullLayoutLimit
+        else { return }
         keepingTopLine {
             isLayingOutEverything = true
             layoutManager.ensureLayout(for: layoutManager.documentRange)

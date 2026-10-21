@@ -43,7 +43,8 @@ final class StatusBar: NSView, NSMenuDelegate {
         }
         countButton.toolTip = String(localized: "Wörter, Zeichen, Zeilen und Absätze; für die Auswahl getrennt")
         countButton.menu = NSMenu()
-        countButton.menu?.addItem(NSMenuItem())
+        // Until the first count is done, which takes a few seconds in a text of many megabytes.
+        countButton.menu?.addItem(NSMenuItem(title: "…", action: nil, keyEquivalent: ""))
         languageButton.toolTip = String(localized: "Sprache für Hervorhebung, Kommentare und Einrückung")
         indentationButton.toolTip = String(localized: "Einrückung dieses Dokuments")
         encodingButton.toolTip = String(localized: "Zeichenkodierung beim Sichern")
