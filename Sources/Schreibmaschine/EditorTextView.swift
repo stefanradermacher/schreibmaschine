@@ -206,6 +206,12 @@ final class EditorTextView: NSTextView {
         updateCaretIndicators()
     }
 
+    // NSTextView holds back new layout while a window or split view is resized live, so lines
+    // wrapped to the new width only when the mouse was released. Without its live-resize mode
+    // they wrap as the edge moves, like in TextEdit.
+    override func viewWillStartLiveResize() {}
+    override func viewDidEndLiveResize() {}
+
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         if cursorRanges != nil { updateCaretIndicators() }
