@@ -15,7 +15,8 @@
 import AppKit
 
 /// Line numbers beside the text. A wrapped line gets its number on its first row only.
-/// Lines with a bookmark are marked; a click on a line number sets or removes one.
+/// Lines with a bookmark are marked; a click on a line number sets or removes one. A narrow
+/// column at the right edge marks the lines changed since saving.
 final class LineNumberRuler: NSRulerView {
     private weak var textView: NSTextView?
     private let lineIndex: LineIndex
@@ -29,6 +30,11 @@ final class LineNumberRuler: NSRulerView {
     var onClickFold: ((Int) -> Void)?
     /// Room for the fold marks right of the numbers.
     private let foldWidth: CGFloat = 12
+    var lineChanges: () -> LineChanges? = { nil }
+    /// Room for the marks of changed lines at the right edge, next to the text.
+    private var changeWidth: CGFloat { ChangeMarkStyle.current == .off ? 0 : 5 }
+    /// Everything right of the numbers.
+    private var rightColumns: CGFloat { foldWidth + changeWidth }
     /// The marks of open blocks show while the mouse is over the ruler, as in Xcode.
     private var isMouseInside = false {
         didSet { if isMouseInside != oldValue { needsDisplay = true } }
@@ -61,7 +67,7 @@ final class LineNumberRuler: NSRulerView {
         guard force || needed != digits else { return }
         digits = needed
         let digitWidth = ("8" as NSString).size(withAttributes: [.font: font]).width
-        ruleThickness = ceil(CGFloat(digits) * digitWidth + 2 * padding + foldWidth)
+        ruleThickness = ceil(CGFloat(digits) * digitWidth + 2 * padding + rightColumns)
     }
 
     override func drawHashMarksAndLabels(in rect: NSRect) {
@@ -86,6 +92,35 @@ final class LineNumberRuler: NSRulerView {
         let bookmarks = Set(bookmarkedLines())
         let folded = Set(foldedHeads())
         let marked: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: NSColor.white]
+        let style = ChangeMarkStyle.current
+        let changes = style == .off ? nil : lineChanges()
+        // The empty line after a final line break is not a line of the text.
+        let lastTextLine = endsWithNewline && !textView.string.isEmpty ? lineIndex.lineCount - 1 : lineIndex.lineCount
+
+        /// A bar beside a new or changed line over all its rows; a wedge where lines are gone.
+        func drawChange(_ number: Int, top: CGFloat, bottom: CGFloat) {
+            guard let changes else { return }
+            let x = ruleThickness - 3
+            if changes.added.contains(number) || changes.changed.contains(number) {
+                let y = convert(NSPoint(x: 0, y: top + origin.y), from: textView).y
+                let end = convert(NSPoint(x: 0, y: bottom + origin.y), from: textView).y
+                (changes.added.contains(number) ? style.addedColor : style.changedColor).setFill()
+                NSBezierPath(roundedRect: NSRect(x: x, y: y + 1, width: 3, height: max(end - y - 2, 2)), xRadius: 1.5, yRadius: 1.5).fill()
+            }
+            for (line, edge) in [(number, top), (number + 1, bottom)] where changes.deletedBefore.contains(line) {
+                // The wedge sits on the border above the line it belongs to; the one after the
+                // last line is drawn with that line.
+                guard line == number || number == lastTextLine else { continue }
+                let y = convert(NSPoint(x: 0, y: edge + origin.y), from: textView).y
+                let wedge = NSBezierPath()
+                wedge.move(to: NSPoint(x: x - 3, y: y - 4))
+                wedge.line(to: NSPoint(x: ruleThickness, y: y))
+                wedge.line(to: NSPoint(x: x - 3, y: y + 4))
+                wedge.close()
+                style.deletedColor.setFill()
+                wedge.fill()
+            }
+        }
 
         func drawNumber(_ number: Int, lineTop: CGFloat, lineHeight: CGFloat) {
             let label = String(number) as NSString
@@ -102,7 +137,7 @@ final class LineNumberRuler: NSRulerView {
             // In the middle of the line, measured by the height of the digits, like the bookmark
             // around it. On the text's baseline the smaller digits would sit too low.
             let top = (y + lineHeight / 2 - font.ascender + font.capHeight / 2).rounded()
-            label.draw(at: NSPoint(x: ruleThickness - foldWidth - padding - size.width, y: top), withAttributes: attributes)
+            label.draw(at: NSPoint(x: ruleThickness - rightColumns - padding - size.width, y: top), withAttributes: attributes)
         }
 
         let start = layoutManager.textLayoutFragment(for: CGPoint(x: 0, y: visible.minY - origin.y))?.rangeInElement.location
@@ -113,6 +148,11 @@ final class LineNumberRuler: NSRulerView {
             let offset = content.offset(from: documentStart, to: fragment.rangeInElement.location)
             let number = lineIndex.lineNumber(at: offset)
             let lines = fragment.textLineFragments
+            // The rows of the line itself, without the empty one after a final line break.
+            let rows = lines.count > 1 && lines.last?.characterRange.length == 0 ? lines.dropLast() : lines[...]
+            if let first = rows.first, let last = rows.last {
+                drawChange(number, top: frame.minY + first.typographicBounds.minY, bottom: frame.minY + last.typographicBounds.maxY)
+            }
             if let first = lines.first {
                 drawNumber(number, lineTop: frame.minY + first.typographicBounds.minY, lineHeight: first.typographicBounds.height)
             }
@@ -133,7 +173,7 @@ final class LineNumberRuler: NSRulerView {
 
     /// A tag pointing at the text, in the accent color, as Xcode marks breakpoints.
     private func drawBookmark(top: CGFloat, height: CGFloat) {
-        let rect = NSRect(x: 2, y: top + 1, width: ruleThickness - foldWidth - 2, height: max(height - 2, 4))
+        let rect = NSRect(x: 2, y: top + 1, width: ruleThickness - rightColumns - 2, height: max(height - 2, 4))
         let tip = min(rect.height / 2, 6)
         let path = NSBezierPath()
         path.move(to: NSPoint(x: rect.minX + 2, y: rect.minY))
@@ -152,7 +192,7 @@ final class LineNumberRuler: NSRulerView {
     /// A chevron: pointing down beside an open block, to the right beside a folded one.
     private func drawFoldMark(_ mark: FoldMark, top: CGFloat, height: CGFloat) {
         guard mark == .folded || (mark == .open && isMouseInside) else { return }
-        let center = NSPoint(x: ruleThickness - foldWidth / 2 - 1, y: top + height / 2)
+        let center = NSPoint(x: ruleThickness - changeWidth - foldWidth / 2 - 1, y: top + height / 2)
         let size: CGFloat = 3.5
         let path = NSBezierPath()
         if mark == .folded {
@@ -176,7 +216,7 @@ final class LineNumberRuler: NSRulerView {
     override func mouseDown(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
         guard let line = line(at: point) else { return super.mouseDown(with: event) }
-        if point.x >= ruleThickness - foldWidth - 2 {
+        if point.x >= ruleThickness - rightColumns - 2 {
             if foldMark(line) != .none { onClickFold?(line) }
         } else {
             onClickLine?(line)

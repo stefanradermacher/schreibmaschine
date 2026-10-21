@@ -250,7 +250,7 @@ Ein Ergebnis zu ersetzen ist ein Schritt, den ⌘Z zurücknimmt. Endet ein Skrip
 
 # Darstellung und Einstellungen
 
-Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
+Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. Neben den Zeilennummern zeigt ein schmaler Balken, welche Zeilen seit dem letzten Sichern neu oder geändert sind, und ein kleiner Keil, wo Zeilen gelöscht wurden; nach dem Sichern verschwinden die Marken. Ob und in welchen Farben sie erscheinen, legt „Einstellungen → Editor → Änderungen im Lineal“ fest. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
 
 ## Blättern und springen
 
@@ -263,7 +263,7 @@ Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einr
 ## Einstellungen
 
 - Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, die Standard-App für Text und Code, Kodierung und Zeilenenden für neue Dokumente
-- Editor: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung und Hervorhebung der aktuellen Zeile
+- Editor: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung, Hervorhebung der aktuellen Zeile und Änderungen im Lineal
 - Schreiben: Schreibmaschinen-Modus, Fokus-Modus und die Breite der Textspalte im ablenkungsfreien Modus
 
 Soll die Schreibmaschine Textdateien per Doppelklick öffnen, legt „Allgemein → Standard-App → Als Standard festlegen“ sie dafür fest: für reinen Text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, Shell-Skripte, SQL, Lua, TOML und INI sowie Diff. macOS fragt dabei für jedes Format einzeln nach. „Anpassen …“ zeigt alle Formate mit der App, die sie gerade öffnet, und legt jedes einzeln fest, auch HTML, CSV und Protokolle, die sonst meist in Browser, Tabellenkalkulation und Konsole bleiben. „Zurücksetzen“ gibt die Formate der App zurück, die sie vorher hatten. Nach einigen Tagen fragt die Schreibmaschine auch selbst einmal in einem Balken unter der Titelleiste nach, höchstens zweimal.

@@ -28,7 +28,8 @@ struct TextDiff {
     let leftCharacters: [NSRange]
     let rightCharacters: [NSRange]
 
-    init(left: String, right: String, options: Options) {
+    /// Without `characters`, only lines are compared, as for the marks in the ruler.
+    init(left: String, right: String, options: Options, characters: Bool = true) {
         let leftLines = Self.lines(of: left)
         let rightLines = Self.lines(of: right)
         let leftKeys = leftLines.map { Self.key($0.text, options) }
@@ -64,7 +65,7 @@ struct TextDiff {
 
         // Within changed hunks the lines are paired in order and compared character by character.
         var leftCharacters: [NSRange] = [], rightCharacters: [NSRange] = []
-        for hunk in hunks where hunk.kind == .changed {
+        for hunk in hunks where characters && hunk.kind == .changed {
             for (a, b) in zip(hunk.left, hunk.right) {
                 let (l, r) = Self.characterDifferences(leftLines[a], rightLines[b])
                 leftCharacters += l

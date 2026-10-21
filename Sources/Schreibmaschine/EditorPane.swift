@@ -133,6 +133,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             return document.isFoldHead(line) ? .open : .none
         }
         ruler.foldedHeads = { [weak document] in document?.foldedHeads ?? [] }
+        ruler.lineChanges = { [weak document] in document?.lineChanges }
         ruler.onClickFold = { [weak self] line in self?.toggleFold(headedBy: line) }
 
         view = scrollView
@@ -176,6 +177,9 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
                 self?.foldsDidChange()
             },
             center.addObserver(forName: TextDocument.bookmarksDidChange, object: document, queue: .main) { [weak self] _ in
+                self?.ruler.needsDisplay = true
+            },
+            center.addObserver(forName: TextDocument.lineChangesDidChange, object: document, queue: .main) { [weak self] _ in
                 self?.ruler.needsDisplay = true
             },
         ]
@@ -252,6 +256,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
     // MARK: - Settings
 
     private var lastHighlightsSyntax = Preferences.highlightsSyntaxValue
+    private var lastChangeMarkStyle = ChangeMarkStyle.current
 
     private var lastTypewriterMode = Preferences.typewriterModeValue
 
@@ -271,6 +276,12 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         if Preferences.highlightsSyntaxValue != lastHighlightsSyntax {
             lastHighlightsSyntax = Preferences.highlightsSyntaxValue
             recolor(fromLine: 1)
+        }
+        if ChangeMarkStyle.current != lastChangeMarkStyle {
+            lastChangeMarkStyle = ChangeMarkStyle.current
+            ruler.updateThickness(force: true)
+            ruler.needsDisplay = true
+            document.scheduleLineChanges()
         }
     }
 

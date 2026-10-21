@@ -671,6 +671,16 @@
         }
       }
     },
+    "Aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off"
+          }
+        }
+      }
+    },
     "Ausführen": {
       "localizations": {
         "en": {
@@ -1557,6 +1567,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tips are possible in the App Store version."
+          }
+        }
+      }
+    },
+    "Einfarbig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Single color"
           }
         }
       }
@@ -2501,6 +2521,16 @@
         }
       }
     },
+    "Neben den Zeilennummern ein schmaler Balken an jeder Zeile, die seit dem letzten Sichern neu oder geändert ist, und ein kleiner Keil, wo Zeilen gelöscht wurden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beside the line numbers, a narrow bar at every line that is new or changed since the last save, and a small wedge where lines were deleted."
+          }
+        }
+      }
+    },
     "Nebeneinander teilen": {
       "localizations": {
         "en": {
@@ -2517,6 +2547,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "New"
+          }
+        }
+      }
+    },
+    "Neu grün, geändert blau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New green, changed blue"
           }
         }
       }
@@ -3771,6 +3811,16 @@
         }
       }
     },
+    "Wie im Vergleich: neu blau, geändert rot": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As in comparisons: new blue, changed red"
+          }
+        }
+      }
+    },
     "Wie in den meisten Code-Editoren: Bild ↑/↓ blättert mit der Einfügemarke, Pos1 und Ende gehen an Anfang und Ende der Zeile, mit ⌘ an Anfang und Ende des Dokuments. Pos1 und ⌘← springen zuerst hinter die Einrückung. Ausgeschaltet gilt das Verhalten von macOS: Diese Tasten blättern nur.": {
       "localizations": {
         "en": {
@@ -4247,6 +4297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Do you want to save the changes to “%@”?"
+          }
+        }
+      }
+    },
+    "Änderungen im Lineal:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes in the ruler:"
           }
         }
       }

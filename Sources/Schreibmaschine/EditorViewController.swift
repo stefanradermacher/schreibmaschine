@@ -321,11 +321,17 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let item = NSMenuItem()
                 item.representedObject = argument
                 textView.performTextCommand(item)
+            case "marks":
+                let changes = document.lineChanges
+                NSLog("DEBUGSCRIPT marks %@ neu=%@ geändert=%@ gelöscht=%@", argument,
+                      changes.map { Array($0.added).description } ?? "nil", changes.map { Array($0.changed).description } ?? "nil",
+                      changes.map { Array($0.deletedBefore).description } ?? "nil")
             case "external":
                 // external:reload | keep | save — the buttons of the bar, or ⌘S
                 switch argument {
                 case "reload": document.reloadFromDisk()
                 case "keep": document.keepOwnText()
+                case "undo": document.undoManager?.undo()
                 case "compare":
                     document.keepOwnText()
                     compareWithFileOnDisk(title: String(localized: "\(document.displayName ?? "") (extern geändert)"))

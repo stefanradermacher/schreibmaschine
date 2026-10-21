@@ -157,6 +157,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
     @AppStorage(Preferences.autoIndents) private var autoIndents = true
     @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
+    @AppStorage(Preferences.changeMarks) private var changeMarks = ChangeMarkStyle.single.rawValue
     @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
     @AppStorage(Preferences.showsLineNumbers) private var showsLineNumbers = true
     @AppStorage(Preferences.wrapsLines) private var wrapsLines = true
@@ -227,6 +228,18 @@ private struct EditorSettings: View {
             Section {
                 Toggle("Syntax hervorheben", isOn: $highlightsSyntax)
                 Toggle("Aktuelle Zeile hervorheben", isOn: $highlightsCurrentLine)
+            }
+
+            Section {
+                Picker("Änderungen im Lineal:", selection: $changeMarks) {
+                    ForEach(ChangeMarkStyle.allCases, id: \.rawValue) { style in
+                        Text(style.title).tag(style.rawValue)
+                    }
+                }
+            } footer: {
+                Text("Neben den Zeilennummern ein schmaler Balken an jeder Zeile, die seit dem letzten Sichern neu oder geändert ist, und ein kleiner Keil, wo Zeilen gelöscht wurden.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

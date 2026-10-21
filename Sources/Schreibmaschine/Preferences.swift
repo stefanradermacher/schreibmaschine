@@ -25,6 +25,8 @@ enum Preferences {
     static let wrapsLines = "wrapsLines"
     static let showsInvisibles = "showsInvisibles"
     static let highlightsCurrentLine = "highlightsCurrentLine"
+    /// How the ruler marks lines changed since saving (ChangeMarkStyle).
+    static let changeMarks = "changeMarks"
     static let highlightsSyntax = "highlightsSyntax"
     static let showsDocumentList = "showsDocumentList"
     static let tabWidth = "tabWidth"
@@ -60,6 +62,7 @@ enum Preferences {
             wrapsLines: true,
             showsInvisibles: false,
             highlightsCurrentLine: true,
+            changeMarks: ChangeMarkStyle.single.rawValue,
             highlightsSyntax: true,
             showsDocumentList: false,
             tabWidth: 4,

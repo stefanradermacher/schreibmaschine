@@ -61,6 +61,13 @@ final class TextDocument: NSDocument {
     /// The document writes its file itself; the writes it sees meanwhile are its own.
     var isSavingFile = false
 
+    // Marks of changed lines in the ruler (ChangeMarks.swift).
+    /// The text as last read from or written to the file; nil without a file.
+    var savedText: String?
+    var lineChanges: LineChanges?
+    var lineChangesWork: DispatchWorkItem?
+    var lineChangesGeneration = 0
+
     /// Other programs that take part in file coordination report their writes here.
     override func presentedItemDidChange() {
         DispatchQueue.main.async { [weak self] in self?.scheduleExternalCheck() }
@@ -120,6 +127,7 @@ final class TextDocument: NSDocument {
     private func textDidEdit() {
         SessionStore.shared.setNeedsSave()
         if textStorage.editedMask.contains(.editedCharacters) {
+            scheduleLineChanges()
             // The edited line may now end in a different state; the lines after it start anew.
             let line = lineIndex.lineNumber(at: textStorage.editedRange.location)
             highlighter.invalidate(fromLine: line)
@@ -287,6 +295,8 @@ final class TextDocument: NSDocument {
             self.isSavingFile = false
             if error == nil, saveOperation != .autosaveElsewhereOperation {
                 self.clearExternalChange()
+                self.savedText = self.textStorage.string
+                self.scheduleLineChanges()
                 // "Save As" gives the document another file.
                 self.watchFile()
             }
@@ -452,6 +462,7 @@ final class TextDocument: NSDocument {
         hadMixedLineEndings = isMixed
 
         let text = decoded.text.normalizingLineEndings
+        savedText = text
         isReplacingText = true
         defer { isReplacingText = false }
         undoManager?.disableUndoRegistration()

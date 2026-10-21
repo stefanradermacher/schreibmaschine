@@ -239,7 +239,7 @@ Replacing text with a result is one step that ⌘Z undoes. If a script ends with
 
 # View and settings
 
-Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. ⌘+ and ⌘- change the font size, ⌘0 resets it.
+Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. Beside the line numbers, a narrow bar shows which lines are new or changed since the last save, and a small wedge where lines were deleted; after saving, the marks disappear. Whether and in which colors they appear is set under “Settings → Editor → Changes in the ruler”. ⌘+ and ⌘- change the font size, ⌘0 resets it.
 
 ## Scrolling and jumping
 
@@ -252,7 +252,7 @@ At the bottom of the window are line and column, the size of the selection, lang
 ## Settings
 
 - General: what happens when the app starts without a file, tabs or windows, the default app for text and code, encoding and line endings for new documents
-- Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting and highlighting of the current line
+- Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting, highlighting of the current line and changes in the ruler
 - Writing: typewriter mode, focus mode and the width of the text column in distraction-free mode
 
 To have text files open in Schreibmaschine with a double-click, “General → Default app → Make Default” makes it the default for plain text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, shell scripts, SQL, Lua, TOML and INI as well as diff. macOS asks for each format separately. “Customize…” lists all formats with the app that opens them now and sets each one on its own, including HTML, CSV and logs, which usually stay with the browser, a spreadsheet and Console. “Reset” gives the formats back to the apps they had before. After a few days, Schreibmaschine also asks once itself, in a bar below the title bar, at most twice.
