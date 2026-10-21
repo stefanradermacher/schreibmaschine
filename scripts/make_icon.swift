@@ -29,7 +29,7 @@ func noShadow() { ctx.setShadow(offset: .zero, blur: 0, color: nil) }
 
 // MARK: colours
 
-let skyTop = c(0xA9C8EE), skyBottom = c(0x5E8CCB)          // steel blue background
+let skyTop = c(0x5C88C6), skyBottom = c(0x2D5592)          // steel blue background
 let body = c(0x3B3F48), bodyDark = c(0x1C1E23)             // black lacquer of the machine
 let well = c(0x0E0F12)                                     // keyboard well and type basket
 let cream = c(0xF6ECCB), creamDark = c(0xE2D2A0)           // key faces
