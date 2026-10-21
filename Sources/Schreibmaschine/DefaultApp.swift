@@ -74,7 +74,11 @@ enum TextFormat: String, CaseIterable, Identifiable {
     /// Whether "all formats" and the offer include it.
     var isInAll: Bool { self != .html && self != .csv && self != .log }
 
-    static var all: [TextFormat] { allCases.filter(\.isInAll) }
+    /// The formats whose types the system knows. The app declares the ones macOS does not, but a
+    /// format without any type must never count as the Schreibmaschine's.
+    static var available: [TextFormat] { allCases.filter { !$0.types.isEmpty } }
+
+    static var all: [TextFormat] { available.filter(\.isInAll) }
 
     /// The app that opens this format now; for several types, the one for the first.
     var currentApplication: URL? {
@@ -82,7 +86,7 @@ enum TextFormat: String, CaseIterable, Identifiable {
     }
 
     var isSchreibmaschineDefault: Bool {
-        types.allSatisfy { type in
+        !types.isEmpty && types.allSatisfy { type in
             NSWorkspace.shared.urlForApplication(toOpen: type).map(DefaultAppOffer.isSchreibmaschine) ?? false
         }
     }
@@ -119,7 +123,7 @@ enum DefaultAppOffer {
 
     static var isDefaultForAll: Bool { TextFormat.all.allSatisfy(\.isSchreibmaschineDefault) }
 
-    static var isDefaultForAny: Bool { TextFormat.allCases.contains(where: \.isSchreibmaschineDefault) }
+    static var isDefaultForAny: Bool { TextFormat.available.contains(where: \.isSchreibmaschineDefault) }
 
     /// Plain text is the format that matters most; the offer goes by it.
     static var isDefault: Bool { TextFormat.plainText.isSchreibmaschineDefault }
@@ -156,7 +160,7 @@ enum DefaultAppOffer {
     /// Gives the formats back to the app they had before, or to TextEdit if that is unknown or
     /// gone. macOS cannot remove a default, only set another one; it asks to confirm each change,
     /// and as when setting, a single "keep" ends the run.
-    static func restore(_ formats: [TextFormat] = TextFormat.allCases) async {
+    static func restore(_ formats: [TextFormat] = TextFormat.available) async {
         var previous = previousApps
         run: for format in formats where format.isSchreibmaschineDefault {
             for type in format.types {
@@ -355,7 +359,7 @@ struct DefaultAppFormatsView: View {
             Text("Standard-App nach Format")
                 .font(.headline)
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
-                    ForEach(TextFormat.allCases) { format in
+                    ForEach(TextFormat.available) { format in
                         GridRow {
                             Text(format.title)
                                 .fontWeight(.medium)
