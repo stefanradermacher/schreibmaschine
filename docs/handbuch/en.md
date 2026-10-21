@@ -7,7 +7,7 @@ Dokumenttitel: Schreibmaschine – Manual
 Thema: Text editor for macOS
 Untertitel: Manual for the text editor for macOS
 Leitsatz: For text and code.
-Einleitung: Not an IDE, but a tool for writing: with a find bar, text commands and a session that forgets nothing.
+Einleitung: Not an IDE, but a tool for writing: with a find bar, text commands, and a session that forgets nothing.
 Free, ad-free, and without data collection.
 
 # About this manual
@@ -21,7 +21,7 @@ Schreibmaschine is a text editor for macOS: first and foremost for plain text in
 - A session of its own that never loses windows, tabs, or unsaved texts
 - Syntax highlighting, indentation, brackets, and folding for code
 - Multiple insertion points, bookmarks, and a split view
-- Free and open source under the Apache License 2.0, no ads and no data collection
+- Free and open source under the Apache License 2.0, no ads, and no data collection
 - Apple frameworks only, no third-party components
 - German and English
 
@@ -45,9 +45,21 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 ## Saving, encoding, and line endings
 
-Schreibmaschine writes a file only when you save it with ⌘S. It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu; every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
+Schreibmaschine writes a file only when you save it with ⌘S, unless you turn on saving automatically (see below). It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu; every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
 
 If another program changes an open file, such as git or a second editor, Schreibmaschine reloads it by itself as long as you have nothing unsaved in it; the insertion point and the scroll position stay where they were. If you have unsaved changes, a bar below the title bar asks: “Reload” takes the file, “Keep” stays with your text, which ⌘S then writes over the file, and “Compare” puts both side by side: take differences from the file over into your text and save the result. If an open file is deleted or moved, your text is kept and counts as unsaved; “Save As…” puts it somewhere again.
+
+## Saving automatically
+
+With “Settings → General → Save automatically”, Schreibmaschine writes changed files without ⌘S as well. “When switching away” saves as soon as the window or tab loses focus, Schreibmaschine goes to the background, or you close a document; a changed document is then saved on closing instead of asking. “When switching away and when pausing” also saves when you have not typed for 15 seconds. This is handy when another program reads the file, such as a compiler, a web server, or git.
+
+Untitled documents are never saved automatically; they stay in the session. A file that another program has changed, deleted, or made read-only is left alone as well, and so is text with characters the file's encoding cannot hold; here, you decide with ⌘S. The marks in the ruler keep showing what changed since your last ⌘S, not since the last automatic save.
+
+## Earlier versions
+
+Each time you open or save a file, by hand or automatically, Schreibmaschine keeps that state in its own area on your Mac. “File → Revert To” lists them: “Last Saved” and “Last Opened” at the top, the earlier versions with date and time below. Choosing a version replaces the text like an ordinary edit, so ⌘Z brings your text back. Hold down ⌥, and every entry becomes a comparison: the version appears beside your text, and you take over only what you need.
+
+“Settings → General → Keep earlier versions” sets how many versions each file keeps, 20 by default; none is kept longer than 14 days. Identical states are stored only once, and files over 10 MB not at all. “Clear History…” at the end of the menu removes the versions of the file; the file itself stays as it is. If you rename or move an open file, its versions go with it.
 
 # The session
 
@@ -59,7 +71,7 @@ Schreibmaschine keeps unsaved texts and changes all the time in its own area on 
 
 ## Starting with a file
 
-Started without a file, Schreibmaschine restores the last session, opens a new document or nothing, as set in the settings. When you open a file from the Finder instead, only that file appears. The session before is kept as the “previous session”: “Window → Session → Restore Previous Session” brings it back.
+Started without a file, Schreibmaschine restores the last session, opens a new document, or nothing, as set in the settings. When you open a file from the Finder instead, only that file appears. The session before is kept as the “previous session”: “Window → Session → Restore Previous Session” brings it back.
 
 > “Window → Session” always shows what belongs to the session and what comes back at the next start.
 
@@ -94,22 +106,22 @@ For every file, Schreibmaschine remembers the selection, the visible part, wrapp
 
 ## Go to line
 
-⌘L opens the same bar for jumping: 120 goes to line 120, 120:15 also to column 15, +10 and -10 jump relative to the current line.
+⌘L opens the same bar for jumping: 120 goes to line 120, 120:15 also to column 15, and +10 and -10 jump relative to the current line.
 
 # Reshaping text
 
 The “Text” menu holds commands that reshape text in one step. Every command can be undone with ⌘Z, and ⌘R runs the last one again.
 
 - Lines: duplicate, delete, move, join, split, sort, remove duplicates, reverse, shuffle, number, remove empty lines
-- Paragraphs: rewrap and unwrap, indent and outdent, mark as quote
+- Paragraphs: rewrap and unwrap, indent and outdent, and mark as quote
 - White Space: remove trailing spaces, convert between tabs and spaces
-- Case: upper and lower case, also camelCase, snake_case and kebab-case
+- Case: upper and lower case, also camelCase, snake_case, and kebab-case
 - Columns: align at a character, format Markdown tables
 - Encode: URL, Base64, and HTML, format or minify JSON
 
 ## Without a selection
 
-Without a selection, a command acts on what makes sense: sorting and encoding on the whole document, moving and indenting on the line, rewrapping on the paragraph, changing case on the word at the insertion point.
+Without a selection, a command acts on what makes sense: sorting and encoding on the whole document, moving and indenting on the line, rewrapping on the paragraph, and changing case on the word at the insertion point.
 
 ## The command palette
 
@@ -144,7 +156,7 @@ Without a selection, a command acts on what makes sense: sorting and encoding on
 
 ## Counting
 
-On the left of the status bar is the number of words in the text, with a selection, for example “12 of 1,234 words”. A click on it shows all counts – words, characters, characters without spaces, lines and paragraphs – and lets you choose which one the bar shows.
+On the left of the status bar is the number of words in the text, with a selection, for example “12 of 1,234 words”. A click on it shows all counts – words, characters, characters without spaces, lines, and paragraphs – and lets you choose which one the bar shows.
 
 ## Typewriter mode
 
@@ -162,11 +174,11 @@ With “View → Focus Mode”, only the paragraph with the insertion point stay
 
 ## Markdown preview
 
-In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
+In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables, and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
 
 # Code
 
-Schreibmaschine recognizes the language of a file from its name, extension, or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL and Lua. The language can be chosen under “Format → Language” or in the status bar.
+Schreibmaschine recognizes the language of a file from its name, extension, or first line and colors it accordingly. It comes with Swift, Markdown, PHP, JavaScript and TypeScript, Python, JSON, YAML, INI and TOML, Shell, HTML, XML, CSS, SQL, and Lua. The language can be chosen under “Format → Language” or in the status bar.
 
 ![Swift with syntax highlighting, line numbers, and bookmarks](docs/screenshots/en/1-code.jpg)
 
@@ -201,7 +213,7 @@ A rule names either words (words), a pattern within a line (match) or a region f
 
 # Comparing
 
-“File → Compare” puts two texts side by side: the document and its saved version, the contents of the clipboard, another open document or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
+“File → Compare” puts two texts side by side: the document and its saved or an earlier version (with ⌥ under “File → Revert To”), the contents of the clipboard, another open document, or a file. The comparison opens in a window of its own, which you can drag to the tabs like any other.
 
 Both sides scroll together. Where lines are missing on one side, Schreibmaschine leaves room, so lines that belong together stand at the same height. Neither side counts as the older one: lines that exist on only one side are blue, whichever side; lines that differ are red, with the differing characters marked more strongly. If you like, equal lines are green as well (“Equal lines green” at the bottom right); otherwise, they stay white. The bar at the right edge shows all differences in the whole text; a click jumps there.
 
@@ -239,7 +251,7 @@ Replacing text with a result is one step that ⌘Z undoes. If a script ends with
 
 # View and settings
 
-Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. Beside the line numbers, a narrow bar shows which lines are new or changed since the last save, and a small wedge where lines were deleted; after saving, the marks disappear. Whether and in which colors they appear is set under “Settings → Editor → Changes in the ruler”. ⌘+ and ⌘- change the font size, ⌘0 resets it.
+Line numbers (⌥⌘L), line wrapping (⌃⌘W) and invisible characters (⌥⌘I) apply to each window on its own. Beside the line numbers, a narrow bar shows which lines are new or changed since the last save with ⌘S, and a small wedge where lines were deleted; after ⌘S, the marks disappear. Whether and in which colors they appear is set under “Settings → Editor → Changes in the ruler”. ⌘+ and ⌘- change the font size, ⌘0 resets it.
 
 ## Scrolling and jumping
 
@@ -251,11 +263,11 @@ At the bottom of the window are line and column, the size of the selection, lang
 
 ## Settings
 
-- General: what happens when the app starts without a file, tabs or windows, the default app for text and code, encoding, and line endings for new documents
+- General: what happens when the app starts without a file, tabs or windows, saving automatically and how many earlier versions are kept, the default app for text and code, encoding, and line endings for new documents
 - Editor: font, line height (from +0% to +100% over what the font needs, +20% by default), tab width, indentation, wrap column, defaults for new windows, syntax highlighting, highlighting of the current line, and changes in the ruler
 - Writing: typewriter mode, focus mode, and the width of the text column in distraction-free mode
 
-To have text files open in Schreibmaschine with a double-click, “General → Default app → Make Default” makes it the default for plain text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, shell scripts, SQL, Lua, TOML and INI as well as diff. macOS asks for each format separately. “Customize…” lists all formats with the app that opens them now and sets each one on its own, including HTML, CSV and logs, which usually stay with the browser, a spreadsheet and Console. “Reset” gives the formats back to the apps they had before. After a few days, Schreibmaschine also asks once itself, in a bar below the title bar, at most twice.
+To have text files open in Schreibmaschine with a double-click, “General → Default app → Make Default” makes it the default for plain text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, shell scripts, SQL, Lua, TOML, and INI, as well as diff. macOS asks for each format separately. “Customize…” lists all formats with the app that opens them now and sets each one on its own, including HTML, CSV, and logs, which usually stay with the browser, a spreadsheet, and Console. “Reset” gives the formats back to the apps they had before. After a few days, Schreibmaschine also asks once itself, in a bar below the title bar, at most twice.
 
 The default font is SF Mono, the monospaced font of macOS. Because macOS does not list it in the font panel, the “Default” button leads back to it.
 
@@ -298,7 +310,7 @@ No, and it will stay that way. There are no projects, no auto-completion, and no
 
 ## Where do my unsaved texts go when I quit?
 
-They stay in the session and come back at the next start. Files are only written with ⌘S. An untitled document that you close yourself, on the other hand, asks whether it should be saved; closing is a deliberate act, quitting is not.
+They stay in the session and come back at the next start. Files are only written with ⌘S, unless you have turned on saving automatically. An untitled document that you close yourself, on the other hand, asks whether it should be saved; closing is a deliberate act, quitting is not.
 
 ## I opened a file from the Finder, and my other windows are gone.
 

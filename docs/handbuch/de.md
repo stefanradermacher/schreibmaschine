@@ -56,9 +56,21 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 ## Sichern, Kodierung und Zeilenenden
 
-Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst. Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
+Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst, es sei denn, du schaltest das automatische Sichern ein (siehe unten). Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
 
 Ändert ein anderes Programm eine offene Datei, etwa git oder ein zweiter Editor, lädt die Schreibmaschine sie von selbst neu, solange du nichts Ungesichertes darin hast; Einfügemarke und Scrollposition bleiben, wo sie waren. Hast du ungesicherte Änderungen, fragt eine Leiste unter der Titelleiste: „Neu laden“ übernimmt die Datei, „Behalten“ bleibt bei deinem Text, den ⌘S dann über die Datei schreibt, und „Vergleichen“ stellt beides nebeneinander: Unterschiede aus der Datei übernimmst du in deinen Text und sicherst das Ergebnis. Wird eine offene Datei gelöscht oder verschoben, bleibt dein Text erhalten und gilt als ungesichert; „Sichern unter …“ legt ihn wieder ab.
+
+## Automatisch sichern
+
+Unter „Einstellungen → Allgemein → Automatisch sichern“ schreibt die Schreibmaschine geänderte Dateien auch ohne ⌘S. „Beim Verlassen“ sichert, sobald Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder du ein Dokument schließt; ein geändertes Dokument wird dann beim Schließen gesichert statt nachgefragt. „Beim Verlassen und in Schreibpausen“ sichert zusätzlich, wenn du 15 Sekunden nichts tippst. Das ist praktisch, wenn ein anderes Programm die Datei liest, etwa ein Compiler, ein Webserver oder git.
+
+Nie automatisch gesichert werden unbenannte Dokumente, die bleiben in der Sitzung. Auch eine Datei, die ein anderes Programm geändert, gelöscht oder schreibgeschützt hat, bleibt unangetastet, ebenso Text mit Zeichen, die die Kodierung der Datei nicht kennt; hier entscheidest du mit ⌘S. Die Marken im Lineal zeigen weiterhin, was sich seit deinem letzten ⌘S geändert hat, nicht seit dem letzten automatischen Sichern.
+
+## Frühere Fassungen
+
+Jedes Mal, wenn du eine Datei öffnest oder sicherst, von Hand oder automatisch, hebt die Schreibmaschine diesen Stand in ihrem eigenen Bereich auf dem Mac auf. „Ablage → Zurück zu“ führt sie auf: oben „Zuletzt gesichert“ und „Zuletzt geöffnet“, darunter die früheren Fassungen mit Datum und Uhrzeit. Eine Fassung zu wählen ersetzt den Text wie eine gewöhnliche Bearbeitung, ⌘Z holt deinen Text also zurück. Hältst du ⌥ gedrückt, wird aus jedem Eintrag ein Vergleich: Die Fassung erscheint neben deinem Text, und du übernimmst nur, was du brauchst.
+
+Wie viele Fassungen je Datei bleiben, legt „Einstellungen → Allgemein → Frühere Fassungen aufbewahren“ fest, voreingestellt 20; älter als 14 Tage wird keine. Gleiche Stände werden nur einmal gespeichert, Dateien über 10 MB gar nicht. „Verlauf löschen …“ am Ende des Menüs entfernt die Fassungen der Datei, die Datei selbst bleibt, wie sie ist. Benennst du eine offene Datei um oder verschiebst sie, nimmt sie ihre Fassungen mit.
 
 # Die Sitzung
 
@@ -212,7 +224,7 @@ Eine Regel nennt entweder Wörter (words), ein Muster in einer Zeile (match) ode
 
 # Vergleichen
 
-„Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten Fassung, mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
+„Ablage → Vergleichen“ stellt zwei Texte nebeneinander: das Dokument mit seiner gesicherten oder einer früheren Fassung (mit ⌥ unter „Ablage → Zurück zu“), mit dem Inhalt der Zwischenablage, mit einem anderen offenen Dokument oder mit einer Datei. Der Vergleich öffnet sich in einem eigenen Fenster, das sich wie jedes andere zu den Tabs ziehen lässt.
 
 Beide Seiten scrollen gemeinsam. Wo auf einer Seite Zeilen fehlen, lässt die Schreibmaschine Platz, sodass zusammengehörige Zeilen auf gleicher Höhe stehen. Zeilen, die es nur auf einer Seite gibt, egal auf welcher, sind blau; Zeilen, die sich unterscheiden, sind rot, die abweichenden Zeichen darin kräftiger. Auf Wunsch sind auch die gleichen Zeilen grün („Gleiche Zeilen grün“ unten rechts), sonst bleiben sie weiß. Die Leiste am rechten Rand zeigt alle Unterschiede im ganzen Text, ein Klick springt hin.
 
@@ -250,7 +262,7 @@ Ein Ergebnis zu ersetzen ist ein Schritt, den ⌘Z zurücknimmt. Endet ein Skrip
 
 # Darstellung und Einstellungen
 
-Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. Neben den Zeilennummern zeigt ein schmaler Balken, welche Zeilen seit dem letzten Sichern neu oder geändert sind, und ein kleiner Keil, wo Zeilen gelöscht wurden; nach dem Sichern verschwinden die Marken. Ob und in welchen Farben sie erscheinen, legt „Einstellungen → Editor → Änderungen im Lineal“ fest. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
+Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. Neben den Zeilennummern zeigt ein schmaler Balken, welche Zeilen seit dem letzten Sichern mit ⌘S neu oder geändert sind, und ein kleiner Keil, wo Zeilen gelöscht wurden; nach ⌘S verschwinden die Marken. Ob und in welchen Farben sie erscheinen, legt „Einstellungen → Editor → Änderungen im Lineal“ fest. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
 
 ## Blättern und springen
 
@@ -262,7 +274,7 @@ Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einr
 
 ## Einstellungen
 
-- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, die Standard-App für Text und Code, Kodierung und Zeilenenden für neue Dokumente
+- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, automatisches Sichern und wie viele frühere Fassungen bleiben, die Standard-App für Text und Code, Kodierung und Zeilenenden für neue Dokumente
 - Editor: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung, Hervorhebung der aktuellen Zeile und Änderungen im Lineal
 - Schreiben: Schreibmaschinen-Modus, Fokus-Modus und die Breite der Textspalte im ablenkungsfreien Modus
 
@@ -309,7 +321,7 @@ Nein, und das bleibt so. Es gibt keine Projekte, keine Autovervollständigung un
 
 ## Wo bleiben meine ungesicherten Texte, wenn ich die App beende?
 
-Sie bleiben in der Sitzung und kommen beim nächsten Start zurück. In eine Datei geschrieben wird nur mit ⌘S. Ein unbenanntes Dokument, das du selbst schließt, fragt dagegen, ob es gesichert werden soll; Schließen ist eine bewusste Handlung, Beenden nicht.
+Sie bleiben in der Sitzung und kommen beim nächsten Start zurück. In eine Datei geschrieben wird nur mit ⌘S, außer du hast das automatische Sichern eingeschaltet. Ein unbenanntes Dokument, das du selbst schließt, fragt dagegen, ob es gesichert werden soll; Schließen ist eine bewusste Handlung, Beenden nicht.
 
 ## Ich habe eine Datei aus dem Finder geöffnet, und meine anderen Fenster sind weg.
 
