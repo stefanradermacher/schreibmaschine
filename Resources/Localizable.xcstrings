@@ -2551,16 +2551,6 @@
         }
       }
     },
-    "Neu grün, geändert blau": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New green, changed blue"
-          }
-        }
-      }
-    },
     "Neu laden": {
       "localizations": {
         "en": {
@@ -3571,6 +3561,16 @@
         }
       }
     },
+    "Vergleich": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparison"
+          }
+        }
+      }
+    },
     "Vergleichen": {
       "localizations": {
         "en": {
@@ -3807,16 +3807,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Undo"
-          }
-        }
-      }
-    },
-    "Wie im Vergleich: neu blau, geändert rot": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "As in comparisons: new blue, changed red"
           }
         }
       }

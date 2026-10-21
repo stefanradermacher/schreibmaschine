@@ -97,15 +97,19 @@ final class LineNumberRuler: NSRulerView {
         // The empty line after a final line break is not a line of the text.
         let lastTextLine = endsWithNewline && !textView.string.isEmpty ? lineIndex.lineCount - 1 : lineIndex.lineCount
 
-        /// A bar beside a new or changed line over all its rows; a wedge where lines are gone.
+        /// A bar beside a new or changed line over its whole height, line spacing included, so
+        /// that the bars of neighbouring lines join; only the ends of such a run are rounded.
+        /// A wedge where lines are gone.
         func drawChange(_ number: Int, top: CGFloat, bottom: CGFloat) {
             guard let changes else { return }
             let x = ruleThickness - 3
-            if changes.added.contains(number) || changes.changed.contains(number) {
-                let y = convert(NSPoint(x: 0, y: top + origin.y), from: textView).y
-                let end = convert(NSPoint(x: 0, y: bottom + origin.y), from: textView).y
+            func isMarked(_ line: Int) -> Bool { changes.added.contains(line) || changes.changed.contains(line) }
+            if isMarked(number) {
+                let startsRun = !isMarked(number - 1), endsRun = !isMarked(number + 1)
+                let y = convert(NSPoint(x: 0, y: top + origin.y), from: textView).y + (startsRun ? 1 : 0)
+                let end = convert(NSPoint(x: 0, y: bottom + origin.y), from: textView).y - (endsRun ? 1 : 0)
                 (changes.added.contains(number) ? style.addedColor : style.changedColor).setFill()
-                NSBezierPath(roundedRect: NSRect(x: x, y: y + 1, width: 3, height: max(end - y - 2, 2)), xRadius: 1.5, yRadius: 1.5).fill()
+                bar(NSRect(x: x, y: y, width: 3, height: max(end - y, 2)), roundTop: startsRun, roundBottom: endsRun).fill()
             }
             for (line, edge) in [(number, top), (number + 1, bottom)] where changes.deletedBefore.contains(line) {
                 // The wedge sits on the border above the line it belongs to; the one after the
@@ -150,8 +154,11 @@ final class LineNumberRuler: NSRulerView {
             let lines = fragment.textLineFragments
             // The rows of the line itself, without the empty one after a final line break.
             let rows = lines.count > 1 && lines.last?.characterRange.length == 0 ? lines.dropLast() : lines[...]
-            if let first = rows.first, let last = rows.last {
-                drawChange(number, top: frame.minY + first.typographicBounds.minY, bottom: frame.minY + last.typographicBounds.maxY)
+            if !rows.isEmpty {
+                // The whole fragment, line spacing included, without the empty row after a final
+                // line break.
+                let bottom = rows.count < lines.count ? frame.minY + lines[lines.count - 1].typographicBounds.minY : frame.maxY
+                drawChange(number, top: frame.minY, bottom: bottom)
             }
             if let first = lines.first {
                 drawNumber(number, lineTop: frame.minY + first.typographicBounds.minY, lineHeight: first.typographicBounds.height)
@@ -169,6 +176,21 @@ final class LineNumberRuler: NSRulerView {
         if textView.string.isEmpty {
             drawNumber(1, lineTop: 0, lineHeight: EditorStyle.lineHeightPoints(font: textView.font ?? font, multiple: Preferences.lineHeightValue))
         }
+    }
+
+    /// A bar with rounded ends where a run of marked lines begins or ends.
+    private func bar(_ rect: NSRect, roundTop: Bool, roundBottom: Bool) -> NSBezierPath {
+        let radius = min(rect.width / 2, rect.height / 2)
+        let path = NSBezierPath()
+        let top = roundTop ? radius : 0, bottom = roundBottom ? radius : 0
+        path.move(to: NSPoint(x: rect.minX, y: rect.minY + top))
+        if top > 0 { path.appendArc(withCenter: NSPoint(x: rect.midX, y: rect.minY + top), radius: radius, startAngle: 180, endAngle: 0, clockwise: false) }
+        else { path.line(to: NSPoint(x: rect.minX, y: rect.minY)); path.line(to: NSPoint(x: rect.maxX, y: rect.minY)) }
+        path.line(to: NSPoint(x: rect.maxX, y: rect.maxY - bottom))
+        if bottom > 0 { path.appendArc(withCenter: NSPoint(x: rect.midX, y: rect.maxY - bottom), radius: radius, startAngle: 0, endAngle: 180, clockwise: false) }
+        else { path.line(to: NSPoint(x: rect.maxX, y: rect.maxY)); path.line(to: NSPoint(x: rect.minX, y: rect.maxY)) }
+        path.close()
+        return path
     }
 
     /// A tag pointing at the text, in the accent color, as Xcode marks breakpoints.

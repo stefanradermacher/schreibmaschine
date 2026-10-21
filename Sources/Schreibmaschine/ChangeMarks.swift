@@ -33,14 +33,15 @@ enum ChangeMarkStyle: String, CaseIterable {
         switch self {
         case .off: String(localized: "Aus")
         case .single: String(localized: "Einfarbig")
-        case .compare: String(localized: "Wie im Vergleich: neu blau, geändert rot")
-        case .colorful: String(localized: "Neu grün, geändert blau")
+        case .compare: String(localized: "Vergleich")
+        case .colorful: "VS Code"
         }
     }
 
     private static let steelBlue = NSColor(named: "AccentColor") ?? .controlAccentColor
-    /// As strong as the bands in the middle strip of the comparison: quiet beside the text.
-    private static let strength: CGFloat = 0.3
+    /// A little stronger than the bands in the middle strip of the comparison, whose colors
+    /// these are: quiet beside the text, yet clear in a bar this narrow.
+    private static let strength: CGFloat = 0.45
 
     var addedColor: NSColor {
         switch self {
