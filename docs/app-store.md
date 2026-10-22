@@ -239,7 +239,7 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] App-Eintrag in App Store Connect angelegt (Name, primäre Sprache, Bundle-ID, SKU), deutscher und englischer Name eingetragen
 - [x] Support- und Datenschutzseite online
 - [ ] Drei Verbrauchsartikel angelegt
-- [ ] Quellcode: Die Beschreibung und die Hilfe nennen die Schreibmaschine quelloffen; vor der Freigabe das GitHub-Repo öffentlich machen oder die Stellen anpassen
+- [x] Quellcode: GitHub-Repo seit 22.10.2026 öffentlich (github.com/stefanradermacher/schreibmaschine)
 - [x] Screenshots aufgenommen (außer trinkgeld.png)
 - [ ] Build-Nummer höher als beim letzten Upload
 - [ ] Archiv erstellt, validiert und hochgeladen
