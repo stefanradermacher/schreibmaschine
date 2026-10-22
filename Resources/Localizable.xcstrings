@@ -131,6 +131,16 @@
         }
       }
     },
+    "%@ auf GitHub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ on GitHub"
+          }
+        }
+      }
+    },
     "%@ ausblenden": {
       "localizations": {
         "en": {
@@ -2977,6 +2987,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Logs"
+          }
+        }
+      }
+    },
+    "Quellcode auf GitHub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source code on GitHub"
           }
         }
       }

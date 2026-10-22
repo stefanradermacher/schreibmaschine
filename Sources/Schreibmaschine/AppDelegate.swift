@@ -129,7 +129,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openHelp(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.help) }
     @objc func openManual(_ sender: Any?) { AppLinks.openManual() }
     @objc func openProductPage(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.productPage) }
-    @objc func sendFeedback(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.feedback) }
+    @objc func openSourceCode(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.sourceCode) }
+    @objc func sendFeedback(_ sender: Any?) { NSWorkspace.shared.open(AppLinks.reportIssue) }
 
     @objc func showSettings(_ sender: Any?) {
         if settingsWindow == nil { settingsWindow = SettingsWindowController() }

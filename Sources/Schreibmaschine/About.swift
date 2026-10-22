@@ -15,14 +15,14 @@
 import AppKit
 import SwiftUI
 
-/// Addresses used in the About window and the Help menu, kept in one place. The source code
-/// and its issue tracker join them once the repository is public.
+/// Addresses used in the About window and the Help menu, kept in one place.
 enum AppLinks {
     static let moreProjects = URL(string: "https://stefanradermacher.com/projects")!
     static let productPage = URL(string: "https://stefanradermacher.com/projects/schreibmaschine")!
     static let help = URL(string: "https://stefanradermacher.com/projects/schreibmaschine/support")!
     static let privacy = URL(string: "https://stefanradermacher.com/projects/schreibmaschine/datenschutz")!
-    static let feedback = URL(string: "mailto:schreibmaschine@stefanradermacher.com")!
+    static let sourceCode = URL(string: "https://github.com/stefanradermacher/schreibmaschine")!
+    static let reportIssue = URL(string: "https://github.com/stefanradermacher/schreibmaschine/issues/new")!
 
     /// Opens the manual that comes with the app, in the language of the app, in the default
     /// PDF viewer. It lives in the bundle, so it matches this version and needs no network.
@@ -171,6 +171,8 @@ struct AboutView: View {
             }
             HStack(spacing: 6) {
                 Link("Hilfe", destination: AppLinks.help)
+                separator
+                Link("Quellcode auf GitHub", destination: AppLinks.sourceCode)
                 separator
                 Link("Datenschutz", destination: AppLinks.privacy)
             }

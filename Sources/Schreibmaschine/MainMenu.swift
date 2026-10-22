@@ -77,6 +77,7 @@ enum MainMenu {
         menu.addItem(item(String(localized: "\(appName)-Handbuch"), #selector(AppDelegate.openManual(_:))))
         menu.addItem(item(String(localized: "\(appName) im Web"), #selector(AppDelegate.openProductPage(_:))))
         menu.addItem(.separator())
+        menu.addItem(item(String(localized: "\(appName) auf GitHub"), #selector(AppDelegate.openSourceCode(_:))))
         menu.addItem(item(String(localized: "Fehler melden oder Idee vorschlagen …"), #selector(AppDelegate.sendFeedback(_:))))
         menu.addItem(.separator())
         menu.addItem(item(String(localized: "\(appName) unterstützen …"), #selector(AppDelegate.showSupport(_:))))
