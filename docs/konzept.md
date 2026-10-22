@@ -2,7 +2,7 @@
 
 Stand: 28. September 2026
 
-Die Schreibmaschine ist ein schlichter Texteditor für macOS: vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Er soll kein IDE-Ersatz und kein Alleskönner sein. Vorbilder sind KWrite und CotEditor. Von CotEditor übernimmt er den Funktionsumfang, macht aber Suchen, Fenster und Wiederherstellung anders.
+Die Schreibmaschine ist ein Texteditor für macOS: vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Er soll kein IDE-Ersatz und kein Alleskönner sein. Vorbilder sind KWrite und CotEditor. Von CotEditor übernimmt er den Funktionsumfang, macht aber Suchen, Fenster und Wiederherstellung anders.
 
 Englischer Name ebenfalls „Schreibmaschine“, im App Store mit erklärendem Zusatz (etwa „Schreibmaschine – Text Editor“).
 

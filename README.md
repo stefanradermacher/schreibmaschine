@@ -1,6 +1,6 @@
 # Schreibmaschine
 
-Schlichter Texteditor für macOS 15+, gebaut mit AppKit und TextKit 2. Vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Kein IDE-Ersatz; Vorbilder sind KWrite und CotEditor.
+Texteditor für macOS 15+, gebaut mit AppKit und TextKit 2. Vor allem für einfachen Text, der oft umgeformt wird, aber genauso brauchbar für Code. Kein IDE-Ersatz; Vorbilder sind KWrite und CotEditor.
 
 Die Schreibmaschine ist quelloffen (Apache-Lizenz 2.0, siehe `LICENSE`), werbefrei und übermittelt keine Daten: kein Tracking, keine Analyse, keine eigenen Netzwerkverbindungen.
 
