@@ -1,0 +1,97 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "de",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "5C3B8F42",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6820000001",
+      "localizations" : [
+        {
+          "description" : "Kleines Trinkgeld für die Schreibmaschine.",
+          "displayName" : "Ein Kaffee",
+          "locale" : "de"
+        },
+        {
+          "description" : "A small tip for Schreibmaschine.",
+          "displayName" : "Coffee",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.stefanradermacher.schreibmaschine.tip.coffee",
+      "referenceName" : "Trinkgeld Kaffee",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6820000002",
+      "localizations" : [
+        {
+          "description" : "Mittleres Trinkgeld für die Schreibmaschine.",
+          "displayName" : "Ein Frühstück",
+          "locale" : "de"
+        },
+        {
+          "description" : "A medium tip for Schreibmaschine.",
+          "displayName" : "Breakfast",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.stefanradermacher.schreibmaschine.tip.breakfast",
+      "referenceName" : "Trinkgeld Frühstück",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6820000003",
+      "localizations" : [
+        {
+          "description" : "Großes Trinkgeld für die Schreibmaschine.",
+          "displayName" : "Ein Abendessen",
+          "locale" : "de"
+        },
+        {
+          "description" : "A generous tip for Schreibmaschine.",
+          "displayName" : "Dinner",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.stefanradermacher.schreibmaschine.tip.dinner",
+      "referenceName" : "Trinkgeld Abendessen",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6820000000",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "DEU",
+    "_storeKitErrors" : [],
+    "_timeRate" : 0
+  },
+  "subscriptionBundleGroups" : [],
+  "subscriptionGroups" : [],
+  "subscriptionSuiteGroups" : [],
+  "version" : {
+    "major" : 6,
+    "minor" : 3
+  }
+}

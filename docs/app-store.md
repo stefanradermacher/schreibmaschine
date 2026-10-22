@@ -220,7 +220,7 @@ In `docs/screenshots/` (deutsch) und `docs/screenshots/en/`, 2880 × 1800 Pixel 
 | 3-vorschau.png | Markdown-Notiz mit Vorschau daneben |
 | 4-vergleich.png | Vergleich mit der gesicherten Fassung, Unterschiede farbig |
 | 5-geteilt.png | Geteilte Ansicht mit zwei Stellen derselben Datei |
-| trinkgeld.png | Fenster „Schreibmaschine unterstützen“ als Prüfbild für die In-App-Käufe; noch offen, weil der Debug-Build keine Produkte lädt: aus Xcode mit StoreKit-Konfiguration oder aus dem TestFlight-Build aufnehmen |
+| trinkgeld.png | Fenster „Schreibmaschine unterstützen“ mit Preisen, Prüfbild für die In-App-Käufe, 1280 × 800 wie bei Leser und Motiv; aufgenommen aus Xcode mit `Config/Schreibmaschine.storekit`, die das Schema beim Ausführen lädt |
 
 Für den englischen Eintrag derselbe Satz mit englischer Oberfläche in `docs/screenshots/en/` (`1-code.png`, `2-search.png`, `3-preview.png`, `4-compare.png`, `5-split.png`). Screenshots hängen in App Store Connect an der jeweiligen Lokalisierung: Der deutsche Satz gehört zu „Deutsch“, der englische zu „Englisch“.
 
@@ -240,7 +240,7 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] Support- und Datenschutzseite online
 - [ ] Drei Verbrauchsartikel angelegt
 - [x] Quellcode: GitHub-Repo seit 22.10.2026 öffentlich (github.com/stefanradermacher/schreibmaschine)
-- [x] Screenshots aufgenommen (außer trinkgeld.png)
+- [x] Screenshots aufgenommen
 - [ ] Build-Nummer höher als beim letzten Upload
 - [ ] Archiv erstellt, validiert und hochgeladen
 
