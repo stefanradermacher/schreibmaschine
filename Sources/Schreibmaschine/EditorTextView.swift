@@ -244,6 +244,8 @@ final class EditorTextView: NSTextView {
         let anchor = selection.upperBound
         let target = smartLineStart(from: selection.location)
         setSelectedRange(NSRange(location: min(target, anchor), length: abs(anchor - target)))
+        // AppKit does not learn which end stays from a selection set like this; ⇧↑ and ⇧↓ do.
+        noteSelectionExtension(anchor: anchor, atRowStart: true)
         scrollRangeToVisible(NSRange(location: target, length: 0))
     }
 
@@ -436,52 +438,133 @@ final class EditorTextView: NSTextView {
         super.scrollRangeToVisible(range)
     }
 
-    // MARK: - ⇧↑ in wrapped lines
+    // MARK: - ⇧↑ and ⇧↓
 
-    /// The end of the selection that stays while ⇧↑ and ⇧↓ extend it, with the selection it
-    /// belongs to; for any other selection it is unknown.
-    private var selectionExtension: (range: NSRange, anchor: Int)?
+    /// A selection that ⇧↑ and ⇧↓ are extending: the end that stays, the side of a row break
+    /// the moving end is on (the end of one row is the same place as the start of the next),
+    /// and the x the moving end keeps to, as the insertion point does with ↑ and ↓.
+    private struct Extension {
+        var range: NSRange
+        var anchor: Int
+        var upstream: Bool
+        var goalX: CGFloat
+    }
+    private var selectionExtension: Extension?
 
     override func moveUpAndModifySelection(_ sender: Any?) {
-        extendSelection(up: true) { super.moveUpAndModifySelection(sender) } plain: { super.moveUp(sender) }
+        if !extendSelectionByRow(up: true) { super.moveUpAndModifySelection(sender) }
     }
 
     override func moveDownAndModifySelection(_ sender: Any?) {
-        extendSelection(up: false) { super.moveDownAndModifySelection(sender) } plain: { super.moveDown(sender) }
+        if !extendSelectionByRow(up: false) { super.moveDownAndModifySelection(sender) }
     }
 
-    /// Under TextKit 2, ⇧↑ does not move when the moving end of the selection stands where a
-    /// wrapped line breaks, as after End or after ⇧↑ from a longer row: AppKit takes the place
-    /// for the start of the next row and goes nowhere, and afterwards at times moves the end
-    /// that should stay. Then the moving end goes up like the insertion point with ↑, from the
-    /// end of its row, and the selection follows it.
-    private func extendSelection(up: Bool, extend: () -> Void, plain: () -> Void) {
-        let before = selectedRange()
-        let known = selectionExtension.flatMap { $0.range == before ? $0.anchor : nil }
-        extend()
-        var after = selectedRange()
-        var anchor: Int?
-        // Stuck, or moved the end that should stay, which AppKit does at times after it was stuck.
-        let keptAnchor = known.map { $0 == after.location || $0 == after.upperBound } ?? true
-        if after == before || !keptAnchor, !hasMultipleCursors,
-           up ? before.location > 0 : before.upperBound < (string as NSString).length {
-            let stays = known ?? (before.length == 0 ? before.location : up ? before.upperBound : before.location)
-            let moving = stays == before.location ? before.upperBound : before.location
-            setSelectedRange(NSRange(location: moving, length: 0), affinity: .upstream, stillSelecting: false)
-            plain()
-            let target = selectedRange().location
-            after = NSRange(location: min(target, stays), length: abs(stays - target))
-            setSelectedRange(after, affinity: .upstream, stillSelecting: false)
-            scrollRangeToVisible(NSRange(location: target, length: 0))
-            anchor = stays
-        } else if let known {
-            anchor = known
-        } else if before.length == 0 || after.location == before.location {
-            anchor = before.location
-        } else if after.upperBound == before.upperBound {
-            anchor = before.upperBound
+    /// Records the end that stays for a selection set by a movement of its own, as ⇧Home.
+    func noteSelectionExtension(anchor: Int, atRowStart: Bool) {
+        let range = selectedRange()
+        let moving = anchor == range.location ? range.upperBound : range.location
+        guard let row = row(containing: moving, upstream: !atRowStart) else { selectionExtension = nil; return }
+        selectionExtension = Extension(range: range, anchor: anchor, upstream: !atRowStart, goalX: row.x(at: moving))
+    }
+
+    /// AppKit's own ⇧↑ goes wrong under TextKit 2 where a wrapped line breaks: there it takes
+    /// the end of a row for the start of the next one, stops moving, and afterwards at times
+    /// moves the end that should stay. So the rows are walked here, one at a time. A selection
+    /// made otherwise, as with the mouse, is left to AppKit, which knows its anchor.
+    private func extendSelectionByRow(up: Bool) -> Bool {
+        guard !hasMultipleCursors else { return false }
+        let selection = selectedRange()
+        var state: Extension
+        if let known = selectionExtension, known.range == selection {
+            state = known
+        } else if selection.length == 0 {
+            let upstream = selectionAffinity == .upstream
+            guard let row = row(containing: selection.location, upstream: upstream) else { return false }
+            state = Extension(range: selection, anchor: selection.location, upstream: upstream, goalX: row.x(at: selection.location))
+        } else {
+            selectionExtension = nil
+            return false
         }
-        selectionExtension = anchor.flatMap { $0 == after.location || $0 == after.upperBound ? (after, $0) : nil }
+        let moving = state.anchor == selection.location ? selection.upperBound : selection.location
+        guard let row = row(containing: moving, upstream: state.upstream) else { return false }
+        let length = (string as NSString).length
+        let target: Int
+        if let next = up ? row.above : row.below {
+            target = characterIndexForInsertion(at: NSPoint(x: state.goalX, y: next.midY))
+            // Past the end of a row that breaks, the place is its end, not the next row's start.
+            state.upstream = target == next.range.upperBound && next.breaksSoftly
+        } else {
+            target = up ? 0 : length
+            state.upstream = false
+        }
+        let range = NSRange(location: min(target, state.anchor), length: abs(state.anchor - target))
+        setSelectedRange(range, affinity: state.upstream ? .upstream : .downstream, stillSelecting: false)
+        state.range = selectedRange()
+        selectionExtension = state
+        scrollRangeToVisible(NSRange(location: target, length: 0))
+        return true
+    }
+
+    /// A row of laid-out text: one line fragment, in offsets of the whole text and points of
+    /// the view, with its neighbors.
+    private struct Row {
+        let range: NSRange
+        let midY: CGFloat
+        /// The row ends in the middle of a wrapped line, not at a line break.
+        let breaksSoftly: Bool
+        let line: NSTextLineFragment
+        let fragmentStart: Int
+        let originX: CGFloat
+        var above: Row? { aboveRow?() }
+        var below: Row? { belowRow?() }
+        var aboveRow: (() -> Row?)?
+        var belowRow: (() -> Row?)?
+
+        func x(at offset: Int) -> CGFloat {
+            originX + line.locationForCharacter(at: offset - fragmentStart).x
+        }
+    }
+
+    /// The row an offset is on. Where a wrapped line breaks, upstream is the row that ends
+    /// there, downstream the row that starts there.
+    private func row(containing offset: Int, upstream: Bool) -> Row? {
+        let rows = rows(around: offset)
+        let index = rows.lastIndex { row in
+            row.range.location <= offset && (offset < row.range.upperBound || (upstream && row.breaksSoftly && offset == row.range.upperBound))
+        } ?? rows.lastIndex { $0.range.location <= offset }
+        guard let index else { return nil }
+        var row = rows[index]
+        if upstream, row.range.location == offset, index > 0, rows[index - 1].breaksSoftly { row = rows[index - 1] }
+        let current = rows.firstIndex { $0.range == row.range } ?? index
+        row.aboveRow = { current > 0 ? rows[current - 1] : nil }
+        row.belowRow = { current + 1 < rows.count ? rows[current + 1] : nil }
+        return row
+    }
+
+    /// The rows of the line with the offset and of the lines before and after it.
+    private func rows(around offset: Int) -> [Row] {
+        guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager else { return [] }
+        let text = string as NSString
+        let line = text.lineRange(for: NSRange(location: min(offset, text.length), length: 0))
+        let first = line.location > 0 ? text.lineRange(for: NSRange(location: line.location - 1, length: 0)).location : 0
+        guard let start = content.location(content.documentRange.location, offsetBy: first) else { return [] }
+        let origin = textContainerOrigin
+        var rows: [Row] = []
+        var paragraphs = 0
+        layoutManager.enumerateTextLayoutFragments(from: start, options: [.ensuresLayout]) { fragment in
+            let fragmentStart = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
+            let frame = fragment.layoutFragmentFrame
+            let lines = fragment.textLineFragments
+            for (i, line) in lines.enumerated() {
+                let range = NSRange(location: fragmentStart + line.characterRange.location, length: line.characterRange.length)
+                rows.append(Row(range: range, midY: frame.minY + line.typographicBounds.midY + origin.y,
+                                breaksSoftly: i < lines.count - 1, line: line, fragmentStart: fragmentStart,
+                                originX: frame.minX + line.typographicBounds.minX + origin.x))
+            }
+            paragraphs += 1
+            return paragraphs < (first == line.location ? 2 : 3)
+        }
+        return rows
     }
 
     /// The offset of the first line laid out at the top of the visible part.
