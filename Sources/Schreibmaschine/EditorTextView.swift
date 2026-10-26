@@ -436,6 +436,54 @@ final class EditorTextView: NSTextView {
         super.scrollRangeToVisible(range)
     }
 
+    // MARK: - ⇧↑ in wrapped lines
+
+    /// The end of the selection that stays while ⇧↑ and ⇧↓ extend it, with the selection it
+    /// belongs to; for any other selection it is unknown.
+    private var selectionExtension: (range: NSRange, anchor: Int)?
+
+    override func moveUpAndModifySelection(_ sender: Any?) {
+        extendSelection(up: true) { super.moveUpAndModifySelection(sender) } plain: { super.moveUp(sender) }
+    }
+
+    override func moveDownAndModifySelection(_ sender: Any?) {
+        extendSelection(up: false) { super.moveDownAndModifySelection(sender) } plain: { super.moveDown(sender) }
+    }
+
+    /// Under TextKit 2, ⇧↑ does not move when the moving end of the selection stands where a
+    /// wrapped line breaks, as after End or after ⇧↑ from a longer row: AppKit takes the place
+    /// for the start of the next row and goes nowhere, and afterwards at times moves the end
+    /// that should stay. Then the moving end goes up like the insertion point with ↑, from the
+    /// end of its row, and the selection follows it.
+    private func extendSelection(up: Bool, extend: () -> Void, plain: () -> Void) {
+        let before = selectedRange()
+        let known = selectionExtension.flatMap { $0.range == before ? $0.anchor : nil }
+        extend()
+        var after = selectedRange()
+        var anchor: Int?
+        // Stuck, or moved the end that should stay, which AppKit does at times after it was stuck.
+        let keptAnchor = known.map { $0 == after.location || $0 == after.upperBound } ?? true
+        if after == before || !keptAnchor, !hasMultipleCursors,
+           up ? before.location > 0 : before.upperBound < (string as NSString).length {
+            let stays = known ?? (before.length == 0 ? before.location : up ? before.upperBound : before.location)
+            let moving = stays == before.location ? before.upperBound : before.location
+            setSelectedRange(NSRange(location: moving, length: 0), affinity: .upstream, stillSelecting: false)
+            plain()
+            let target = selectedRange().location
+            after = NSRange(location: min(target, stays), length: abs(stays - target))
+            setSelectedRange(after, affinity: .upstream, stillSelecting: false)
+            scrollRangeToVisible(NSRange(location: target, length: 0))
+            anchor = stays
+        } else if let known {
+            anchor = known
+        } else if before.length == 0 || after.location == before.location {
+            anchor = before.location
+        } else if after.upperBound == before.upperBound {
+            anchor = before.upperBound
+        }
+        selectionExtension = anchor.flatMap { $0 == after.location || $0 == after.upperBound ? (after, $0) : nil }
+    }
+
     /// The offset of the first line laid out at the top of the visible part.
     func visibleTopOffset() -> Int? {
         guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
@@ -537,6 +585,11 @@ final class EditorTextView: NSTextView {
         return NSRect(x: 0, y: lineFrame.minY + textContainerOrigin.y, width: bounds.width, height: lineFrame.height)
     }
 
+    #if DEBUG
+    /// For the debug script: every selection set, while dragging too.
+    var selectionLog: ((NSRange, NSSelectionAffinity, Bool) -> Void)?
+    #endif
+
     override func setSelectedRanges(_ ranges: [NSValue], affinity: NSSelectionAffinity, stillSelecting: Bool) {
         if !isSettingCursors {
             lastAddedOccurrence = nil
@@ -547,6 +600,9 @@ final class EditorTextView: NSTextView {
         }
         super.setSelectedRanges(ranges, affinity: affinity, stillSelecting: stillSelecting)
         if highlightsCurrentLine { setNeedsDisplay(visibleRect) }
+        #if DEBUG
+        selectionLog?(ranges.first?.rangeValue ?? NSRange(), affinity, stillSelecting)
+        #endif
     }
 
     // MARK: - Indentation

@@ -351,6 +351,59 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                     view.window?.orderOut(nil)
                     window.makeKeyAndOrderFront(nil)
                 }
+            case "drag":
+                // drag:8@400,4@300 — the mouse from line 8 at x 400 to line 4 at x 300 (text view
+                // coordinates, middle of the line), with real events, as a hand would drag
+                guard let window = view.window else { break }
+                let points: [NSPoint] = argument.split(separator: ",").compactMap { part in
+                    let pieces = part.split(separator: "@")
+                    // 8@400: line 8; 8e@400: the last row of a wrapped line 8
+                    let atEnd = pieces.first?.hasSuffix("e") == true
+                    guard pieces.count == 2, let line = Int(pieces[0].replacingOccurrences(of: "e", with: "")), let x = Double(pieces[1]) else { return nil }
+                    let start = document.lineIndex.start(ofLine: line)
+                    let end = line < document.lineIndex.lineCount ? document.lineIndex.start(ofLine: line + 1) - 1 : document.textStorage.length
+                    let rect = textView.caretRect(at: atEnd ? end : start)
+                    return NSPoint(x: x, y: rect.midY)
+                }
+                guard points.count >= 2 else { break }
+                var path: [NSPoint] = []
+                for (a, b) in zip(points, points.dropFirst()) {
+                    for i in 0..<12 { let t = Double(i) / 12; path.append(NSPoint(x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t)) }
+                }
+                path.append(points.last!)
+                func event(_ type: NSEvent.EventType, _ point: NSPoint) -> NSEvent {
+                    NSEvent.mouseEvent(with: type, location: textView.convert(point, to: nil), modifierFlags: [], timestamp: ProcessInfo.processInfo.systemUptime,
+                                       windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: type == .leftMouseUp ? 0 : 1)!
+                }
+                for point in path.dropFirst() { NSApp.postEvent(event(.leftMouseDragged, point), atStart: false) }
+                NSApp.postEvent(event(.leftMouseUp, path.last!), atStart: false)
+                var steps: [String] = []
+                textView.selectionLog = { [weak self] range, affinity, still in
+                    guard let self else { return }
+                    steps.append("\(range.location),\(range.length)\(affinity == .upstream ? "↑" : "")\(still ? "" : "!")@\(Int(textView.visibleRect.minY))")
+                }
+                textView.mouseDown(with: event(.leftMouseDown, path[0]))
+                textView.selectionLog = nil
+                NSLog("DEBUGSCRIPT   steps %@", steps.joined(separator: " "))
+                let selection = textView.selectedRange()
+                let text = document.textStorage.string as NSString
+                NSLog("DEBUGSCRIPT drag %@ → %@ lines %d–%d %@", argument, NSStringFromRange(selection),
+                      document.lineIndex.lineNumber(at: selection.location), document.lineIndex.lineNumber(at: selection.upperBound),
+                      text.substring(with: selection).debugDescription)
+            case "do":
+                // do:moveUpAndModifySelection:x5 — a command as from the keyboard, n times, with the selection after each
+                let parts = argument.components(separatedBy: "x")
+                let times = parts.count > 1 ? Int(parts.last!) ?? 1 : 1
+                let selector = NSSelectorFromString(parts.count > 1 ? parts.dropLast().joined(separator: "x") : argument)
+                var after: [String] = []
+                for _ in 0..<times {
+                    textView.doCommand(by: selector)
+                    let r = textView.selectedRange()
+                    let lines = document.lineIndex
+                    let up = textView.textLayoutManager?.textSelections.first?.affinity == .upstream ? "↑" : "↓"
+                    after.append("\(up)\(r.location),\(r.length)[\(lines.lineNumber(at: r.location)):\(r.location - lines.start(ofLine: lines.lineNumber(at: r.location)))–\(lines.lineNumber(at: r.upperBound)):\(r.upperBound - lines.start(ofLine: lines.lineNumber(at: r.upperBound)))]")
+                }
+                NSLog("DEBUGSCRIPT do %@ → %@", argument, after.joined(separator: " "))
             case "close":
                 view.window?.performClose(nil)
             case "quit":
