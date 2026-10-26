@@ -132,7 +132,7 @@ final class EditorTextView: NSTextView {
         var selector = Preferences.navigationMovesCaretValue ? Self.editorNavigation[selector] ?? selector : selector
         // NSTextView's own page movements do not move the insertion point under TextKit 2.
         selector = Self.pageMovements[selector] ?? selector
-        if performMultiCursorCommand(selector) { return }
+        if performMultiCursorCommand(selector) || performSelectionCommand(selector) { return }
         super.doCommand(by: selector)
     }
 
@@ -169,7 +169,7 @@ final class EditorTextView: NSTextView {
         case (false, false, false): selector = #selector(moveToEndOfLine(_:))
         case (false, false, true): selector = #selector(moveToEndOfLineAndModifySelection(_:))
         }
-        if performMultiCursorCommand(selector) { return }
+        if performMultiCursorCommand(selector) || performSelectionCommand(selector) { return }
         super.doCommand(by: selector)
     }
 
@@ -234,7 +234,8 @@ final class EditorTextView: NSTextView {
     /// Home: the first character after the indentation, and from there the very start of the
     /// line. In a wrapped line it first goes to the start of the visual line.
     @objc func moveToSmartLineStart(_ sender: Any?) {
-        setSelectedRange(NSRange(location: smartLineStart(from: selectedRange().location), length: 0))
+        // At the start of a row, not at the end of the one before it.
+        placeCaret(at: smartLineStart(from: selectedRange().location), upstream: false)
         scrollRangeToVisible(selectedRange())
     }
 
@@ -249,7 +250,9 @@ final class EditorTextView: NSTextView {
         scrollRangeToVisible(NSRange(location: target, length: 0))
     }
 
-    private func smartLineStart(from caret: Int) -> Int {
+    /// Upstream, a caret where a wrapped line breaks is at the end of the row before.
+    private func smartLineStart(from caret: Int, upstream: Bool? = nil) -> Int {
+        let upstream = upstream ?? isUpstream
         let text = string as NSString
         let lineStart = text.lineRange(for: NSRange(location: caret, length: 0)).location
         var indentEnd = lineStart
@@ -261,7 +264,8 @@ final class EditorTextView: NSTextView {
            let fragment = layoutManager.textLayoutFragment(for: location) {
             let fragmentStart = content.offset(from: content.documentRange.location, to: fragment.rangeInElement.location)
             let inFragment = caret - fragmentStart
-            if let line = fragment.textLineFragments.last(where: { $0.characterRange.location <= inFragment }) {
+            let lines = fragment.textLineFragments
+            if let line = lines.last(where: { upstream && inFragment > 0 ? $0.characterRange.location < inFragment : $0.characterRange.location <= inFragment }) {
                 visualStart = fragmentStart + line.characterRange.location
             }
         }
@@ -452,11 +456,111 @@ final class EditorTextView: NSTextView {
     private var selectionExtension: Extension?
 
     override func moveUpAndModifySelection(_ sender: Any?) {
-        if !extendSelectionByRow(up: true) { super.moveUpAndModifySelection(sender) }
+        if extendSelectionByRow(up: true) { return }
+        let before = selectedRange()
+        super.moveUpAndModifySelection(sender)
+        learnSelectionExtension(from: before)
     }
 
     override func moveDownAndModifySelection(_ sender: Any?) {
-        if !extendSelectionByRow(up: false) { super.moveDownAndModifySelection(sender) }
+        if extendSelectionByRow(up: false) { return }
+        let before = selectedRange()
+        super.moveDownAndModifySelection(sender)
+        learnSelectionExtension(from: before)
+    }
+
+    /// The other commands that extend the selection, from ⇧← to ⇧End: once the end that stays
+    /// is known, the other end moves like the insertion point would, and the selection follows.
+    /// AppKit keeps its own idea of that end, which goes wrong after a selection set here.
+    func performSelectionCommand(_ selector: Selector) -> Bool {
+        let name = NSStringFromSelector(selector)
+        guard !hasMultipleCursors, name.hasPrefix("move"), name.hasSuffix("AndModifySelection:"),
+              !name.hasPrefix("moveUp"), !name.hasPrefix("moveDown"), !name.hasPrefix("movePage")
+        else { return false }
+        let plain = NSSelectorFromString(name.replacingOccurrences(of: "AndModifySelection:", with: ":"))
+        guard responds(to: plain) else { return false }
+        let selection = selectedRange()
+        let known = selectionExtension.flatMap { $0.range == selection ? $0 : nil }
+        guard let anchor = known?.anchor ?? (selection.length == 0 ? selection.location : nil) else {
+            // Made otherwise, as with the mouse: AppKit knows which end stays.
+            super.doCommand(by: selector)
+            learnSelectionExtension(from: selection)
+            return true
+        }
+        let moving = anchor == selection.location ? selection.upperBound : selection.location
+        let side = known?.upstream ?? isUpstream
+        let target: Int
+        let upstream: Bool
+        if plain == #selector(moveToSmartLineStart(_:)) {
+            (target, upstream) = (smartLineStart(from: moving, upstream: side), false)
+        } else if let step = Self.navigationSteps[NSStringFromSelector(plain)], let moved = navigate(from: moving, upstream: side, step) {
+            (target, upstream) = moved
+        } else {
+            setSelectedRange(NSRange(location: moving, length: 0))
+            super.doCommand(by: plain)
+            (target, upstream) = (selectedRange().location, isUpstream)
+        }
+        setSelectedRange(NSRange(location: min(target, anchor), length: abs(anchor - target)),
+                         affinity: upstream ? .upstream : .downstream, stillSelecting: false)
+        let goalX = row(containing: target, upstream: upstream)?.x(at: target) ?? 0
+        selectionExtension = Extension(range: selectedRange(), anchor: anchor, upstream: upstream, goalX: goalX)
+        scrollRangeToVisible(NSRange(location: target, length: 0))
+        return true
+    }
+
+    /// The movements of the insertion point as TextKit's navigation knows them; it takes the side
+    /// of a row break into account, which AppKit's commands do not let one choose.
+    private static let navigationSteps: [String: (NSTextSelectionNavigation.Direction, NSTextSelectionNavigation.Destination)] = [
+        "moveLeft:": (.left, .character), "moveRight:": (.right, .character),
+        "moveBackward:": (.backward, .character), "moveForward:": (.forward, .character),
+        "moveWordLeft:": (.left, .word), "moveWordRight:": (.right, .word),
+        "moveWordBackward:": (.backward, .word), "moveWordForward:": (.forward, .word),
+        "moveToBeginningOfLine:": (.backward, .line), "moveToEndOfLine:": (.forward, .line),
+        "moveToLeftEndOfLine:": (.left, .line), "moveToRightEndOfLine:": (.right, .line),
+        "moveToBeginningOfParagraph:": (.backward, .paragraph), "moveToEndOfParagraph:": (.forward, .paragraph),
+        "moveParagraphBackward:": (.backward, .paragraph), "moveParagraphForward:": (.forward, .paragraph),
+        "moveToBeginningOfDocument:": (.backward, .document), "moveToEndOfDocument:": (.forward, .document),
+    ]
+
+    /// Where the insertion point would go from an offset on the given side of a row break.
+    private func navigate(from offset: Int, upstream: Bool,
+                          _ step: (NSTextSelectionNavigation.Direction, NSTextSelectionNavigation.Destination)) -> (Int, Bool)? {
+        guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+              let location = content.location(content.documentRange.location, offsetBy: offset)
+        else { return nil }
+        let selection = NSTextSelection(location, affinity: upstream ? .upstream : .downstream)
+        guard let moved = layoutManager.textSelectionNavigation.destinationSelection(
+                  for: selection, direction: step.0, destination: step.1, extending: false, confined: false),
+              let target = moved.textRanges.first?.location
+        else { return nil }
+        return (content.offset(from: content.documentRange.location, to: target), moved.affinity == .upstream)
+    }
+
+    /// Whether TextKit has the insertion point at the end of a row rather than at the start of
+    /// the next, where a wrapped line breaks.
+    private var isUpstream: Bool { textLayoutManager?.textSelections.first?.affinity == .upstream }
+
+    /// Puts the insertion point on the given side of a place where a wrapped line breaks;
+    /// NSTextView's own setSelectedRange(_:affinity:stillSelecting:) does not pass the side
+    /// on to TextKit.
+    func placeCaret(at offset: Int, upstream: Bool) {
+        setSelectedRange(NSRange(location: offset, length: 0))
+        guard let layoutManager = textLayoutManager, let content = layoutManager.textContentManager,
+              let location = content.location(content.documentRange.location, offsetBy: offset)
+        else { return }
+        layoutManager.textSelections = [NSTextSelection(location, affinity: upstream ? .upstream : .downstream)]
+    }
+
+    /// After AppKit extended a selection: the end that stayed is the anchor from now on.
+    private func learnSelectionExtension(from before: NSRange) {
+        let after = selectedRange()
+        let anchor: Int? = before.length == 0 || after.location == before.location ? before.location
+            : after.upperBound == before.upperBound ? before.upperBound : nil
+        guard let anchor, anchor == after.location || anchor == after.upperBound else { selectionExtension = nil; return }
+        let moving = anchor == after.location ? after.upperBound : after.location
+        let upstream = isUpstream
+        selectionExtension = Extension(range: after, anchor: anchor, upstream: upstream,
+                                       goalX: row(containing: moving, upstream: upstream)?.x(at: moving) ?? 0)
     }
 
     /// Records the end that stays for a selection set by a movement of its own, as ⇧Home.
@@ -478,7 +582,7 @@ final class EditorTextView: NSTextView {
         if let known = selectionExtension, known.range == selection {
             state = known
         } else if selection.length == 0 {
-            let upstream = selectionAffinity == .upstream
+            let upstream = isUpstream
             guard let row = row(containing: selection.location, upstream: upstream) else { return false }
             state = Extension(range: selection, anchor: selection.location, upstream: upstream, goalX: row.x(at: selection.location))
         } else {

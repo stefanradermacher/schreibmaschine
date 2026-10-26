@@ -404,6 +404,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                     after.append("\(up)\(r.location),\(r.length)[\(lines.lineNumber(at: r.location)):\(r.location - lines.start(ofLine: lines.lineNumber(at: r.location)))–\(lines.lineNumber(at: r.upperBound)):\(r.upperBound - lines.start(ofLine: lines.lineNumber(at: r.upperBound)))]")
                 }
                 NSLog("DEBUGSCRIPT do %@ → %@", argument, after.joined(separator: " "))
+            case "caret":
+                // caret:635,down — the insertion point on one side of a row break
+                let parts = argument.split(separator: ",")
+                textView.placeCaret(at: Int(parts[0]) ?? 0, upstream: parts.count > 1 && parts[1] == "up")
             case "close":
                 view.window?.performClose(nil)
             case "quit":
