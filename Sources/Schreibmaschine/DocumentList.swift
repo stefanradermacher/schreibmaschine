@@ -17,7 +17,7 @@ import AppKit
 /// The document list (⌃⌘S): every open document of every window in a sidebar on the left, in
 /// the order of Window → Documents, with a dot for unsaved changes. A click brings the document
 /// to the front. Shown or hidden for all windows at once.
-final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDelegate {
+final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDelegate, NSMenuDelegate {
     static let didChange = Notification.Name("DocumentListDidChange")
 
     /// Asks every list to show the documents again, after a change the list cannot observe itself.
@@ -74,6 +74,8 @@ final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDele
         outline.delegate = self
         outline.target = self
         outline.action = #selector(rowClicked(_:))
+        outline.menu = NSMenu()
+        outline.menu?.delegate = self
         let scroll = NSScrollView()
         scroll.documentView = outline
         scroll.hasVerticalScroller = true
@@ -212,36 +214,145 @@ final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDele
             return cell
         }
         guard let entry = item as? Entry, let document = entry.document else { return nil }
-        let cell = NSTableCellView()
+        let cell = EntryCell(document: document)
+        cell.onClose = { DocumentCloser.close([document]) }
+        return cell
+    }
+
+    // MARK: - Context menu
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        guard let entry = outline.item(atRow: outline.clickedRow) as? Entry, let document = entry.document else { return }
+        let others = groups.flatMap(\.entries).compactMap(\.document).filter { $0 !== document }
+        func add(_ title: String, enabled: Bool = true, _ action: @escaping () -> Void) {
+            let item = NSMenuItem(title: title, action: enabled ? #selector(ClosureItem.run(_:)) : nil, keyEquivalent: "")
+            let target = ClosureItem(action)
+            item.target = target
+            item.representedObject = target
+            menu.addItem(item)
+        }
+        add(String(localized: "Schließen")) { DocumentCloser.close([document]) }
+        add(String(localized: "Andere schließen"), enabled: !others.isEmpty) { DocumentCloser.close(others) }
+        menu.addItem(.separator())
+        let url = document.fileURL
+        add(String(localized: "Im Finder zeigen"), enabled: url != nil) {
+            if let url { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+        }
+        add(String(localized: "Pfad kopieren"), enabled: url != nil) {
+            guard let url else { return }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(url.path, forType: .string)
+        }
+    }
+}
+
+/// A menu item's action as a closure; the item keeps it alive.
+private final class ClosureItem: NSObject {
+    private let action: () -> Void
+    init(_ action: @escaping () -> Void) { self.action = action }
+    @objc func run(_ sender: Any?) { action() }
+}
+
+/// A document in the list: icon, name, and a dot for unsaved changes, which gives way to a
+/// close button while the mouse is over the row, as in the tabs of Safari and Xcode.
+private final class EntryCell: NSTableCellView {
+    var onClose: (() -> Void)?
+    private let dot = NSImageView(image: NSImage(systemSymbolName: "circle.fill", accessibilityDescription: String(localized: "Ungesichert"))!)
+    private let close = NSButton()
+    private let isEdited: Bool
+    private var isHovered = false { didSet { updateMarks() } }
+
+    init(document: TextDocument) {
+        isEdited = document.isDocumentEdited
+        super.init(frame: .zero)
         let icon = NSImageView(image: document.fileURL.map { NSWorkspace.shared.icon(forFile: $0.path) }
                                    ?? NSImage(systemSymbolName: "doc.text", accessibilityDescription: nil)!)
         icon.imageScaling = .scaleProportionallyDown
         let label = NSTextField(labelWithString: document.displayName)
         label.lineBreakMode = .byTruncatingMiddle
-        cell.textField = label
-        cell.imageView = icon
-        // A dot for unsaved changes, as in the tabs of Xcode.
-        let dot = NSImageView(image: NSImage(systemSymbolName: "circle.fill", accessibilityDescription: String(localized: "Ungesichert"))!)
+        textField = label
+        imageView = icon
         dot.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 6, weight: .regular)
         dot.contentTintColor = .secondaryLabelColor
-        dot.isHidden = !document.isDocumentEdited
-        for view in [icon, label, dot] {
+        close.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localized: "Schließen"))
+        close.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 9, weight: .semibold)
+        close.isBordered = false
+        close.contentTintColor = .secondaryLabelColor
+        close.toolTip = String(localized: "Dokument schließen")
+        close.target = self
+        close.action = #selector(closeClicked(_:))
+        for view in [icon, label, dot, close] {
             view.translatesAutoresizingMaskIntoConstraints = false
-            cell.addSubview(view)
+            addSubview(view)
         }
         NSLayoutConstraint.activate([
-            icon.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 2),
-            icon.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+            icon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
+            icon.centerYAnchor.constraint(equalTo: centerYAnchor),
             icon.widthAnchor.constraint(equalToConstant: 16),
             icon.heightAnchor.constraint(equalToConstant: 16),
             label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 5),
-            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
-            dot.leadingAnchor.constraint(greaterThanOrEqualTo: label.trailingAnchor, constant: 4),
-            dot.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -6),
-            dot.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor),
+            label.trailingAnchor.constraint(lessThanOrEqualTo: close.leadingAnchor, constant: -4),
+            close.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2),
+            close.centerYAnchor.constraint(equalTo: centerYAnchor),
+            close.widthAnchor.constraint(equalToConstant: 16),
+            close.heightAnchor.constraint(equalToConstant: 16),
+            dot.centerXAnchor.constraint(equalTo: close.centerXAnchor),
+            dot.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        cell.toolTip = document.fileURL?.path ?? document.keptName
-        return cell
+        toolTip = document.fileURL?.path ?? document.keptName
+        updateMarks()
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    private func updateMarks() {
+        close.isHidden = !isHovered
+        dot.isHidden = isHovered || !isEdited
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        trackingAreas.forEach(removeTrackingArea)
+        addTrackingArea(NSTrackingArea(rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
+        // A row that appears under the mouse, by scrolling or after an update, is hovered too.
+        if let window { isHovered = bounds.contains(convert(window.mouseLocationOutsideOfEventStream, from: nil)) }
+    }
+
+    override func mouseEntered(with event: NSEvent) { isHovered = true }
+    override func mouseExited(with event: NSEvent) { isHovered = false }
+
+    @objc private func closeClicked(_ sender: Any?) { onClose?() }
+}
+
+/// Closes documents one after another, each as ⌘W in its tab would: with the question about
+/// unsaved changes, on the document's window, brought to the front for it. Cancel stops the
+/// rest. It outlives the list, whose window may be among those that close.
+enum DocumentCloser {
+    private static var queue: [TextDocument] = []
+    private static let delegate = Delegate()
+
+    static func close(_ documents: [TextDocument]) {
+        queue = documents
+        closeNext()
+    }
+
+    private static func closeNext() {
+        guard !queue.isEmpty else { return }
+        let document = queue.removeFirst()
+        if document.isDocumentEdited, let window = document.windowControllers.first?.window {
+            DocumentNavigation.show(window)
+        }
+        document.canClose(withDelegate: delegate, shouldClose: #selector(Delegate.document(_:shouldClose:contextInfo:)), contextInfo: nil)
+    }
+
+    private final class Delegate: NSObject {
+        @objc func document(_ document: NSDocument, shouldClose: Bool, contextInfo: UnsafeMutableRawPointer?) {
+            guard shouldClose else { return DocumentCloser.queue.removeAll() }
+            document.close()
+            DispatchQueue.main.async { DocumentCloser.closeNext() }
+        }
     }
 }

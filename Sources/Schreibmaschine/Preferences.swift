@@ -29,6 +29,9 @@ enum Preferences {
     static let changeMarks = "changeMarks"
     static let highlightsSyntax = "highlightsSyntax"
     static let showsDocumentList = "showsDocumentList"
+    /// Widths of the document list and of the sidebar of the search in all documents.
+    static let documentListWidth = "documentListWidth"
+    static let searchSidebarWidth = "searchSidebarWidth"
     static let tabWidth = "tabWidth"
     static let lineHeight = "lineHeight"
     static let wrapColumn = "wrapColumn"
@@ -69,6 +72,8 @@ enum Preferences {
             changeMarks: ChangeMarkStyle.single.rawValue,
             highlightsSyntax: true,
             showsDocumentList: false,
+            documentListWidth: 220.0,
+            searchSidebarWidth: 300.0,
             tabWidth: 4,
             lineHeight: 1.2,
             wrapColumn: 80,

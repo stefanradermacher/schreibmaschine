@@ -40,6 +40,11 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private var editorAtLeft: NSLayoutConstraint!
     private var editorBesideSidebar: NSLayoutConstraint!
     private var editorBesideList: NSLayoutConstraint!
+    // Widths of the two sidebars, from the settings, and the edges to drag them.
+    private var listWidth: NSLayoutConstraint!
+    private var searchWidth: NSLayoutConstraint!
+    private var listEdge: SidebarResizeHandle!
+    private var searchEdge: SidebarResizeHandle!
     private var textBelowBar: NSLayoutConstraint!
     private var marksConstraints: [NSLayoutConstraint] = []
     private var textAboveStatusBar: NSLayoutConstraint!
@@ -123,16 +128,34 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             documentList.topAnchor.constraint(equalTo: root.topAnchor),
             documentList.bottomAnchor.constraint(equalTo: root.bottomAnchor),
             documentList.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            documentList.widthAnchor.constraint(equalToConstant: 220),
+            documentList.widthAnchor.constraint(lessThanOrEqualTo: root.widthAnchor, multiplier: SidebarResizeHandle.maximumShare),
             allDocumentsView.topAnchor.constraint(equalTo: root.topAnchor),
             allDocumentsView.bottomAnchor.constraint(equalTo: root.bottomAnchor),
             allDocumentsView.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            allDocumentsView.widthAnchor.constraint(equalToConstant: 300),
+            allDocumentsView.widthAnchor.constraint(lessThanOrEqualTo: root.widthAnchor, multiplier: SidebarResizeHandle.maximumShare),
             editorAtLeft,
             container.topAnchor.constraint(equalTo: root.topAnchor),
             container.bottomAnchor.constraint(equalTo: root.bottomAnchor),
             container.trailingAnchor.constraint(equalTo: root.trailingAnchor),
         ])
+        // The stored width gives way when the window is too narrow for it.
+        listWidth = documentList.widthAnchor.constraint(equalToConstant: SidebarResizeHandle.storedWidth(Preferences.documentListWidth))
+        searchWidth = allDocumentsView.widthAnchor.constraint(equalToConstant: SidebarResizeHandle.storedWidth(Preferences.searchSidebarWidth))
+        listEdge = SidebarResizeHandle(width: listWidth, key: Preferences.documentListWidth)
+        searchEdge = SidebarResizeHandle(width: searchWidth, key: Preferences.searchSidebarWidth)
+        for (sidebar, width, edge) in [(documentList as NSView, listWidth!, listEdge!), (allDocumentsView, searchWidth!, searchEdge!)] {
+            width.priority = .init(999)
+            edge.isHidden = true
+            edge.translatesAutoresizingMaskIntoConstraints = false
+            root.addSubview(edge)
+            NSLayoutConstraint.activate([
+                width,
+                edge.topAnchor.constraint(equalTo: root.topAnchor),
+                edge.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+                edge.centerXAnchor.constraint(equalTo: sidebar.trailingAnchor),
+                edge.widthAnchor.constraint(equalToConstant: 7),
+            ])
+        }
         view = root
         attachMarks(to: first)
     }
@@ -148,6 +171,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             center.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 guard let self else { return }
                 updateSidebar()
+                updateSidebarWidths()
                 if isDistractionFree { applyFocus() }
                 if currentFont != lastFont || Preferences.lineHeightValue != lastLineHeight { applyFont() }
             },
@@ -408,6 +432,15 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 // caret:635,down — the insertion point on one side of a row break
                 let parts = argument.split(separator: ",")
                 textView.placeCaret(at: Int(parts[0]) ?? 0, upstream: parts.count > 1 && parts[1] == "up")
+            case "pref":
+                // pref:showsDocumentList=1 — a setting, as a number
+                let parts = argument.split(separator: "=")
+                if parts.count == 2, let value = Double(parts[1]) { UserDefaults.standard.set(value, forKey: String(parts[0])) }
+            case "closeothers":
+                let others = NSDocumentController.shared.documents.compactMap { $0 as? TextDocument }.filter { $0 !== document }
+                DocumentCloser.close(others)
+            case "docs":
+                NSLog("DEBUGSCRIPT docs %@", NSDocumentController.shared.documents.map(\.displayName).joined(separator: ", "))
             case "close":
                 view.window?.performClose(nil)
             case "quit":
@@ -908,12 +941,22 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         allDocumentsView.focus()
     }
 
+    /// A width dragged in another window applies here too.
+    private func updateSidebarWidths() {
+        let list = SidebarResizeHandle.storedWidth(Preferences.documentListWidth)
+        let search = SidebarResizeHandle.storedWidth(Preferences.searchSidebarWidth)
+        if listWidth.constant != list { listWidth.constant = list }
+        if searchWidth.constant != search { searchWidth.constant = search }
+    }
+
     private func updateSidebar() {
         let active = AllDocumentsSearch.shared.isActive && !isDistractionFree
         let showsList = !active && !isDistractionFree && UserDefaults.standard.bool(forKey: Preferences.showsDocumentList)
         guard allDocumentsView.isHidden == active || documentList.isHidden == showsList else { return }
         allDocumentsView.isHidden = !active
         documentList.isHidden = !showsList
+        searchEdge.isHidden = !active
+        listEdge.isHidden = !showsList
         editorAtLeft.isActive = false
         editorBesideSidebar.isActive = false
         editorBesideList.isActive = false
