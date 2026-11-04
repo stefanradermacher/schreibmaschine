@@ -21,6 +21,8 @@ final class MarkdownPreview: NSView, WKNavigationDelegate {
         super.init(frame: .zero)
         webView.navigationDelegate = self
         webView.setValue(false, forKey: "drawsBackground")
+        // Dropped files would replace the page; the window opens them instead.
+        webView.unregisterDraggedTypes()
         webView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(webView)
         NSLayoutConstraint.activate([

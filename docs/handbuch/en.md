@@ -29,7 +29,7 @@ Schreibmaschine is a text editor for macOS: first and foremost for plain text in
 
 # Documents and windows
 
-Open text files by double-clicking them, through “File → Open…” (⌘O) or by dropping them onto the Schreibmaschine icon in the Dock. ⌘N creates a new document.
+Open text files by double-clicking them, through “File → Open…” (⌘O), or by dropping them onto the Schreibmaschine icon in the Dock or onto a Schreibmaschine window, whether on the text, the title bar, or the document list. Hold ⌥ while dropping onto the text to insert the file's path instead. ⌘N creates a new document.
 
 ## Tabs or windows
 

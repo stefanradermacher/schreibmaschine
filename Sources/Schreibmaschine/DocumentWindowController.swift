@@ -32,6 +32,9 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
         window.isRestorable = false
         super.init(window: window)
         window.delegate = self
+        // Files dropped on the title bar, the status bar, or any other place without a drop
+        // of its own open as documents; the window sends the drag on to its delegate.
+        window.registerForDraggedTypes([.fileURL])
         // Placement is done in showWindow: centered, or offset from the front window.
         shouldCascadeWindows = false
     }
@@ -121,6 +124,12 @@ final class DocumentWindowController: NSWindowController, NSWindowDelegate {
         window.addTabbedWindow(newWindow, ordered: .above)
         newWindow.makeKeyAndOrderFront(sender)
     }
+
+    // MARK: - Dropping files
+
+    @objc func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation { FileDrop.operation(sender) }
+    @objc func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation { FileDrop.operation(sender) }
+    @objc func performDragOperation(_ sender: NSDraggingInfo) -> Bool { FileDrop.open(sender) }
 
     // MARK: - NSWindowDelegate
 

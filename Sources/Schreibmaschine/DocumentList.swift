@@ -76,6 +76,7 @@ final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDele
         outline.action = #selector(rowClicked(_:))
         outline.menu = NSMenu()
         outline.menu?.delegate = self
+        outline.registerForDraggedTypes([.fileURL])
         let scroll = NSScrollView()
         scroll.documentView = outline
         scroll.hasVerticalScroller = true
@@ -188,6 +189,17 @@ final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDele
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
         item is Group
+    }
+
+    /// Files dragged onto the list open as documents; the whole list is the target.
+    func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?,
+                     proposedChildIndex index: Int) -> NSDragOperation {
+        outlineView.setDropItem(nil, dropChildIndex: NSOutlineViewDropOnItemIndex)
+        return FileDrop.operation(info)
+    }
+
+    func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
+        FileDrop.open(info)
     }
 
     // MARK: - NSOutlineViewDelegate

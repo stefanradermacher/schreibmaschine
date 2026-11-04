@@ -40,7 +40,7 @@ Die Schreibmaschine ist ein Texteditor für macOS: vor allem für einfachen Text
 
 # Dokumente und Fenster
 
-Textdateien öffnest du per Doppelklick, über „Ablage → Öffnen …“ (⌘O) oder indem du sie auf das Symbol der Schreibmaschine im Dock ziehst. Ein neues Dokument legst du mit ⌘N an.
+Textdateien öffnest du per Doppelklick, über „Ablage → Öffnen …“ (⌘O) oder indem du sie auf das Symbol der Schreibmaschine im Dock oder auf ein Fenster der Schreibmaschine ziehst, ob auf den Text, die Titelleiste oder die Dokumentliste. Hältst du beim Loslassen über dem Text die ⌥-Taste gedrückt, wird stattdessen der Pfad der Datei eingefügt. Ein neues Dokument legst du mit ⌘N an.
 
 ## Tabs oder Fenster
 

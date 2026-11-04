@@ -74,6 +74,45 @@ enum EditorStyle {
 /// The editor's text view: plain text, indenting with spaces or tabs, keeping the indentation
 /// of the previous line, highlighting the line with the insertion point.
 final class EditorTextView: NSTextView {
+    // MARK: - Dropping files
+
+    /// Whether the text view itself handles the current drag, showing where the paths would go.
+    private var dragInsertsPaths = false
+
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        dragInsertsPaths = !FileDrop.opensInText(sender)
+        return dragInsertsPaths ? super.draggingEntered(sender) : FileDrop.operation(sender)
+    }
+
+    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        let insertsPaths = !FileDrop.opensInText(sender)
+        defer { dragInsertsPaths = insertsPaths }
+        if insertsPaths { return super.draggingUpdated(sender) }
+        // ⌥ released: the drop caret goes away.
+        if dragInsertsPaths { super.draggingExited(sender) }
+        return FileDrop.operation(sender)
+    }
+
+    override func draggingExited(_ sender: NSDraggingInfo?) {
+        if dragInsertsPaths { super.draggingExited(sender) }
+        dragInsertsPaths = false
+    }
+
+    override func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        FileDrop.opensInText(sender) ? !FileDrop.files(sender).isEmpty : super.prepareForDragOperation(sender)
+    }
+
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        guard FileDrop.opensInText(sender) else { return super.performDragOperation(sender) }
+        if dragInsertsPaths { super.draggingExited(sender) }
+        return FileDrop.open(sender)
+    }
+
+    override func concludeDragOperation(_ sender: NSDraggingInfo?) {
+        if dragInsertsPaths { super.concludeDragOperation(sender) }
+        dragInsertsPaths = false
+    }
+
     var highlightsCurrentLine = true { didSet { needsDisplay = true } }
     /// Esc in the text; returns true if it was used, for instance to close the find bar.
     var onCancel: (() -> Bool)?
