@@ -77,6 +77,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// The typewriter mode, for all windows.
+    /// Markdown shown with its formatting, for all windows.
+    @objc func toggleMarkdownStyle(_ sender: Any?) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: Preferences.stylesMarkdown), forKey: Preferences.stylesMarkdown)
+    }
+
     @objc func toggleTypewriterMode(_ sender: Any?) {
         let defaults = UserDefaults.standard
         defaults.set(!defaults.bool(forKey: Preferences.typewriterMode), forKey: Preferences.typewriterMode)
@@ -142,6 +148,9 @@ extension AppDelegate: NSMenuItemValidation {
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         if item.action == #selector(toggleDocumentList(_:)) {
             item.state = UserDefaults.standard.bool(forKey: Preferences.showsDocumentList) ? .on : .off
+        }
+        if item.action == #selector(toggleMarkdownStyle(_:)) {
+            item.state = MarkdownStyler.isEnabled ? .on : .off
         }
         if item.action == #selector(toggleTypewriterMode(_:)) {
             item.state = Preferences.typewriterModeValue ? .on : .off

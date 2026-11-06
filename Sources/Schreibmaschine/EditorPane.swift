@@ -348,7 +348,8 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
                 layoutManager.addRenderingAttribute(.foregroundColor, value: NSColor.tertiaryLabelColor, for: range)
             }
         }
-        guard Preferences.highlightsSyntaxValue, document.language != nil else { return }
+        // Formatted Markdown has its colors in the text itself.
+        guard Preferences.highlightsSyntaxValue, document.language != nil, !MarkdownStyler.applies(to: document) else { return }
         let start = content.offset(from: content.documentRange.location, to: range.location)
         let end = content.offset(from: content.documentRange.location, to: range.endLocation)
         let line = document.lineIndex.lineNumber(at: start)

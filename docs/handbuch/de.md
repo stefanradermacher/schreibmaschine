@@ -183,6 +183,14 @@ Unter „Darstellung → Fokus-Modus“ bleibt nur der Absatz mit der Einfügema
 
 > Die drei Modi lassen sich verbinden: Im ablenkungsfreien Modus mit Schreibmaschinen- und Fokus-Modus steht der aktuelle Absatz mitten im Bildschirm, und alles andere tritt zurück.
 
+## Markdown gestaltet
+
+In Markdown-Dateien zeigt die Schreibmaschine die Auszeichnungen gleich im Text: Überschriften stehen größer und fett, `**fett**` und `*kursiv*` erscheinen fett und kursiv, `~~durchgestrichen~~` durchgestrichen, Code hat einen leichten Hintergrund, Links stehen in Linkfarbe, Zitate bekommen einen Balken am Rand. Die Zeichen dafür bleiben blass sichtbar, du bearbeitest also weiterhin genau den Text, der in der Datei steht. Umbrochene Zeilen von Listenpunkten und Zitaten beginnen unter dem Text, nicht unter dem Zeichen davor. Ausschalten lässt sich das unter „Darstellung → Markdown gestaltet darstellen“.
+
+## Listen und Auszeichnungen
+
+Ein ↩ in einem Listenpunkt beginnt den nächsten, mit derselben Einrückung, bei nummerierten Listen mit der nächsten Zahl, bei Aufgaben mit einem leeren Kästchen; ↩ in einem leeren Punkt beendet die Liste. Bei Zitaten geht es genauso weiter. ⇥ rückt einen Listenpunkt ein, ⇧⇥ rückt ihn aus. Im Menü „Text → Markdown“ setzen „Fett“ (⌃⌘B), „Kursiv“ (⌃⌘I), „Code“ (⌃⌘C) und „Durchgestrichen“ die Zeichen um die Auswahl oder das Wort an der Einfügemarke, ein zweites Mal nehmen sie sie wieder weg. „Link“ (⌃⌘K) macht aus der Auswahl den Text eines Links und wählt die Stelle für die Adresse aus.
+
 ## Markdown-Vorschau
 
 In einer Markdown-Datei zeigt „Darstellung → Markdown-Vorschau“ (⌥⌘P) rechts neben dem Text, wie er gesetzt aussieht: Überschriften, Hervorhebungen, Listen und Aufgabenlisten, Zitate, Codeblöcke, Tabellen und Links. Die Vorschau folgt dem Tippen nach einem kurzen Augenblick und scrollt mit, ausgerichtet an den Überschriften. Links öffnen sich im Browser. Die Vorschau lädt nichts aus dem Internet; Bilder neben der Datei zeigt sie nur, wenn die Schreibmaschine sie lesen darf, sonst steht an ihrer Stelle ihre Beschreibung.
@@ -312,6 +320,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Dokumentliste | ⌃⌘S |
 | Nächster, voriger Unterschied im Vergleich | ⌃⌘↓, ⌃⌘↑ |
 | Markdown-Vorschau, ablenkungsfreier Modus | ⌥⌘P, ⌃⇧⌘F |
+| Markdown fett, kursiv, Code, Link | ⌃⌘B, ⌃⌘I, ⌃⌘C, ⌃⌘K |
 | Nächstes, voriges Dokument | ⌥⌘→, ⌥⌘← |
 | Dokument 1 bis 8, letztes Dokument | ⌘1 – ⌘8, ⌘9 |
 | Schrift vergrößern, verkleinern, zurücksetzen | ⌘+, ⌘-, ⌘0 |

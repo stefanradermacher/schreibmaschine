@@ -172,6 +172,14 @@ With “View → Focus Mode”, only the paragraph with the insertion point stay
 
 > The three modes can be combined: in the distraction-free mode with typewriter and focus mode, the current paragraph stands in the middle of the screen, and everything else steps back.
 
+## Formatted Markdown
+
+In Markdown files, Schreibmaschine shows the markup right in the text: headings are larger and bold, `**bold**` and `*italic*` appear bold and italic, `~~strikethrough~~` struck through, code has a light background, links are in the link color, and quotes get a bar at the edge. The marks themselves stay visible in a faint color, so you keep editing exactly the text that is in the file. Wrapped lines of list items and quotes start below the text, not below the mark in front of it. “View → Formatted Markdown” turns this off.
+
+## Lists and markup
+
+↩ in a list item starts the next one, with the same indentation, the next number in numbered lists, and an empty box in task lists; ↩ in an empty item ends the list. Quotes go on the same way. ⇥ indents a list item, and ⇧⇥ outdents it. In “Text → Markdown”, “Bold” (⌃⌘B), “Italic” (⌃⌘I), “Code” (⌃⌘C), and “Strikethrough” put the marks around the selection or the word at the insertion point; a second time, they take them away again. “Link” (⌃⌘K) makes the selection the text of a link and selects the place for the address.
+
 ## Markdown preview
 
 In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables, and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
@@ -301,6 +309,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Document list | ⌃⌘S |
 | Next, previous difference in a comparison | ⌃⌘↓, ⌃⌘↑ |
 | Markdown preview, distraction-free mode | ⌥⌘P, ⌃⇧⌘F |
+| Markdown bold, italic, code, link | ⌃⌘B, ⌃⌘I, ⌃⌘C, ⌃⌘K |
 | Next, previous document | ⌥⌘→, ⌥⌘← |
 | Documents 1 to 8, last document | ⌘1 – ⌘8, ⌘9 |
 | Bigger, smaller, actual size text | ⌘+, ⌘-, ⌘0 |

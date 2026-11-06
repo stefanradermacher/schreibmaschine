@@ -178,6 +178,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
     @AppStorage(Preferences.changeMarks) private var changeMarks = ChangeMarkStyle.single.rawValue
     @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
+    @AppStorage(Preferences.stylesMarkdown) private var stylesMarkdown = true
     @AppStorage(Preferences.showsLineNumbers) private var showsLineNumbers = true
     @AppStorage(Preferences.wrapsLines) private var wrapsLines = true
     @AppStorage(Preferences.showsInvisibles) private var showsInvisibles = false
@@ -246,6 +247,7 @@ private struct EditorSettings: View {
 
             Section {
                 Toggle("Syntax hervorheben", isOn: $highlightsSyntax)
+                Toggle("Markdown gestaltet darstellen", isOn: $stylesMarkdown)
                 Toggle("Aktuelle Zeile hervorheben", isOn: $highlightsCurrentLine)
             }
 

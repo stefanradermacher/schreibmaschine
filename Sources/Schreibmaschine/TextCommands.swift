@@ -152,6 +152,23 @@ enum TextCommands {
                 view.transformLines(scope: .selectionOrTable, TextTransforms.formatMarkdownTable)
             },
         ]),
+        Group(title: String(localized: "Markdown"), commands: [
+            TextCommand(id: "markdownBold", title: String(localized: "Fett"), key: "b", modifiers: [.command, .control]) { view, _ in
+                view.toggleMarkdownMark("**")
+            },
+            TextCommand(id: "markdownItalic", title: String(localized: "Kursiv"), key: "i", modifiers: [.command, .control]) { view, _ in
+                view.toggleMarkdownMark("*")
+            },
+            TextCommand(id: "markdownCode", title: String(localized: "Code"), key: "c", modifiers: [.command, .control]) { view, _ in
+                view.toggleMarkdownMark("`")
+            },
+            TextCommand(id: "markdownStrike", title: String(localized: "Durchgestrichen")) { view, _ in
+                view.toggleMarkdownMark("~~")
+            },
+            TextCommand(id: "markdownLink", title: String(localized: "Link"), key: "k", modifiers: [.command, .control]) { view, _ in
+                view.insertMarkdownLink()
+            },
+        ]),
         Group(title: String(localized: "Kodieren"), commands: [
             textCommand("urlEncode", String(localized: "URL-kodieren"), TextTransforms.urlEncode),
             throwingCommand("urlDecode", String(localized: "URL-Kodierung auflösen"), TextTransforms.urlDecode),

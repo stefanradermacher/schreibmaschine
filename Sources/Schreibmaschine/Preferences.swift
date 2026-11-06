@@ -28,6 +28,7 @@ enum Preferences {
     /// How the ruler marks lines changed since saving (ChangeMarkStyle).
     static let changeMarks = "changeMarks"
     static let highlightsSyntax = "highlightsSyntax"
+    static let stylesMarkdown = "stylesMarkdown"
     static let showsDocumentList = "showsDocumentList"
     /// Widths of the document list and of the sidebar of the search in all documents.
     static let documentListWidth = "documentListWidth"
@@ -71,6 +72,7 @@ enum Preferences {
             highlightsCurrentLine: true,
             changeMarks: ChangeMarkStyle.single.rawValue,
             highlightsSyntax: true,
+            stylesMarkdown: true,
             showsDocumentList: false,
             documentListWidth: 220.0,
             searchSidebarWidth: 300.0,

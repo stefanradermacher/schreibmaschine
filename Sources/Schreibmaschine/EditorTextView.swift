@@ -842,6 +842,7 @@ final class EditorTextView: NSTextView {
             currentCommandTitle = nil
             return
         }
+        if indentMarkdownListItem() { return }
         guard indentation().usesSpaces, selectedRange().length == 0 else { return super.insertTab(sender) }
         let width = indentation().width
         let count = width - column(at: selectedRange().location) % width
@@ -856,6 +857,7 @@ final class EditorTextView: NSTextView {
     }
 
     override func insertNewline(_ sender: Any?) {
+        if continueMarkdownList() { return }
         guard Preferences.autoIndentsValue else { return super.insertNewline(sender) }
         let text = string as NSString
         let selection = selectedRange()

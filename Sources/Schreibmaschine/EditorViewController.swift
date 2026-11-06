@@ -173,7 +173,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 updateSidebar()
                 updateSidebarWidths()
                 if isDistractionFree { applyFocus() }
-                if currentFont != lastFont || Preferences.lineHeightValue != lastLineHeight { applyFont() }
+                if currentFont != lastFont || Preferences.lineHeightValue != lastLineHeight
+                    || MarkdownStyler.isEnabled != lastStylesMarkdown { applyFont() }
             },
             center.addObserver(forName: AllDocumentsSearch.didChange, object: nil, queue: .main) { [weak self] _ in
                 self?.updateSidebar()
@@ -187,6 +188,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 panes.forEach { $0.textView.setSelectedRange(NSRange(location: 0, length: 0)) }
             },
             center.addObserver(forName: TextDocument.languageDidChange, object: document, queue: .main) { [weak self] _ in
+                self?.markdownStyler.restyleAll()
                 self?.statusBar.updateFormat()
             },
             center.addObserver(forName: TextDocument.indentationDidChange, object: document, queue: .main) { [weak self] _ in
@@ -481,6 +483,9 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 default: document.checkForExternalChange()
                 }
                 NSLog("DEBUGSCRIPT external %@ → %@ edited=%d", argument, String(describing: document.externalChange), document.isDocumentEdited ? 1 : 0)
+            case "tc":
+                // tc:markdownBold — a command of the Text menu
+                if let command = TextCommands.command(argument) { try? command.run(textView, "") }
             case "call":
                 // call:<action> — straight to this editor, also when the window is not in front
                 _ = perform(NSSelectorFromString(argument), with: nil)
@@ -523,7 +528,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         }
         panes.append(pane)
         if isDistractionFree { pane.distractionFreeColumn = textColumnWidth }
-        if let font = lastFont { pane.takeFont(font, attributes: EditorStyle.attributes(font: font, tabWidth: document.indentation.width)) }
+        if let font = lastFont {
+            pane.takeFont(font, attributes: EditorStyle.attributes(font: font, tabWidth: document.indentation.width))
+            markdownStyler.restyleAll()
+        }
         return pane
     }
 
@@ -860,6 +868,8 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     // MARK: - Font
 
     private var lastFont: NSFont?
+    private var lastStylesMarkdown = MarkdownStyler.isEnabled
+    private lazy var markdownStyler = MarkdownStyler(document: document)
     private var lastLineHeight = Preferences.lineHeightValue
 
     private var currentFont: NSFont {
@@ -876,7 +886,12 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         storage.beginEditing()
         storage.setAttributes(attributes, range: NSRange(location: 0, length: storage.length))
         storage.endEditing()
+        lastStylesMarkdown = MarkdownStyler.isEnabled
+        markdownStyler.base = attributes
+        markdownStyler.lineHeight = Preferences.lineHeightValue
+        // After the panes: a plain text view sets its font on the whole text.
         panes.forEach { $0.takeFont(font, attributes: attributes) }
+        markdownStyler.restyleAll()
     }
 
     @objc func zoomIn(_ sender: Any?) { setZoom(zoom + 1) }

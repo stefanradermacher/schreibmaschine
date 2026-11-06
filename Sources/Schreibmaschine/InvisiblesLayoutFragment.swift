@@ -34,6 +34,31 @@ final class InvisiblesLayoutFragment: NSTextLayoutFragment {
         return frame
     }
 
+    /// How deep the paragraph is quoted in formatted Markdown.
+    private var quoteDepth: Int {
+        guard let paragraph = textElement as? NSTextParagraph, paragraph.attributedString.length > 0 else { return 0 }
+        return paragraph.attributedString.attribute(MarkdownStyler.quoteDepth, at: 0, effectiveRange: nil) as? Int ?? 0
+    }
+
+    /// A bar left of each level of a quoted line in formatted Markdown, over the whole height of
+    /// the paragraph, so that the bars of a quote join up. The fragment starts where the text
+    /// does, after the room the styler left for the bars.
+    private func drawQuoteBars(at point: CGPoint, in context: CGContext) {
+        let depth = quoteDepth
+        guard depth > 0 else { return }
+        // Down to the last line with text: the last paragraph of a text ending in a line break
+        // also holds the empty line after it.
+        let height = textLineFragments.last { $0.characterRange.length > 0 }?.typographicBounds.maxY
+            ?? super.layoutFragmentFrame.height
+        context.saveGState()
+        context.setFillColor(NSColor.tertiaryLabelColor.cgColor)
+        for level in 0..<depth {
+            let x = point.x - CGFloat(depth - level) * MarkdownStyler.quoteBarStep + 2
+            context.fill(CGRect(x: x, y: point.y, width: 3, height: height))
+        }
+        context.restoreGState()
+    }
+
     private static func symbol(for character: unichar) -> String? {
         switch character {
         case 0x20: "·"
@@ -52,10 +77,13 @@ final class InvisiblesLayoutFragment: NSTextLayoutFragment {
     // bounds do not depend on the option, so switching it needs no new layout.
     override var renderingSurfaceBounds: CGRect {
         let bounds = super.renderingSurfaceBounds
-        return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width + 20, height: bounds.height)
+        // Quote bars lie left of the fragment.
+        let left = CGFloat(quoteDepth) * MarkdownStyler.quoteBarStep
+        return CGRect(x: bounds.minX - left, y: bounds.minY, width: bounds.width + 20 + left, height: bounds.height)
     }
 
     override func draw(at point: CGPoint, in context: CGContext) {
+        drawQuoteBars(at: point, in: context)
         super.draw(at: point, in: context)
         guard options?.showsInvisibles == true else { return }
 
