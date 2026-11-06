@@ -27,6 +27,7 @@ Eine Leiste oben im Editor, wie in PhpStorm. Kein eigenes Fenster.
 - **Alle Treffer auswählen** (⌃⌘G): Aus jedem Treffer wird eine Auswahl, an der man gleichzeitig tippt.
 - Mehrzeilige Suchbegriffe sind möglich, das Feld wächst dann mit. Ein Verlauf der letzten Begriffe ist über ↓ oder ein Menü am Feld erreichbar.
 - **Gehe zu Zeile** (⌘L) nutzt dieselbe Leiste: `120`, `120:15` (Spalte), `+10`, `-10`.
+- **Gehe zu Symbol** (⇧⌘O): die Gliederung des Dokuments in der Befehlspalette, eingeleitet mit `@`. Überschriften in Markdown, Klassen und Funktionen in Code; die Muster stehen als `outline` in den Sprachdefinitionen.
 - **In allen offenen Dokumenten suchen** (⇧⌘F): eine Trefferliste in einer Seitenleiste, gegliedert nach Dokument, jeweils mit Zeilennummer und Zeile. Ein Klick springt zum Treffer. „Alle ersetzen“ gilt für alle offenen Dokumente und lässt sich in jedem Dokument einzeln widerrufen. Eine Suche in Ordnern oder Projekten gibt es bewusst nicht.
 
 ## 2. Fenster, Tabs und Wiederherstellung

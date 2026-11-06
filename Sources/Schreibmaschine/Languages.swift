@@ -73,6 +73,8 @@ struct LanguageDefinition {
     /// Quotation marks that are closed automatically, like brackets.
     let quotes: [Character]
     let rules: [Rule]
+    /// Rules for the outline: headings, functions, classes.
+    let outline: [OutlineRule]
     /// The file it came from: in the app bundle or in the user's folder.
     let url: URL
     let isBuiltIn: Bool
@@ -147,7 +149,36 @@ struct LanguageDefinition {
             }
         }
         self.rules = rules
+
+        var outline: [OutlineRule] = []
+        for (index, item) in (yaml["outline"].flatMap { value -> [YAMLValue]? in
+            if case .list(let items) = value { return items } else { return nil }
+        } ?? []).enumerated() {
+            let number = index + 1
+            guard let pattern = item["match"]?.string else {
+                throw fail(String(localized: "Gliederung \(number): „match“ fehlt."))
+            }
+            var options: NSRegularExpression.Options = [.anchorsMatchLines]
+            if ignoreCase || item["ignoreCase"]?.bool == true { options.insert(.caseInsensitive) }
+            guard let expression = try? NSRegularExpression(pattern: pattern, options: options) else {
+                throw fail(String(localized: "Gliederung \(number): „match“ ist kein gültiger regulärer Ausdruck."))
+            }
+            outline.append(OutlineRule(expression: expression, nameGroup: item["name"]?.int ?? 1,
+                                       levelGroup: item["level"]?.int, inComment: item["inComment"]?.bool ?? false))
+        }
+        self.outline = outline
     }
+}
+
+/// A rule for the outline: a pattern for one line, the group with the name, and the group that
+/// gives the level, as a number or by its length; without one, the indentation gives it.
+struct OutlineRule {
+    let expression: NSRegularExpression
+    let nameGroup: Int
+    let levelGroup: Int?
+    /// The entry is a comment itself, such as // MARK: in Swift; otherwise matches in comments
+    /// and strings do not count.
+    let inComment: Bool
 }
 
 /// The languages the app knows: the built-in ones from the app bundle and the user's own from

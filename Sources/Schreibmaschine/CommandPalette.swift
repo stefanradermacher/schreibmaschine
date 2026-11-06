@@ -17,6 +17,7 @@ import AppKit
 /// The command palette (⇧⌘P): every command of the menu bar, found by typing a few letters,
 /// the most recently used on top. It lists what the menus offer at that moment, so encodings,
 /// open documents and, later, languages and user scripts come along without extra work.
+/// With @ in front, it lists the outline of the document instead: "Go to Symbol" (⇧⌘O).
 final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate {
     static let shared = CommandPalette()
 
@@ -35,14 +36,25 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
     private var shown: [Entry] = []
     private weak var targetWindow: NSWindow?
     private let recentKey = "CommandPaletteRecent"
+    /// The outline of the document, for @.
+    private var symbols: [OutlineItem] = []
+    private var shownSymbols: [OutlineItem] = []
+    private var currentSymbol: Int?
+    private var isSymbolMode: Bool { field.stringValue.hasPrefix("@") }
+    private var targetEditor: EditorViewController? {
+        (targetWindow?.windowController as? DocumentWindowController)?.editor
+    }
 
-    func show() {
+    func show(symbols showsSymbols: Bool = false) {
         targetWindow = NSApp.mainWindow ?? NSApp.keyWindow
         // Collected while the document window is still key, so the menus validate against it.
         entries = collect(NSApp.mainMenu, path: [])
+        let outline = targetEditor?.currentOutlineIndex
+        symbols = outline?.items ?? []
+        currentSymbol = outline?.index
         let panel = self.panel ?? makePanel()
         self.panel = panel
-        field.stringValue = ""
+        field.stringValue = showsSymbols ? "@" : ""
         filter()
         place(panel)
         panel.makeKeyAndOrderFront(nil)
@@ -105,6 +117,7 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
     }
 
     private func filter() {
+        if isSymbolMode { return filterSymbols() }
         let query = field.stringValue.trimmingCharacters(in: .whitespaces).lowercased()
         let recent = self.recent
         if query.isEmpty {
@@ -124,6 +137,27 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
         if !shown.isEmpty {
             table.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
             table.scrollRowToVisible(0)
+        }
+    }
+
+    /// The outline, all of it with the current entry selected, or the entries whose names fit.
+    private func filterSymbols() {
+        let query = field.stringValue.dropFirst().trimmingCharacters(in: .whitespaces).lowercased()
+        var row = 0
+        if query.isEmpty {
+            shownSymbols = symbols
+            row = currentSymbol ?? 0
+        } else {
+            shownSymbols = symbols.enumerated().compactMap { index, item -> (OutlineItem, Int)? in
+                Self.score(query, in: item.name.lowercased()).map { (item, $0 * 1000 - index) }
+            }
+            .sorted { $0.1 > $1.1 }
+            .map(\.0)
+        }
+        table.reloadData()
+        if !shownSymbols.isEmpty {
+            table.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+            table.scrollRowToVisible(row)
         }
     }
 
@@ -165,6 +199,14 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
 
     private func runSelected() {
         let row = table.selectedRow
+        if isSymbolMode {
+            guard shownSymbols.indices.contains(row) else { return NSSound.beep() }
+            let item = shownSymbols[row]
+            let editor = targetEditor
+            close()
+            editor?.reveal(item)
+            return
+        }
         guard shown.indices.contains(row) else { return NSSound.beep() }
         let entry = shown[row]
         var recent = self.recent
@@ -282,8 +324,9 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
     }
 
     private func moveSelection(by offset: Int) {
-        guard !shown.isEmpty else { return }
-        let row = min(max(table.selectedRow + offset, 0), shown.count - 1)
+        let count = numberOfRows(in: table)
+        guard count > 0 else { return }
+        let row = min(max(table.selectedRow + offset, 0), count - 1)
         table.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
         table.scrollRowToVisible(row)
     }
@@ -294,9 +337,10 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
 
     // MARK: - Table
 
-    func numberOfRows(in tableView: NSTableView) -> Int { shown.count }
+    func numberOfRows(in tableView: NSTableView) -> Int { isSymbolMode ? shownSymbols.count : shown.count }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        if isSymbolMode { return symbolCell(shownSymbols[row]) }
         let entry = shown[row]
         let cell = NSView()
         let title = NSTextField(labelWithString: entry.title)
@@ -334,6 +378,34 @@ final class CommandPalette: NSObject, NSTextFieldDelegate, NSTableViewDataSource
         ])
         return cell
     }
+
+    /// An entry of the outline, indented by its level, with its line number.
+    private func symbolCell(_ item: OutlineItem) -> NSView {
+        let cell = NSView()
+        let title = NSTextField(labelWithString: item.name)
+        title.font = item.level == 0 ? NSFont.boldSystemFont(ofSize: NSFont.systemFontSize + 1)
+            : NSFont.systemFont(ofSize: NSFont.systemFontSize + 1)
+        title.lineBreakMode = .byTruncatingTail
+        title.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        let line = NSTextField(labelWithString: String(localized: "Zeile \(item.line)"))
+        line.font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        line.textColor = .secondaryLabelColor
+        line.setContentHuggingPriority(.required, for: .horizontal)
+        line.setContentCompressionResistancePriority(.required, for: .horizontal)
+        for view in [title, line] {
+            view.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(view)
+        }
+        NSLayoutConstraint.activate([
+            title.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 30 + CGFloat(min(item.level, 8)) * 16),
+            title.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+            title.trailingAnchor.constraint(lessThanOrEqualTo: line.leadingAnchor, constant: -10),
+            line.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -10),
+            line.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+        ])
+        return cell
+    }
+
 }
 
 /// A panel without title bar that still takes typing.

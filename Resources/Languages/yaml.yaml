@@ -5,6 +5,8 @@ comment:
   line: '#'
 indent:
   width: 2
+outline:
+  - match: '^([A-Za-z_][\w.-]*)[ \t]*:'
 rules:
   - scope: string
     match: '"(?:[^"\\]|\\.)*"'

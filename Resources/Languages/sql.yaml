@@ -7,6 +7,8 @@ comment:
 indent:
   width: 4
 ignoreCase: true
+outline:
+  - match: '^[ \t]*(create[ \t]+(?:or[ \t]+replace[ \t]+)?(?:temporary[ \t]+)?(?:table|view|function|procedure|index|unique[ \t]+index|trigger|schema)[ \t]+(?:if[ \t]+not[ \t]+exists[ \t]+)?[\w.`"\[\]]+)'
 rules:
   - scope: comment
     begin: '/\*'

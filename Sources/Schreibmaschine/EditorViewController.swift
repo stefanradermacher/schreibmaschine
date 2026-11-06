@@ -483,6 +483,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 default: document.checkForExternalChange()
                 }
                 NSLog("DEBUGSCRIPT external %@ → %@ edited=%d", argument, String(describing: document.externalChange), document.isDocumentEdited ? 1 : 0)
+            case "outline":
+                let (items, current) = currentOutlineIndex
+                NSLog("DEBUGSCRIPT outline current=%@ %@", current.map(String.init) ?? "-",
+                      items.map { "\(String(repeating: ".", count: $0.level))\($0.name)@\($0.line)" }.joined(separator: " | "))
             case "tc":
                 // tc:markdownBold — a command of the Text menu
                 if let command = TextCommands.command(argument) { try? command.run(textView, "") }

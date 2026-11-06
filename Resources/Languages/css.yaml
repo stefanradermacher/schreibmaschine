@@ -5,6 +5,8 @@ comment:
   block: ['/*', '*/']
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*([^\s{};/][^{};\n]*?)[ \t]*\{'
 rules:
   - scope: comment
     begin: '/\*'

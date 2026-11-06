@@ -148,6 +148,7 @@ enum MainMenu {
         find.addItem(item(String(localized: "Auswahl anzeigen"), #selector(NSText.centerSelectionInVisibleArea(_:)), "j"))
         menu.addItem(submenu(find))
         menu.addItem(item(String(localized: "Gehe zu Zeile …"), #selector(EditorViewController.showGoToLine(_:)), "l"))
+        menu.addItem(item(String(localized: "Gehe zu Symbol …"), #selector(AppDelegate.showOutline(_:)), "o", [.command, .shift]))
         let bookmarks = NSMenu(title: String(localized: "Lesezeichen"))
         bookmarks.addItem(item(String(localized: "Lesezeichen setzen"), #selector(EditorPane.toggleBookmark(_:)), "b"))
         bookmarks.addItem(item(String(localized: "Nächstes Lesezeichen"), #selector(EditorPane.nextBookmark(_:)), String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), [.command, .option]))

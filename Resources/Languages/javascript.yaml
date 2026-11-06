@@ -7,6 +7,9 @@ comment:
   block: ['/*', '*/']
 indent:
   width: 2
+outline:
+  - match: '^[ \t]*(?:export[ \t]+)?(?:default[ \t]+)?((?:async[ \t]+)?function\*?[ \t]*\w+|class[ \t]+\w+)'
+  - match: '^[ \t]*(?:export[ \t]+)?(?:const|let|var)[ \t]+(\w+)[ \t]*=[ \t]*(?:async[ \t]*)?(?:function\b|\([^)\n]*\)[ \t]*=>|\w+[ \t]*=>)'
 rules:
   - scope: comment
     begin: '/\*'

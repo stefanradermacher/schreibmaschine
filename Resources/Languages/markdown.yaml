@@ -7,6 +7,10 @@ indent:
   width: 4
 # Apostrophe und Backticks für Codeblöcke schließen sich nicht von selbst.
 quotes: '"'
+outline:
+  - match: '^(#{1,6})[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$'
+    name: 2
+    level: 1
 rules:
   - scope: code
     begin: '^\s*```'

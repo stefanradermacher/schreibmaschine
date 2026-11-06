@@ -6,6 +6,10 @@ comment:
   block: ['/*', '*/']
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*//[ \t]*MARK:[ \t]*-?[ \t]*(.+)$'
+    inComment: true
+  - match: '^[ \t]*(?:@\w+(?:\([^)\n]*\))?[ \t]+)*(?:(?:public|private|fileprivate|internal|package|open|final|static|class|override|mutating|nonmutating|convenience|required|nonisolated|indirect)(?:\([^)\n]*\))?[ \t]+)*((?:func|init|deinit|class|struct|enum|protocol|extension|actor)\b[^{=\n]*?)[ \t]*(?:\{.*)?$'
 rules:
   - scope: comment
     begin: '/\*'

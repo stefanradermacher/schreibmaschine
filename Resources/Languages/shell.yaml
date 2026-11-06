@@ -7,6 +7,9 @@ comment:
   line: '#'
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*(?:function[ \t]+)?([A-Za-z_][\w-]*)[ \t]*\(\)'
+  - match: '^[ \t]*function[ \t]+([A-Za-z_][\w-]*)[ \t]*(?:\{|$)'
 rules:
   - scope: comment
     match: '(?:(?<=\s)|^)#.*$'

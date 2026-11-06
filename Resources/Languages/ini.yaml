@@ -6,6 +6,8 @@ comment:
   line: '#'
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*\[([^\]\n]+)\]'
 rules:
   - scope: comment
     match: '^\s*[#;].*$'

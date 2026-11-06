@@ -7,6 +7,8 @@ comment:
   block: ['/*', '*/']
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*(?:(?:abstract|final|public|private|protected|static|readonly)[ \t]+)*((?:function|class|interface|trait|enum)[ \t]+&?\w+)'
 rules:
   - scope: comment
     begin: '/\*'

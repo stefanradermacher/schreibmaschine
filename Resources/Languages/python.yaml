@@ -6,6 +6,8 @@ comment:
   line: '#'
 indent:
   width: 4
+outline:
+  - match: '^[ \t]*((?:async[ \t]+)?def[ \t]+\w+|class[ \t]+\w+)'
 rules:
   - scope: string
     begin: '(?:\b[rRbBuUfF]{1,2})?"""'

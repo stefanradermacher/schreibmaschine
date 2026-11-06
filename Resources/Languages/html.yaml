@@ -5,6 +5,10 @@ comment:
   block: ['<!--', '-->']
 indent:
   width: 2
+outline:
+  - match: '<h([1-6])\b[^>]*>(.*?)</h\1>'
+    name: 2
+    level: 1
 rules:
   - scope: comment
     begin: '<!--'

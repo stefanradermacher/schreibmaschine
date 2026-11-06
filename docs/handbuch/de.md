@@ -119,6 +119,10 @@ Für jede Datei merkt sich die Schreibmaschine Auswahl, sichtbaren Ausschnitt, U
 
 ⌘L öffnet dieselbe Leiste zum Springen: 120 geht zu Zeile 120, 120:15 zusätzlich zu Spalte 15, +10 und -10 springen relativ.
 
+## Gehe zu Symbol
+
+⇧⌘O zeigt die Gliederung des Dokuments: in Markdown die Überschriften, in Code die Klassen, Funktionen und ähnliches, nach ihrer Ebene eingerückt. Ausgewählt ist der Eintrag, in dem die Einfügemarke gerade steht. Ein paar Buchstaben filtern die Liste, ↩ springt zum Eintrag, Esc lässt alles, wie es war. In der Befehlspalette geht dasselbe mit einem @ vor dem Suchbegriff. Was zur Gliederung gehört, legt die Sprachdefinition fest.
+
 # Text umformen
 
 Das Menü „Text“ enthält Befehle, die Text in einem Schritt umformen. Jeder Befehl lässt sich mit ⌘Z widerrufen, ⌘R führt den letzten noch einmal aus.
@@ -303,7 +307,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Suchen, Suchen und ersetzen | ⌘F, ⌥⌘F |
 | Weitersuchen, Rückwärts suchen | ⌘G, ⇧⌘G |
 | In allen offenen Dokumenten suchen | ⇧⌘F |
-| Gehe zu Zeile | ⌘L |
+| Gehe zu Zeile, Gehe zu Symbol | ⌘L, ⇧⌘O |
 | Befehlspalette | ⇧⌘P |
 | Letzten Textbefehl erneut ausführen | ⌘R |
 | Zeile duplizieren, löschen | ⌘D, ⌘⌫ |

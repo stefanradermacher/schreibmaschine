@@ -116,6 +116,21 @@ Jede Regel kann außerdem `ignoreCase: true` haben.
 
 Die Farben folgen dem Standardthema von Xcode, je eine für helle und dunkle Darstellung.
 
+## Gliederung
+
+Für „Gehe zu Symbol“ (⇧⌘O) sagt eine Liste `outline`, welche Zeilen in die Gliederung gehören. Jeder Eintrag hat ein Muster `match` für eine Zeile:
+
+```yaml
+outline:
+  - match: '^(#{1,6})[ \t]+(.+?)[ \t]*$'
+    name: 2        # Gruppe mit dem Namen; Voreinstellung 1
+    level: 1       # Gruppe für die Ebene: eine Zahl oder ihre Länge zählt
+  - match: '^[ \t]*//[ \t]*MARK:[ \t]*-?[ \t]*(.+)$'
+    inComment: true   # der Eintrag steht selbst in einem Kommentar
+```
+
+Ohne `level` ergibt sich die Ebene aus der Einrückung der Zeile, so stehen Methoden unter ihrer Klasse. Treffer in Kommentaren, Zeichenketten und Codeblöcken zählen nicht, außer bei `inComment: true`. `ignoreCase` gilt wie bei den Regeln.
+
 ## YAML
 
 Die App liest den Teil von YAML, den Sprachdefinitionen brauchen:

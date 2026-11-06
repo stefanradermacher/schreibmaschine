@@ -69,6 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func showCommandPalette(_ sender: Any?) { CommandPalette.shared.show() }
+    @objc func showOutline(_ sender: Any?) { CommandPalette.shared.show(symbols: true) }
 
     /// ⌃⌘S: the document list in every window.
     @objc func toggleDocumentList(_ sender: Any?) {
@@ -148,6 +149,10 @@ extension AppDelegate: NSMenuItemValidation {
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         if item.action == #selector(toggleDocumentList(_:)) {
             item.state = UserDefaults.standard.bool(forKey: Preferences.showsDocumentList) ? .on : .off
+        }
+        if item.action == #selector(showOutline(_:)) {
+            let editor = (NSApp.mainWindow?.windowController as? DocumentWindowController)?.editor
+            return editor?.document.language?.outline.isEmpty == false
         }
         if item.action == #selector(toggleMarkdownStyle(_:)) {
             item.state = MarkdownStyler.isEnabled ? .on : .off

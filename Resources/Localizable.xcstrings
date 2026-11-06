@@ -4680,6 +4680,36 @@
           }
         }
       }
+    },
+    "Gehe zu Symbol …" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Symbol…"
+          }
+        }
+      }
+    },
+    "Gliederung %lld: „match“ fehlt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outline %lld: “match” is missing."
+          }
+        }
+      }
+    },
+    "Gliederung %lld: „match“ ist kein gültiger regulärer Ausdruck." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outline %lld: “match” is not a valid regular expression."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

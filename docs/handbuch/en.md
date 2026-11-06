@@ -108,6 +108,10 @@ For every file, Schreibmaschine remembers the selection, the visible part, wrapp
 
 ⌘L opens the same bar for jumping: 120 goes to line 120, 120:15 also to column 15, and +10 and -10 jump relative to the current line.
 
+## Go to symbol
+
+⇧⌘O shows the outline of the document: the headings in Markdown, the classes, functions, and the like in code, indented by their level. The entry the insertion point is in comes selected. A few letters filter the list, ↩ jumps to the entry, and Esc leaves everything as it was. In the command palette, an @ in front of the search does the same. The language definition says what belongs to the outline.
+
 # Reshaping text
 
 The “Text” menu holds commands that reshape text in one step. Every command can be undone with ⌘Z, and ⌘R runs the last one again.
@@ -292,7 +296,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Find, Find and Replace | ⌘F, ⌥⌘F |
 | Find Next, Find Previous | ⌘G, ⇧⌘G |
 | Find in all open documents | ⇧⌘F |
-| Go to Line | ⌘L |
+| Go to Line, Go to Symbol | ⌘L, ⇧⌘O |
 | Command palette | ⇧⌘P |
 | Repeat the last text command | ⌘R |
 | Duplicate line, delete line | ⌘D, ⌘⌫ |
