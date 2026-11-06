@@ -39,6 +39,7 @@ enum Preferences {
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
     static let closesBrackets = "closesBrackets"
+    static let highlightsOccurrences = "highlightsOccurrences"
     static let navigationMovesCaret = "navigationMovesCaret"
     /// What the count in the status bar shows: words, characters, lines …
     static let statusCountUnit = "statusCountUnit"
@@ -83,6 +84,7 @@ enum Preferences {
             indentsWithSpaces: true,
             autoIndents: true,
             closesBrackets: true,
+            highlightsOccurrences: true,
             navigationMovesCaret: true,
             textColumn: 70,
             focusMode: false,
@@ -120,6 +122,7 @@ enum Preferences {
     static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
     static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
     static var closesBracketsValue: Bool { defaults.bool(forKey: closesBrackets) }
+    static var highlightsOccurrencesValue: Bool { defaults.bool(forKey: highlightsOccurrences) }
     /// Page Up/Down, Home and End move the insertion point, as in most code editors, instead of
     /// only scrolling as on the Mac.
     static var navigationMovesCaretValue: Bool { defaults.bool(forKey: navigationMovesCaret) }

@@ -136,6 +136,11 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         ruler.lineChanges = { [weak document] in document?.lineChanges }
         ruler.onClickFold = { [weak self] line in self?.toggleFold(headedBy: line) }
 
+        // The scroll view lays out its parts by frames; the marks follow its size by autoresizing.
+        occurrenceMarks.color = NSColor.secondaryLabelColor
+        occurrenceMarks.autoresizingMask = [.minXMargin, .height]
+        scrollView.addSubview(occurrenceMarks)
+
         view = scrollView
     }
 
@@ -427,6 +432,62 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
         if colored { textView.redrawFragments() }
     }
 
+    // MARK: - Occurrences of the selected word
+
+    /// Marks at the edge for the other places of the selected word.
+    private let occurrenceMarks = MatchMarksView()
+    private var occurrenceWork: DispatchWorkItem?
+    /// Above this size, the text is not searched for occurrences.
+    private static let longestTextForOccurrences = 10_000_000
+
+    /// A selected whole word gets its other places marked, shortly after the selection settles.
+    private func updateOccurrences() {
+        occurrenceWork?.cancel()
+        guard Preferences.highlightsOccurrencesValue, let word = selectedWord() else {
+            textView.occurrenceRanges = []
+            occurrenceMarks.marks = []
+            return
+        }
+        let work = DispatchWorkItem { [weak self] in self?.markOccurrences(of: word) }
+        occurrenceWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: work)
+    }
+
+    /// The selection, if it is one whole word of two characters or more within a line.
+    private func selectedWord() -> NSRange? {
+        let ranges = textView.editingRanges
+        guard ranges.count == 1, let range = ranges.first, (2...200).contains(range.length) else { return nil }
+        let text = textView.string as NSString
+        guard text.length <= Self.longestTextForOccurrences else { return nil }
+        func isWord(_ index: Int) -> Bool {
+            guard index >= 0, index < text.length, let scalar = Unicode.Scalar(text.character(at: index)) else { return false }
+            return CharacterSet.alphanumerics.contains(scalar) || scalar == "_"
+        }
+        guard !isWord(range.location - 1), !isWord(range.upperBound),
+              (range.location..<range.upperBound).allSatisfy(isWord)
+        else { return nil }
+        return range
+    }
+
+    private func markOccurrences(of word: NSRange) {
+        guard textView.selectedRange() == word else { return }
+        let text = textView.string
+        let pattern = "(?<![\\p{L}\\p{N}_])" + NSRegularExpression.escapedPattern(for: (text as NSString).substring(with: word))
+            + "(?![\\p{L}\\p{N}_])"
+        guard let expression = try? NSRegularExpression(pattern: pattern) else { return }
+        var ranges: [NSRange] = []
+        expression.enumerateMatches(in: text, range: NSRange(location: 0, length: (text as NSString).length)) { match, _, stop in
+            guard let match else { return }
+            if match.range != word { ranges.append(match.range) }
+            if ranges.count >= 10_000 { stop.pointee = true }
+        }
+        textView.occurrenceRanges = ranges
+        let lines = max(document.lineIndex.lineCount - 1, 1)
+        occurrenceMarks.marks = ranges.isEmpty ? [] : ranges.map { CGFloat(document.lineIndex.lineNumber(at: $0.location) - 1) / CGFloat(lines) }
+        let bounds = scrollView.bounds
+        occurrenceMarks.frame = NSRect(x: bounds.maxX - 8, y: bounds.minY + 2, width: 7, height: max(bounds.height - 4, 0))
+    }
+
     /// Marks the bracket next to the insertion point and its partner.
     private func updateBrackets() {
         let pairs = document.language?.brackets ?? [("(", ")"), ("[", "]"), ("{", "}")]
@@ -449,6 +510,7 @@ final class EditorPane: NSViewController, NSTextViewDelegate, NSTextLayoutManage
             }
         }
         updateBrackets()
+        updateOccurrences()
         ruler.needsDisplay = true
         onSelectionChange?(self)
         updateFocusedFragment()

@@ -48,6 +48,16 @@ enum EditorStyle {
         (naturalLineHeight(of: font) * CGFloat(multiple)).rounded()
     }
 
+    /// Other places of the selected word.
+    static let occurrenceColor = NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor.white.withAlphaComponent(0.12) : NSColor.black.withAlphaComponent(0.07)
+    }
+    static let occurrenceBorderColor = NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor.white.withAlphaComponent(0.3) : NSColor.black.withAlphaComponent(0.22)
+    }
+
     /// Background of a bracket and its partner next to the insertion point.
     static let bracketColor = NSColor(name: nil) { appearance in
         NSColor.controlAccentColor.withAlphaComponent(appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? 0.35 : 0.22)
@@ -124,6 +134,10 @@ final class EditorTextView: NSTextView {
     /// A bracket next to the insertion point and its partner, drawn with a background.
     var bracketRanges: [NSRange] = [] {
         didSet { if bracketRanges != oldValue { setNeedsDisplay(visibleRect) } }
+    }
+    /// The other places of the selected word, drawn with a light frame; sorted.
+    var occurrenceRanges: [NSRange] = [] {
+        didSet { if occurrenceRanges != oldValue { setNeedsDisplay(visibleRect) } }
     }
 
     /// Ends of the head lines of folded blocks; a mark there stands for the hidden lines.
@@ -747,7 +761,24 @@ final class EditorTextView: NSTextView {
                 }
             }
         }
+        drawOccurrences(in: rect)
         drawFoldPlaceholders(in: rect)
+    }
+
+    /// Only the occurrences in view are laid out and drawn.
+    private func drawOccurrences(in rect: NSRect) {
+        guard !occurrenceRanges.isEmpty, let top = visibleTopOffset() else { return }
+        let bottom = characterIndexForInsertion(at: NSPoint(x: visibleRect.maxX, y: visibleRect.maxY))
+        for range in occurrenceRanges where range.upperBound >= top && range.location <= bottom {
+            for frame in segmentFrames(of: range) where frame.intersects(rect) {
+                let path = NSBezierPath(roundedRect: frame.insetBy(dx: -1, dy: 0.5), xRadius: 3, yRadius: 3)
+                EditorStyle.occurrenceColor.setFill()
+                path.fill()
+                EditorStyle.occurrenceBorderColor.setStroke()
+                path.lineWidth = 1
+                path.stroke()
+            }
+        }
     }
 
     // MARK: - Folds

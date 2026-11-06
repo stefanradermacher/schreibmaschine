@@ -100,6 +100,8 @@ Für jede Datei merkt sich die Schreibmaschine Auswahl, sichtbaren Ausschnitt, U
 
 ↩ und ⇧↩ springen zum nächsten und vorigen Treffer, ⌘G und ⇧⌘G auch bei geschlossener Leiste. Eine Auswahl wird beim Öffnen zum Suchbegriff, ⌘E übernimmt sie ohne die Leiste zu öffnen. Die letzten 20 Begriffe stehen im Menü der Lupe im Suchfeld, ↓ öffnet es ebenfalls. Esc schließt die Leiste.
 
+Auch ohne Suchleiste zeigt die Schreibmaschine, wo ein Wort noch vorkommt: Wählst du ein ganzes Wort aus, etwa mit einem Doppelklick, bekommen seine anderen Vorkommen einen leichten Rahmen, und am rechten Rand stehen kleine Striche für das ganze Dokument. ⌃G wählt dann das nächste Vorkommen dazu aus. Abschalten lässt sich das in den Einstellungen unter „Editor“.
+
 ## Schalter
 
 - Aa: Groß- und Kleinschreibung beachten

@@ -21,6 +21,7 @@ final class MatchMarksView: NSView {
     /// Positions from 0 (top) to 1 (bottom).
     var marks: [CGFloat] = [] { didSet { needsDisplay = true } }
     var current: CGFloat? { didSet { needsDisplay = true } }
+    var color = NSColor.findHighlightColor.withAlphaComponent(0.9)
 
     override var isFlipped: Bool { true }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
@@ -28,7 +29,7 @@ final class MatchMarksView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         guard !marks.isEmpty else { return }
         let usable = bounds.height - 3
-        NSColor.findHighlightColor.withAlphaComponent(0.9).setFill()
+        color.setFill()
         var lastY: CGFloat = -10
         for mark in marks {
             let y = (mark * usable).rounded()

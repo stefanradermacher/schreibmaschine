@@ -89,6 +89,8 @@ For every file, Schreibmaschine remembers the selection, the visible part, wrapp
 
 ↩ and ⇧↩ jump to the next and previous match, ⌘G and ⇧⌘G even with the bar closed. A selection becomes the search term when the bar opens; ⌘E takes it without opening the bar. The last 20 terms are in the menu of the magnifier in the search field, ↓ opens it as well. Esc closes the bar.
 
+Even without the find bar, Schreibmaschine shows where a word occurs again: when you select a whole word, by double-clicking it, for example, its other occurrences get a light frame, and small lines at the right edge mark them in the whole document. ⌃G then adds the next occurrence to the selection. You can turn this off in the settings under “Editor”.
+
 ## Options
 
 - Aa: match case

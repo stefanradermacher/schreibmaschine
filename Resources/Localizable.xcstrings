@@ -4710,6 +4710,16 @@
           }
         }
       }
+    },
+    "Vorkommen des ausgewählten Worts hervorheben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highlight occurrences of the selected word"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
