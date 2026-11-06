@@ -313,6 +313,8 @@ final class EditorTextView: NSTextView {
     }
 
     override func insertText(_ string: Any, replacementRange: NSRange) {
+        if replacementRange.location == NSNotFound,
+           insertClosingPairs((string as? NSAttributedString)?.string ?? string as? String ?? "") { return }
         guard hasMultipleCursors, replacementRange.location == NSNotFound else {
             return super.insertText(string, replacementRange: replacementRange)
         }
@@ -872,6 +874,7 @@ final class EditorTextView: NSTextView {
 
     /// With spaces as indentation, backspace in the indentation goes back to the previous tab stop.
     override func deleteBackward(_ sender: Any?) {
+        if deleteClosingPair() { return }
         let selection = selectedRange()
         guard indentation().usesSpaces, selectedRanges.count == 1, selection.length == 0, selection.location > 0 else {
             return super.deleteBackward(sender)

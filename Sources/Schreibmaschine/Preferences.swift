@@ -38,6 +38,7 @@ enum Preferences {
     static let wrapColumn = "wrapColumn"
     static let indentsWithSpaces = "indentsWithSpaces"
     static let autoIndents = "autoIndents"
+    static let closesBrackets = "closesBrackets"
     static let navigationMovesCaret = "navigationMovesCaret"
     /// What the count in the status bar shows: words, characters, lines …
     static let statusCountUnit = "statusCountUnit"
@@ -81,6 +82,7 @@ enum Preferences {
             wrapColumn: 80,
             indentsWithSpaces: true,
             autoIndents: true,
+            closesBrackets: true,
             navigationMovesCaret: true,
             textColumn: 70,
             focusMode: false,
@@ -117,6 +119,7 @@ enum Preferences {
     static var wrapColumnValue: Int { defaults.integer(forKey: wrapColumn).clamped(to: 10...1000) }
     static var indentsWithSpacesValue: Bool { defaults.bool(forKey: indentsWithSpaces) }
     static var autoIndentsValue: Bool { defaults.bool(forKey: autoIndents) }
+    static var closesBracketsValue: Bool { defaults.bool(forKey: closesBrackets) }
     /// Page Up/Down, Home and End move the insertion point, as in most code editors, instead of
     /// only scrolling as on the Mac.
     static var navigationMovesCaretValue: Bool { defaults.bool(forKey: navigationMovesCaret) }

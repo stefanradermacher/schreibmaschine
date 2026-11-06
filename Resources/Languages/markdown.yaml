@@ -5,6 +5,8 @@ comment:
   block: ['<!--', '-->']
 indent:
   width: 4
+# Apostrophe und Backticks für Codeblöcke schließen sich nicht von selbst.
+quotes: '"'
 rules:
   - scope: code
     begin: '^\s*```'

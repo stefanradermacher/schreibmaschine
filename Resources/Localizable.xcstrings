@@ -4670,6 +4670,16 @@
           }
         }
       }
+    },
+    "Klammern und Anführungszeichen automatisch schließen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close brackets and quotes automatically"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

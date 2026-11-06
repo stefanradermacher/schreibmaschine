@@ -175,6 +175,7 @@ private struct EditorSettings: View {
     @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
     @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
     @AppStorage(Preferences.autoIndents) private var autoIndents = true
+    @AppStorage(Preferences.closesBrackets) private var closesBrackets = true
     @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
     @AppStorage(Preferences.changeMarks) private var changeMarks = ChangeMarkStyle.single.rawValue
     @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
@@ -213,6 +214,10 @@ private struct EditorSettings: View {
                 Text("Gilt für neue Dokumente und Sprachen ohne eigene Vorgabe. Vorhandene Dateien behalten ihre Einrückung; unter Format → Einrückung lässt sie sich für jedes Dokument ändern.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Klammern und Anführungszeichen automatisch schließen", isOn: $closesBrackets)
             }
 
             Section {

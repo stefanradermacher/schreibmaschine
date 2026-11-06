@@ -200,6 +200,8 @@ Schreibmaschine recognizes from the text whether a file is indented with tabs or
 
 ⌘/ adds or removes comment marks in front of the lines of the selection. ⌥⌘/ puts the selection, or the line if nothing is selected, into a block comment such as /* … */ or <!-- … -->; with the insertion point inside a block comment, it takes the comment away. Languages without block comments get line comments. The bracket next to the insertion point and its partner are highlighted, ⇧⌘M jumps to the partner.
 
+Brackets and quotation marks close themselves: `(` brings its `)` right away, with the insertion point between them. If you type the closing bracket yourself, the insertion point just steps over it, and ⌫ between an empty pair deletes both. Before a word, no partner is added, and neither is one for an apostrophe in a word. With text selected, a bracket or quotation mark goes around the selection; in Markdown, this also works for `*`, `_`, and `~`. The language definition says which characters close themselves; in plain text, these are the brackets and `"`. You can turn this off in the settings under “Editor”.
+
 ## Folding
 
 Blocks that are indented deeper than the line before them can be folded. ⌃⌘← folds the block around the insertion point, ⌃⌘→ unfolds it, and with ⇧ it applies to everything. Arrows appear in the line number ruler as soon as the mouse is over it. A folded line ends in ⋯; a click on it unfolds the block.

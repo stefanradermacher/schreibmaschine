@@ -70,6 +70,8 @@ struct LanguageDefinition {
     let blockComment: (String, String)?
     let indentation: Indentation?
     let brackets: [(Character, Character)]
+    /// Quotation marks that are closed automatically, like brackets.
+    let quotes: [Character]
     let rules: [Rule]
     /// The file it came from: in the app bundle or in the user's folder.
     let url: URL
@@ -108,6 +110,7 @@ struct LanguageDefinition {
         let bracketText = yaml["brackets"]?.string ?? "()[]{}"
         let characters = Array(bracketText)
         brackets = stride(from: 0, to: characters.count - 1, by: 2).map { (characters[$0], characters[$0 + 1]) }
+        quotes = Array(yaml["quotes"]?.string ?? "\"'")
         self.url = url
         self.isBuiltIn = isBuiltIn
 

@@ -29,6 +29,7 @@ indent:
   width: 2                         # Breite eines Einzugs
   tabs: false                      # true: mit Tabs einrücken
 brackets: '()[]{}'                 # Klammerpaare, je zwei Zeichen; Voreinstellung wie hier
+quotes: '"'''                       # Anführungszeichen, die sich selbst schließen; Voreinstellung wie hier
 ignoreCase: false                  # true: alle Regeln ohne Groß-/Kleinschreibung
 rules:
   - scope: comment

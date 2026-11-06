@@ -211,6 +211,8 @@ Ob eine Datei mit Tabs oder Leerzeichen eingerückt ist und wie breit, erkennt d
 
 ⌘/ setzt oder entfernt Kommentarzeichen vor den Zeilen der Auswahl. ⌥⌘/ schließt die Auswahl, ohne Auswahl die Zeile, in einen Blockkommentar wie /* … */ oder <!-- … --> ein; steht die Einfügemarke in einem Blockkommentar, nimmt es ihn wieder heraus. Sprachen ohne Blockkommentare bekommen Zeilenkommentare. Die Klammer neben der Einfügemarke und ihr Gegenstück werden hervorgehoben, ⇧⌘M springt zum Gegenstück.
 
+Klammern und Anführungszeichen schließen sich von selbst: Auf `(` folgt gleich `)`, die Einfügemarke steht dazwischen. Tippst du die schließende Klammer selbst, springt die Einfügemarke nur darüber, und ⌫ zwischen einem leeren Paar löscht beide Zeichen. Vor einem Wort kommt kein Gegenstück dazu, ebenso wenig bei einem Apostroph in einem Wort. Ist Text ausgewählt, setzt eine Klammer oder ein Anführungszeichen die Zeichen um die Auswahl; in Markdown gilt das auch für `*`, `_` und `~`. Welche Zeichen sich schließen, legt die Sprachdefinition fest, in reinem Text sind es die Klammern und `"`. Abschalten lässt es sich in den Einstellungen unter „Editor“.
+
 ## Faltung
 
 Blöcke, die tiefer eingerückt sind als die Zeile davor, lassen sich falten. ⌃⌘← faltet den Block um die Einfügemarke, ⌃⌘→ entfaltet ihn, mit ⇧ dazu gilt es für alles. Im Zeilenlineal erscheinen Pfeile, sobald die Maus darüber ist. Hinter einer gefalteten Zeile steht ⋯, ein Klick darauf entfaltet sie.
