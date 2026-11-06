@@ -303,6 +303,7 @@ final class TextDocument: NSDocument {
     /// Saving a language definition from the folder of the user's own ones makes it take effect.
     override func save(to url: URL, ofType typeName: String, for saveOperation: NSDocument.SaveOperationType,
                        completionHandler: @escaping ((any Error)?) -> Void) {
+        if saveOperation == .saveOperation || saveOperation == .saveAsOperation { tidyUpBeforeSaving() }
         isSavingFile = true
         super.save(to: url, ofType: typeName, for: saveOperation) { error in
             self.isSavingFile = false

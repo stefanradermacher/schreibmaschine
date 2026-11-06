@@ -4720,6 +4720,56 @@
           }
         }
       }
+    },
+    "Datei mit einem Zeilenumbruch beenden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End files with a line break"
+          }
+        }
+      }
+    },
+    "Beim Sichern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When saving"
+          }
+        }
+      }
+    },
+    "Beim Sichern aufräumen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidy Up When Saving"
+          }
+        }
+      }
+    },
+    "Die Zeile mit der Einfügemarke bleibt unberührt, ebenso zwei Leerzeichen am Ende einer Markdown-Zeile, die dort einen Zeilenumbruch bedeuten. ⌘Z nimmt das Aufräumen zurück." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The line with the insertion point is left alone, and so are two spaces at the end of a Markdown line, which mean a line break there. ⌘Z takes the tidying up back."
+          }
+        }
+      }
+    },
+    "Leerzeichen und Tabs am Zeilenende entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove spaces and tabs at line ends"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

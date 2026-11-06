@@ -54,6 +54,8 @@ private struct GeneralSettings: View {
     @AppStorage(Preferences.defaultLineEnding) private var lineEnding = LineEnding.lf.rawValue
     @AppStorage(Preferences.autosave) private var autosave = AutosaveMode.off.rawValue
     @AppStorage(Preferences.historyLength) private var historyLength = 20
+    @AppStorage(Preferences.trimsTrailingWhitespace) private var trimsTrailingWhitespace = false
+    @AppStorage(Preferences.endsWithLineBreak) private var endsWithLineBreak = false
 
     var body: some View {
         Form {
@@ -89,6 +91,17 @@ private struct GeneralSettings: View {
                 }
             } footer: {
                 Text("Automatisch gesichert wird, wenn Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder ein Dokument geschlossen wird; auf Wunsch auch nach 15 Sekunden Schreibpause. Die Änderungen im Lineal zeigen weiter, was seit dem letzten ⌘S geändert ist. Unter Ablage → Zurück zu stehen die früheren Fassungen der letzten 14 Tage; mit ⌥ lassen sie sich vergleichen.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Leerzeichen und Tabs am Zeilenende entfernen", isOn: $trimsTrailingWhitespace)
+                Toggle("Datei mit einem Zeilenumbruch beenden", isOn: $endsWithLineBreak)
+            } header: {
+                Text("Beim Sichern")
+            } footer: {
+                Text("Die Zeile mit der Einfügemarke bleibt unberührt, ebenso zwei Leerzeichen am Ende einer Markdown-Zeile, die dort einen Zeilenumbruch bedeuten. ⌘Z nimmt das Aufräumen zurück.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

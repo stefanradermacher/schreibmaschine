@@ -47,6 +47,8 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 Schreibmaschine writes a file only when you save it with ⌘S, unless you turn on saving automatically (see below). It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu; every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
 
+If you like, Schreibmaschine tidies up when saving: under “Settings → General → When saving”, it removes spaces and tabs at the ends of lines and ends the file with a line break. The line with the insertion point is left alone, and so are two spaces at the end of a Markdown line, which mean a line break there. Tidying up is a change like any other, and ⌘Z takes it back.
+
 If another program changes an open file, such as git or a second editor, Schreibmaschine reloads it by itself as long as you have nothing unsaved in it; the insertion point and the scroll position stay where they were. If you have unsaved changes, a bar below the title bar asks: “Reload” takes the file, “Keep” stays with your text, which ⌘S then writes over the file, and “Compare” puts both side by side: take differences from the file over into your text and save the result. If an open file is deleted or moved, your text is kept and counts as unsaved; “Save As…” puts it somewhere again.
 
 ## Saving automatically

@@ -69,7 +69,7 @@ Das ist der Kern für Plain Text. Alle Befehle wirken auf die Auswahl, ohne Ausw
 
 - **Zeilen:** verbinden (Join Lines, mit wählbarem Trennzeichen), teilen an Trennzeichen, duplizieren, löschen, nach oben und unten verschieben, sortieren (alphabetisch, numerisch, natürlich, rückwärts), Dubletten entfernen, umkehren, mischen, nummerieren, leere Zeilen entfernen.
 - **Absätze:** auf Spaltenbreite umbrechen, Umbrüche innerhalb von Absätzen entfernen (Unwrap), einrücken und ausrücken, als Zitat markieren (`> `) und die Markierung wieder entfernen.
-- **Leerraum:** Leerzeichen am Zeilenende entfernen, Tabs in Leerzeichen umwandeln und umgekehrt, mehrfache Leerzeichen zusammenfassen.
+- **Leerraum:** Leerzeichen am Zeilenende entfernen, Tabs in Leerzeichen umwandeln und umgekehrt, mehrfache Leerzeichen zusammenfassen. Auf Wunsch beim Sichern: Leerzeichen am Zeilenende entfernen (außer in der Zeile mit der Einfügemarke und bei Markdown-Zeilenumbrüchen) und die Datei mit einem Zeilenumbruch beenden, widerrufbar.
 - **Schreibweise:** GROSS, klein, Satzanfang groß, Titel, camelCase, snake_case, kebab-case.
 - **Spalten:** an einem Zeichen ausrichten (z. B. an `=` oder `|`), Markdown-Tabellen formatieren.
 - **Kodieren:** URL, Base64, HTML-Entitäten, JSON formatieren und verkleinern.

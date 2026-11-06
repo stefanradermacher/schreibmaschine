@@ -58,6 +58,8 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst, es sei denn, du schaltest das automatische Sichern ein (siehe unten). Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
 
+Auf Wunsch räumt die Schreibmaschine beim Sichern auf: Unter „Einstellungen → Allgemein → Beim Sichern“ entfernt sie Leerzeichen und Tabs am Zeilenende und beendet die Datei mit einem Zeilenumbruch. Die Zeile mit der Einfügemarke bleibt dabei unberührt, ebenso zwei Leerzeichen am Ende einer Markdown-Zeile, die dort einen Zeilenumbruch bedeuten. Das Aufräumen ist eine Änderung wie jede andere und lässt sich mit ⌘Z zurücknehmen.
+
 Ändert ein anderes Programm eine offene Datei, etwa git oder ein zweiter Editor, lädt die Schreibmaschine sie von selbst neu, solange du nichts Ungesichertes darin hast; Einfügemarke und Scrollposition bleiben, wo sie waren. Hast du ungesicherte Änderungen, fragt eine Leiste unter der Titelleiste: „Neu laden“ übernimmt die Datei, „Behalten“ bleibt bei deinem Text, den ⌘S dann über die Datei schreibt, und „Vergleichen“ stellt beides nebeneinander: Unterschiede aus der Datei übernimmst du in deinen Text und sicherst das Ergebnis. Wird eine offene Datei gelöscht oder verschoben, bleibt dein Text erhalten und gilt als ungesichert; „Sichern unter …“ legt ihn wieder ab.
 
 ## Automatisch sichern

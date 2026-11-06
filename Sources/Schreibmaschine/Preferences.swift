@@ -40,6 +40,8 @@ enum Preferences {
     static let autoIndents = "autoIndents"
     static let closesBrackets = "closesBrackets"
     static let highlightsOccurrences = "highlightsOccurrences"
+    static let trimsTrailingWhitespace = "trimsTrailingWhitespace"
+    static let endsWithLineBreak = "endsWithLineBreak"
     static let navigationMovesCaret = "navigationMovesCaret"
     /// What the count in the status bar shows: words, characters, lines …
     static let statusCountUnit = "statusCountUnit"
@@ -85,6 +87,8 @@ enum Preferences {
             autoIndents: true,
             closesBrackets: true,
             highlightsOccurrences: true,
+            trimsTrailingWhitespace: false,
+            endsWithLineBreak: false,
             navigationMovesCaret: true,
             textColumn: 70,
             focusMode: false,
