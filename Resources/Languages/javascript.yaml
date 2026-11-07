@@ -9,6 +9,8 @@ indent:
   width: 2
 outline:
   - match: '^[ \t]*(?:export[ \t]+)?(?:default[ \t]+)?((?:async[ \t]+)?function\*?[ \t]*\w+|class[ \t]+\w+)'
+  # Methoden in Klassen und Objekten: eingerückt, ohne function davor.
+  - match: '^[ \t]+(?:static[ \t]+)?(?:async[ \t]+)?(?:get[ \t]+|set[ \t]+)?\*?((?!(?:if|for|while|switch|catch|return|function|else|with)\b)[A-Za-z_$#][\w$]*)[ \t]*\([^)\n]*\)[ \t]*\{'
   - match: '^[ \t]*(?:export[ \t]+)?(?:const|let|var)[ \t]+(\w+)[ \t]*=[ \t]*(?:async[ \t]*)?(?:function\b|\([^)\n]*\)[ \t]*=>|\w+[ \t]*=>)'
 rules:
   - scope: comment

@@ -4,6 +4,9 @@ extensions: [json, jsonc, json5, geojson, webmanifest, jsonl]
 filenames: [.babelrc, .eslintrc, .prettierrc, composer.lock]
 indent:
   width: 2
+# Schlüssel, deren Wert ein Objekt oder eine Liste ist; die Ebene ergibt sich aus der Einrückung.
+outline:
+  - match: '^[ \t]*"((?:[^"\\\n]|\\.)*)"[ \t]*:[ \t]*[\[{]'
 rules:
   - scope: comment
     begin: '/\*'
