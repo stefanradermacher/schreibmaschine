@@ -32,6 +32,9 @@ enum Preferences {
     static let showsDocumentList = "showsDocumentList"
     /// Widths of the document list and of the sidebar of the search in all documents.
     static let documentListWidth = "documentListWidth"
+    static let showsInspector = "showsInspector"
+    static let inspectorWidth = "inspectorWidth"
+    static let inspectorTab = "inspectorTab"
     static let searchSidebarWidth = "searchSidebarWidth"
     static let tabWidth = "tabWidth"
     static let lineHeight = "lineHeight"
@@ -79,6 +82,8 @@ enum Preferences {
             stylesMarkdown: true,
             showsDocumentList: false,
             documentListWidth: 220.0,
+            showsInspector: false,
+            inspectorWidth: 260.0,
             searchSidebarWidth: 300.0,
             tabWidth: 4,
             lineHeight: 1.2,

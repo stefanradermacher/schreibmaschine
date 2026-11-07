@@ -260,7 +260,7 @@ final class DocumentListView: NSView, NSOutlineViewDataSource, NSOutlineViewDele
 }
 
 /// A menu item's action as a closure; the item keeps it alive.
-private final class ClosureItem: NSObject {
+final class ClosureItem: NSObject {
     private let action: () -> Void
     init(_ action: @escaping () -> Void) { self.action = action }
     @objc func run(_ sender: Any?) { action() }

@@ -24,12 +24,15 @@ final class SidebarResizeHandle: NSView {
 
     private let width: NSLayoutConstraint
     private let key: String
+    /// A sidebar on the right grows when its edge is dragged to the left.
+    private let growsLeftward: Bool
     private var startX: CGFloat = 0
     private var startWidth: CGFloat = 0
 
-    init(width: NSLayoutConstraint, key: String) {
+    init(width: NSLayoutConstraint, key: String, growsLeftward: Bool = false) {
         self.width = width
         self.key = key
+        self.growsLeftward = growsLeftward
         super.init(frame: .zero)
     }
 
@@ -46,7 +49,8 @@ final class SidebarResizeHandle: NSView {
 
     override func mouseDragged(with event: NSEvent) {
         let available = superview?.bounds.width ?? .greatestFiniteMagnitude
-        let proposed = startWidth + event.locationInWindow.x - startX
+        let moved = event.locationInWindow.x - startX
+        let proposed = startWidth + (growsLeftward ? -moved : moved)
         width.constant = proposed.clamped(to: Self.minimumWidth...max(Self.minimumWidth, available * Self.maximumShare)).rounded()
     }
 

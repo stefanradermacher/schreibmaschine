@@ -72,6 +72,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showOutline(_ sender: Any?) { CommandPalette.shared.show(symbols: true) }
 
     /// ⌃⌘S: the document list in every window.
+    /// The inspector, for all windows.
+    @objc func toggleInspector(_ sender: Any?) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: Preferences.showsInspector), forKey: Preferences.showsInspector)
+    }
+
     @objc func toggleDocumentList(_ sender: Any?) {
         let defaults = UserDefaults.standard
         defaults.set(!defaults.bool(forKey: Preferences.showsDocumentList), forKey: Preferences.showsDocumentList)
@@ -147,6 +153,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: NSMenuItemValidation {
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
+        if item.action == #selector(toggleInspector(_:)) {
+            item.state = UserDefaults.standard.bool(forKey: Preferences.showsInspector) ? .on : .off
+        }
         if item.action == #selector(toggleDocumentList(_:)) {
             item.state = UserDefaults.standard.bool(forKey: Preferences.showsDocumentList) ? .on : .off
         }

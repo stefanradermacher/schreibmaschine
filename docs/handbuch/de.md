@@ -54,6 +54,13 @@ Neue Dokumente kommen als Tab ins vordere Fenster oder in ein eigenes Fenster, s
 
 Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fenstern nach Fenster gegliedert. Ein Punkt hinter dem Namen zeigt ungesicherte Änderungen, ein Klick holt das Dokument nach vorn.
 
+## Der Inspektor
+
+„Darstellung → Inspektor“ (⌥⌘0) blendet rechts eine Seitenleiste mit zwei Tabs ein, für alle Fenster zugleich; ihre Breite lässt sich am Rand ziehen.
+
+- **Informationen:** Name, Ort, Größe und Datum der Datei, mit einem Knopf, der sie im Finder zeigt; Sprache, Kodierung, Zeilenenden und Einrückung des Textes; Zeilen, Wörter, Zeichen und Bytes, ab 50 Wörtern auch die Lesedauer. Ist Text ausgewählt, stehen die Zahlen für die Auswahl darunter. Zuletzt das Zeichen an der Einfügemarke, groß, mit Unicode-Codepunkt, Namen und den Bytes in der Kodierung der Datei. So lassen sich geschützte Leerzeichen, Zeichen ohne Breite oder ähnlich aussehende Buchstaben erkennen, und es zeigt sich gleich, ob ein Zeichen in der Kodierung überhaupt vorkommt.
+- **Gliederung:** dieselben Einträge wie bei „Gehe zu Symbol“, nach Ebene eingerückt. Der Eintrag, in dem die Einfügemarke steht, ist ausgewählt; ein Klick oder die Pfeiltasten springen zu einem anderen, das Feld darüber filtert die Liste.
+
 ## Sichern, Kodierung und Zeilenenden
 
 Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst, es sei denn, du schaltest das automatische Sichern ein (siehe unten). Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
@@ -333,7 +340,7 @@ Alle Kürzel sind normale Menübefehle. In den Systemeinstellungen unter „Tast
 | Falten, Entfalten (mit ⇧: alles) | ⌃⌘←, ⌃⌘→ |
 | Nebeneinander, untereinander teilen | ⌃⌘T, ⌃⌥⌘T |
 | Zur anderen Hälfte, Teilung aufheben | ⌥⌘J, ⌃⇧⌘W |
-| Dokumentliste | ⌃⌘S |
+| Dokumentliste, Inspektor | ⌃⌘S, ⌥⌘0 |
 | Nächster, voriger Unterschied im Vergleich | ⌃⌘↓, ⌃⌘↑ |
 | Markdown-Vorschau, ablenkungsfreier Modus | ⌥⌘P, ⌃⇧⌘F |
 | Markdown fett, kursiv, Code, Link | ⌃⌘B, ⌃⌘I, ⌃⌘C, ⌃⌘K |

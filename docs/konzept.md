@@ -62,6 +62,7 @@ Cursor und Auswahl, Scrollposition, Faltungen, Lesezeichen, Kodierung, Zeilenend
 - Die App verwendet die nativen Fenster-Tabs von macOS. Neue Dokumente öffnen standardmäßig als Tab im vorderen Fenster, alternativ in einem neuen Fenster (Einstellung).
 - **Geteilte Ansicht** innerhalb eines Tabs, waagerecht oder senkrecht, mit zwei Ansichten desselben Dokuments.
 - Eine **Dokumentliste** als optionale Seitenleiste zeigt alle offenen Dokumente aller Fenster, mit Markierung für ungesicherte Änderungen.
+- Ein **Inspektor** rechts (⌥⌘0) mit zwei Tabs: Informationen (Datei, Text, Zählungen, Lesedauer, Zeichen an der Einfügemarke mit Codepunkt, Namen und Bytes) und Gliederung. Vorgesehen als dritter Tab: Hinweise (nicht darstellbare Zeichen, gemischte Zeilenenden und Einrückung, unsichtbare Zeichen, ungültiges JSON).
 
 ## 3. Text bearbeiten und umformen
 

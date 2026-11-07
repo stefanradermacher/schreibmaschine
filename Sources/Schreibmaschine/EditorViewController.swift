@@ -37,6 +37,11 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private var textAtTop: NSLayoutConstraint!
     private let allDocumentsView = AllDocumentsSearchView()
     private let documentList = DocumentListView()
+    private let inspector = InspectorView()
+    private var editorToRight: NSLayoutConstraint!
+    private var editorBesideInspector: NSLayoutConstraint!
+    private var inspectorWidth: NSLayoutConstraint!
+    private var inspectorEdge: SidebarResizeHandle!
     private var editorAtLeft: NSLayoutConstraint!
     private var editorBesideSidebar: NSLayoutConstraint!
     private var editorBesideList: NSLayoutConstraint!
@@ -117,10 +122,13 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
         let root = NSView()
         allDocumentsView.isHidden = true
         documentList.isHidden = true
-        for view in [allDocumentsView, documentList, container] {
+        inspector.isHidden = true
+        for view in [allDocumentsView, documentList, container, inspector] {
             view.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview(view)
         }
+        editorToRight = container.trailingAnchor.constraint(equalTo: root.trailingAnchor)
+        editorBesideInspector = container.trailingAnchor.constraint(equalTo: inspector.leadingAnchor)
         editorAtLeft = container.leadingAnchor.constraint(equalTo: root.leadingAnchor)
         editorBesideSidebar = container.leadingAnchor.constraint(equalTo: allDocumentsView.trailingAnchor)
         editorBesideList = container.leadingAnchor.constraint(equalTo: documentList.trailingAnchor)
@@ -136,7 +144,11 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             editorAtLeft,
             container.topAnchor.constraint(equalTo: root.topAnchor),
             container.bottomAnchor.constraint(equalTo: root.bottomAnchor),
-            container.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            editorToRight,
+            inspector.topAnchor.constraint(equalTo: root.topAnchor),
+            inspector.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            inspector.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            inspector.widthAnchor.constraint(lessThanOrEqualTo: root.widthAnchor, multiplier: SidebarResizeHandle.maximumShare),
         ])
         // The stored width gives way when the window is too narrow for it.
         listWidth = documentList.widthAnchor.constraint(equalToConstant: SidebarResizeHandle.storedWidth(Preferences.documentListWidth))
@@ -156,6 +168,20 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 edge.widthAnchor.constraint(equalToConstant: 7),
             ])
         }
+        inspectorWidth = inspector.widthAnchor.constraint(equalToConstant: SidebarResizeHandle.storedWidth(Preferences.inspectorWidth))
+        inspectorWidth.priority = .init(999)
+        inspectorEdge = SidebarResizeHandle(width: inspectorWidth, key: Preferences.inspectorWidth, growsLeftward: true)
+        inspectorEdge.isHidden = true
+        inspectorEdge.translatesAutoresizingMaskIntoConstraints = false
+        root.addSubview(inspectorEdge)
+        NSLayoutConstraint.activate([
+            inspectorWidth,
+            inspectorEdge.topAnchor.constraint(equalTo: root.topAnchor),
+            inspectorEdge.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            inspectorEdge.centerXAnchor.constraint(equalTo: inspector.leadingAnchor),
+            inspectorEdge.widthAnchor.constraint(equalToConstant: 7),
+        ])
+        inspector.attach(to: self)
         view = root
         attachMarks(to: first)
     }
@@ -269,7 +295,7 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             case "subtree":
                 for window in NSApp.windows where window.title.contains(argument) {
                     if let text = window.contentView?.perform(NSSelectorFromString("_subtreeDescription"))?.takeUnretainedValue() as? String {
-                        NSLog("DEBUGSCRIPT subtree\n%@", String(text.prefix(6000)))
+                        NSLog("DEBUGSCRIPT subtree\n%@", String(text.prefix(80000)))
                     }
                 }
             case "takeover":
@@ -533,7 +559,10 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
             if pane === self?.activePane { self?.syncPreviewScroll() }
         }
         pane.onSelectionChange = { [weak self] pane in
-            if pane === self?.activePane { self?.updatePosition() }
+            if pane === self?.activePane {
+                self?.updatePosition()
+                self?.inspector.selectionDidChange()
+            }
         }
         addChild(pane)
         splitView.addArrangedSubview(pane.view)
@@ -976,11 +1005,25 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
     private func updateSidebarWidths() {
         let list = SidebarResizeHandle.storedWidth(Preferences.documentListWidth)
         let search = SidebarResizeHandle.storedWidth(Preferences.searchSidebarWidth)
+        let inspector = SidebarResizeHandle.storedWidth(Preferences.inspectorWidth)
         if listWidth.constant != list { listWidth.constant = list }
         if searchWidth.constant != search { searchWidth.constant = search }
+        if inspectorWidth.constant != inspector { inspectorWidth.constant = inspector }
+    }
+
+    /// The inspector on the right, for all windows; not in the distraction-free mode.
+    private func updateInspector() {
+        let shows = !isDistractionFree && UserDefaults.standard.bool(forKey: Preferences.showsInspector)
+        guard inspector.isHidden == shows else { return }
+        editorToRight.isActive = false
+        editorBesideInspector.isActive = false
+        (shows ? editorBesideInspector : editorToRight).isActive = true
+        inspector.isHidden = !shows
+        inspectorEdge.isHidden = !shows
     }
 
     private func updateSidebar() {
+        updateInspector()
         let active = AllDocumentsSearch.shared.isActive && !isDistractionFree
         let showsList = !active && !isDistractionFree && UserDefaults.standard.bool(forKey: Preferences.showsDocumentList)
         guard allDocumentsView.isHidden == active || documentList.isHidden == showsList else { return }

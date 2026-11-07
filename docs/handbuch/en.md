@@ -43,6 +43,13 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 ⌃⌘S shows a list of all open documents on the left, grouped by window when there are several. A dot after the name marks unsaved changes; a click brings the document to the front.
 
+## The inspector
+
+“View → Inspector” (⌥⌘0) shows a sidebar on the right with two tabs, for all windows at once; drag its edge to change its width.
+
+- **Information:** name, location, size, and dates of the file, with a button that shows it in the Finder; the language, encoding, line endings, and indentation of the text; lines, words, characters, and bytes, and from 50 words on the reading time. With text selected, the numbers for the selection follow. Last comes the character at the insertion point, large, with its Unicode code point, name, and the bytes in the file's encoding. This makes no-break spaces, zero-width characters, or look-alike letters easy to spot, and shows right away whether a character exists in the encoding at all.
+- **Outline:** the same entries as in “Go to Symbol”, indented by level. The entry the insertion point is in is selected; a click or the arrow keys go to another one, and the field above filters the list.
+
 ## Saving, encoding, and line endings
 
 Schreibmaschine writes a file only when you save it with ⌘S, unless you turn on saving automatically (see below). It recognizes the text encoding and line endings when opening a file and keeps them when saving. Both appear in the status bar and can be changed there with a click. The common encodings are right in the menu; every other one that macOS knows is under “More Encodings”, grouped by script. If umlauts or other characters look wrong, “File → Reopen with Encoding” reads the file in another encoding.
@@ -322,7 +329,7 @@ All shortcuts are ordinary menu commands. They can be changed in System Settings
 | Fold, unfold (with ⇧: everything) | ⌃⌘←, ⌃⌘→ |
 | Split side by side, top and bottom | ⌃⌘T, ⌃⌥⌘T |
 | Go to other half, close split | ⌥⌘J, ⌃⇧⌘W |
-| Document list | ⌃⌘S |
+| Document list, inspector | ⌃⌘S, ⌥⌘0 |
 | Next, previous difference in a comparison | ⌃⌘↓, ⌃⌘↑ |
 | Markdown preview, distraction-free mode | ⌥⌘P, ⌃⇧⌘F |
 | Markdown bold, italic, code, link | ⌃⌘B, ⌃⌘I, ⌃⌘C, ⌃⌘K |
