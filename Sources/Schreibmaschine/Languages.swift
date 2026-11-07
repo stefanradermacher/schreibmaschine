@@ -74,7 +74,7 @@ struct LanguageDefinition {
     let quotes: [Character]
     let rules: [Rule]
     /// Rules for the outline: headings, functions, classes.
-    let outline: [OutlineRule]
+    var outline: [OutlineRule]
     /// The file it came from: in the app bundle or in the user's folder.
     let url: URL
     let isBuiltIn: Bool
@@ -208,7 +208,12 @@ final class LanguageRegistry {
         for (urls, isBuiltIn) in [(builtIn, true), (user.filter { ["yaml", "yml"].contains($0.pathExtension.lowercased()) }, false)] {
             for url in urls {
                 do {
-                    let language = try LanguageDefinition(url: url, isBuiltIn: isBuiltIn)
+                    var language = try LanguageDefinition(url: url, isBuiltIn: isBuiltIn)
+                    // An own copy of a built-in language, made before there were outlines, keeps
+                    // the outline of the built-in one.
+                    if !isBuiltIn, language.outline.isEmpty, let builtIn = byID[language.id], builtIn.isBuiltIn {
+                        language.outline = builtIn.outline
+                    }
                     byID[language.id] = language
                 } catch {
                     failures.append(error.localizedDescription)

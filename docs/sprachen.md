@@ -129,7 +129,7 @@ outline:
     inComment: true   # der Eintrag steht selbst in einem Kommentar
 ```
 
-Ohne `level` ergibt sich die Ebene aus der Einrückung der Zeile, so stehen Methoden unter ihrer Klasse. Treffer in Kommentaren, Zeichenketten und Codeblöcken zählen nicht, außer bei `inComment: true`. `ignoreCase` gilt wie bei den Regeln.
+Ohne `level` ergibt sich die Ebene aus der Einrückung der Zeile, so stehen Methoden unter ihrer Klasse. Hat eine eigene Kopie einer mitgelieferten Sprache keine `outline`, etwa weil sie älter ist als die Gliederung, gilt die Gliederung der mitgelieferten. Treffer in Kommentaren, Zeichenketten und Codeblöcken zählen nicht, außer bei `inComment: true`. `ignoreCase` gilt wie bei den Regeln.
 
 ## YAML
 
