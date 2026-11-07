@@ -63,6 +63,10 @@ Each time you open or save a file, by hand or automatically, Schreibmaschine kee
 
 “Settings → Files → Keep earlier versions” sets how many versions each file keeps, 20 by default; none is kept longer than 14 days. Identical states are stored only once, and files over 10 MB not at all. “Clear History…” at the end of the menu removes the versions of the file; the file itself stays as it is. If you rename or move an open file, its versions go with it.
 
+## Printing
+
+“File → Print…” (⌘P) prints the document, wrapped to the width of the paper and in the light colors. In the print dialog, the “Schreibmaschine” section holds its own options: the font size for paper (10 pt by default), syntax colors, line numbers, and a header and footer with the file name or path, the date, and the page number. For Markdown files, you choose whether the text is printed as in the editor or typeset as in the preview, with real headings, lists, and tables. With text selected, the selection option under “Pages” prints only that, keeping the line numbers of the document. The preview on the left follows every change, and Schreibmaschine remembers the options for next time.
+
 # The session
 
 Many Mac apps leave it to macOS to reopen what was open after a restart. Whether that works depends on system settings and on how the app was quit. Schreibmaschine therefore keeps a session of its own: all windows with their tabs, the files in them, and every unsaved text.

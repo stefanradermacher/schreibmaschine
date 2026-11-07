@@ -487,6 +487,18 @@ final class EditorViewController: NSViewController, NSMenuItemValidation, NSSpli
                 let (items, current) = currentOutlineIndex
                 NSLog("DEBUGSCRIPT outline current=%@ %@", current.map(String.init) ?? "-",
                       items.map { "\(String(repeating: ".", count: $0.level))\($0.name)@\($0.line)" }.joined(separator: " | "))
+            case "printpdf":
+                // printpdf:name.pdf[,sel] — prints into a PDF in the container's temporary folder
+                let parts = argument.split(separator: ",")
+                let operation = document.makePrintOperation(printSettings: [:])
+                operation.showsPrintPanel = false
+                operation.showsProgressPanel = false
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent(String(parts[0]))
+                operation.printInfo.jobDisposition = .save
+                operation.printInfo.dictionary()[NSPrintInfo.AttributeKey.jobSavingURL] = url
+                if parts.count > 1 { operation.printInfo.isSelectionOnly = true }
+                operation.run()
+                NSLog("DEBUGSCRIPT printpdf %@", url.path)
             case "tc":
                 // tc:markdownBold — a command of the Text menu
                 if let command = TextCommands.command(argument) { try? command.run(textView, "") }

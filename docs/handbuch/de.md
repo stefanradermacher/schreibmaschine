@@ -74,6 +74,10 @@ Jedes Mal, wenn du eine Datei öffnest oder sicherst, von Hand oder automatisch,
 
 Wie viele Fassungen je Datei bleiben, legt „Einstellungen → Dateien → Frühere Fassungen aufbewahren“ fest, voreingestellt 20; älter als 14 Tage wird keine. Gleiche Stände werden nur einmal gespeichert, Dateien über 10 MB gar nicht. „Verlauf löschen …“ am Ende des Menüs entfernt die Fassungen der Datei, die Datei selbst bleibt, wie sie ist. Benennst du eine offene Datei um oder verschiebst sie, nimmt sie ihre Fassungen mit.
 
+## Drucken
+
+„Ablage → Drucken …“ (⌘P) druckt das Dokument, umbrochen auf die Breite des Papiers und in den hellen Farben. Im Druckdialog stehen unter „Schreibmaschine“ die eigenen Optionen: die Schriftgröße für das Papier (voreingestellt 10 pt), Syntaxfarben, Zeilennummern und eine Kopf- und Fußzeile mit Dateiname oder Dateipfad, Datum und Seitenzahl. Bei Markdown-Dateien wählst du, ob der Text so gedruckt wird wie im Editor oder gesetzt wie in der Vorschau, mit echten Überschriften, Listen und Tabellen. Ist Text ausgewählt, druckt „Auswahl in Schreibmaschine“ unter „Seiten“ nur ihn, mit den Zeilennummern aus dem Dokument. Die Vorschau links folgt jeder Änderung, und die Schreibmaschine merkt sich die Optionen für das nächste Mal.
+
 # Die Sitzung
 
 Viele Mac-Apps überlassen es macOS, nach dem Neustart wieder zu öffnen, was offen war. Ob das klappt, hängt von Systemeinstellungen und der Art des Beendens ab. Die Schreibmaschine führt deshalb ihre eigene Sitzung: alle Fenster mit ihren Tabs, die Dateien darin und alle ungesicherten Texte.

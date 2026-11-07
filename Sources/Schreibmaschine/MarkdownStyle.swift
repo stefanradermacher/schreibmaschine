@@ -19,7 +19,7 @@ import AppKit
 /// be edited as usual; the marks (#, **, `, link targets) are only faded. The file is not
 /// touched: the formatting lives in the attributes of the text storage, which are not saved.
 ///
-/// Prototype: the whole text is styled at once, and after an edit the edited lines.
+/// The whole text is styled when it is shown, and after an edit the edited lines.
 final class MarkdownStyler {
     /// Whether Markdown documents are shown formatted.
     static var isEnabled: Bool { UserDefaults.standard.bool(forKey: Preferences.stylesMarkdown) }
@@ -31,8 +31,9 @@ final class MarkdownStyler {
         isEnabled && document.language?.id == "markdown" && document.textStorage.length <= longestStyledText
     }
 
-    private let document: TextDocument
-    private var storage: NSTextStorage { document.textStorage }
+    private let document: TextDocument?
+    private let storage: NSTextStorage
+    private var applies: Bool { document.map(Self.applies) ?? true }
     /// The attributes of plain text, with the editor's font and line height.
     var base: [NSAttributedString.Key: Any] = EditorStyle.attributes()
     var lineHeight: Double = Preferences.lineHeightValue
@@ -42,14 +43,31 @@ final class MarkdownStyler {
 
     init(document: TextDocument) {
         self.document = document
+        storage = document.textStorage
         observer = NotificationCenter.default.addObserver(forName: NSTextStorage.willProcessEditingNotification,
                                                           object: document.textStorage, queue: nil) { [weak self] _ in
             self?.storageWillProcessEditing()
         }
     }
 
+    /// For a copy of the text, such as for printing.
+    private init(storage: NSTextStorage) {
+        document = nil
+        self.storage = storage
+    }
+
     deinit {
         if let observer { NotificationCenter.default.removeObserver(observer) }
+    }
+
+    /// The text styled with the given plain-text attributes, without touching any document.
+    static func styled(_ text: String, base: [NSAttributedString.Key: Any], lineHeight: Double) -> NSTextStorage {
+        let storage = NSTextStorage(string: text, attributes: base)
+        let styler = MarkdownStyler(storage: storage)
+        styler.base = base
+        styler.lineHeight = lineHeight
+        styler.restyleAll()
+        return storage
     }
 
     /// Styles the whole text anew, or takes the formatting away if it does not apply.
@@ -58,7 +76,7 @@ final class MarkdownStyler {
         isStyling = true
         defer { isStyling = false }
         storage.beginEditing()
-        if Self.applies(to: document) {
+        if applies {
             fenceCount = countFences()
             style(all)
         } else {
@@ -74,7 +92,7 @@ final class MarkdownStyler {
     /// the edit would widen the edited range, and the text view would put the insertion point
     /// at its end.
     private func storageWillProcessEditing() {
-        guard !isStyling, storage.editedMask.contains(.editedCharacters), Self.applies(to: document) else { return }
+        guard !isStyling, storage.editedMask.contains(.editedCharacters), applies else { return }
         let text = storage.string as NSString
         let paragraph = text.paragraphRange(for: storage.editedRange)
         // The range to style, kept as a start and a distance from the end, so that later edits
@@ -93,7 +111,7 @@ final class MarkdownStyler {
     private func stylePending() {
         guard let pending = pendingStyle else { return }
         pendingStyle = nil
-        guard Self.applies(to: document) else { return }
+        guard applies else { return }
         let text = storage.string as NSString
         let start = min(pending.start, text.length)
         var range = text.paragraphRange(for: NSRange(location: start, length: max(0, text.length - pending.tail - start)))

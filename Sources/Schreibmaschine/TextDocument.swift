@@ -449,20 +449,7 @@ final class TextDocument: NSDocument {
     override var shouldRunSavePanelWithAccessoryView: Bool { false }
 
     override func printOperation(withSettings printSettings: [NSPrintInfo.AttributeKey: Any]) throws -> NSPrintOperation {
-        let info = printInfo.copy() as! NSPrintInfo
-        info.dictionary().addEntries(from: printSettings)
-        info.isHorizontallyCentered = false
-        info.isVerticallyCentered = false
-        let width = info.paperSize.width - info.leftMargin - info.rightMargin
-        let view = NSTextView(frame: NSRect(x: 0, y: 0, width: width, height: 100))
-        view.string = textStorage.string
-        view.font = Preferences.font
-        view.textColor = .black
-        view.backgroundColor = .white
-        view.sizeToFit()
-        let operation = NSPrintOperation(view: view, printInfo: info)
-        operation.jobTitle = displayName
-        return operation
+        makePrintOperation(printSettings: printSettings)
     }
 
     // MARK: - Loading

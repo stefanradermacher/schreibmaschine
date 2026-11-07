@@ -4802,6 +4802,126 @@
           }
         }
       }
+    },
+    "Syntaxfarben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syntax colors"
+          }
+        }
+      }
+    },
+    "Kopf- und Fußzeile" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header and footer"
+          }
+        }
+      }
+    },
+    "Dateiname" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File name"
+          }
+        }
+      }
+    },
+    "Dateipfad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File path"
+          }
+        }
+      }
+    },
+    "Schriftgröße:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size:"
+          }
+        }
+      }
+    },
+    "Schriftgröße" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size"
+          }
+        }
+      }
+    },
+    "Kopfzeile:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header:"
+          }
+        }
+      }
+    },
+    "Markdown:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown:"
+          }
+        }
+      }
+    },
+    "wie im Editor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "as in the editor"
+          }
+        }
+      }
+    },
+    "gesetzt wie in der Vorschau" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "typeset as in the preview"
+          }
+        }
+      }
+    },
+    "Ein" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
+          }
+        }
+      }
+    },
+    "Seite %lld von %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %lld of %lld"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
