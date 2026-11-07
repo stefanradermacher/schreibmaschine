@@ -62,6 +62,42 @@ func text(_ string: String, size: CGFloat, weight: NSFont.Weight = .regular,
     ])
 }
 
+/// Text with the inline marks of the handbook: `code` in a monospaced font, **bold** in a
+/// heavier weight. Inside code nothing else counts, so `**fett**` shows its stars.
+func rich(_ string: String, size: CGFloat, color: NSColor = ink, spacing: CGFloat = 0,
+          alignment: NSTextAlignment = .left, lineSpacing: CGFloat = 3) -> NSAttributedString {
+    let result = NSMutableAttributedString()
+    let attributes = text(" ", size: size, color: color, spacing: spacing, alignment: alignment, lineSpacing: lineSpacing)
+        .attributes(at: 0, effectiveRange: nil)
+    func append(_ part: Substring, bold: Bool) {
+        var pieceAttributes = attributes
+        if bold { pieceAttributes[.font] = NSFont.systemFont(ofSize: size, weight: .semibold) }
+        result.append(NSAttributedString(string: String(part), attributes: pieceAttributes))
+    }
+    func appendProse(_ prose: Substring) {
+        var rest = prose
+        var bold = false
+        while let mark = rest.range(of: "**") {
+            append(rest[..<mark.lowerBound], bold: bold)
+            bold.toggle()
+            rest = rest[mark.upperBound...]
+        }
+        append(rest, bold: bold)
+    }
+    var rest = Substring(string)
+    while let open = rest.firstIndex(of: "`"),
+          let close = rest[rest.index(after: open)...].firstIndex(of: "`") {
+        appendProse(rest[..<open])
+        var codeAttributes = attributes
+        codeAttributes[.font] = NSFont.monospacedSystemFont(ofSize: size * 0.92, weight: .regular)
+        codeAttributes[.foregroundColor] = NSColor(white: 0.2, alpha: 1)
+        result.append(NSAttributedString(string: String(rest[rest.index(after: open)..<close]), attributes: codeAttributes))
+        rest = rest[rest.index(after: close)...]
+    }
+    appendProse(rest)
+    return result
+}
+
 // MARK: - Document model
 
 enum Block {
@@ -298,7 +334,7 @@ func shortcutTable(_ rows: [(String, String)]) {
 }
 
 func noteBox(_ string: String) {
-    let content = text(string, size: 11, color: NSColor(white: 0.25, alpha: 1), lineSpacing: 3.5)
+    let content = rich(string, size: 11, color: NSColor(white: 0.25, alpha: 1), lineSpacing: 3.5)
     let inner = contentWidth - 34
     let needed = height(content, width: inner) + 28
     if y - needed < bottomMargin {
@@ -365,16 +401,56 @@ func isBullet(_ block: Block) -> Bool {
     return false
 }
 
+func bodyText(_ string: String) -> NSAttributedString {
+    rich(string, size: 11.5, alignment: .justified, lineSpacing: 3.5)
+}
+
+func bulletText(_ string: String) -> NSAttributedString {
+    rich(string, size: 11.5, lineSpacing: 3.5)
+}
+
+func headingText(_ title: String) -> NSAttributedString {
+    text(title, size: 14, weight: .semibold)
+}
+
+/// The room the block at the index needs at least on the page it starts on. Paragraphs,
+/// notes, pictures, and lists are not split, so they need all of their height.
+func minimumHeight(at index: Int) -> CGFloat {
+    guard index < blocks.count else { return 0 }
+    switch blocks[index] {
+    case .chapter:
+        return 0
+    case .heading(let title):
+        return 6 + height(headingText(title)) + 6 + minimumHeight(at: index + 1)
+    case .body(let string):
+        return height(bodyText(string))
+    case .bullet:
+        let run = blocks[index...].prefix(while: isBullet)
+        return run.reduce(CGFloat(0)) { total, next in
+            guard case .bullet(let string) = next else { return total }
+            return total + height(bulletText(string), width: contentWidth - 18) + 7
+        }
+    case .note(let string):
+        return 4 + height(rich(string, size: 11, lineSpacing: 3.5), width: contentWidth - 34) + 28
+    case .picture(let path, let caption):
+        guard let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = properties[kCGImagePropertyPixelWidth] as? CGFloat,
+              let pixelHeight = properties[kCGImagePropertyPixelHeight] as? CGFloat
+        else { return 0 }
+        let label = caption.isEmpty ? 0 : height(text(caption, size: 9.5, color: quiet, alignment: .center)) + 4
+        return contentWidth * pixelHeight / width + 6 + label
+    case .shortcuts(let rows):
+        return CGFloat(min(rows.count, 3)) * 22
+    }
+}
+
 titlePage()
 
 for (index, block) in blocks.enumerated() {
     // A list is not torn apart: if its points do not all fit, it starts on the next page.
     if case .bullet = block, index == 0 || !isBullet(blocks[index - 1]) {
-        let run = blocks[index...].prefix(while: isBullet)
-        let needed = run.reduce(CGFloat(0)) { total, next in
-            guard case .bullet(let string) = next else { return total }
-            return total + height(text(string, size: 11.5, lineSpacing: 3.5), width: contentWidth - 18) + 7
-        }
+        let needed = minimumHeight(at: index)
         if y - needed < bottomMargin && needed < pageSize.height - margin - bottomMargin {
             endPage()
             beginPage()
@@ -391,18 +467,21 @@ for (index, block) in blocks.enumerated() {
         CGRect(x: margin, y: y + 2, width: 70, height: 2.5).fill()
         y -= 18
     case .heading(let title):
-        y -= 6
-        // A heading never stays alone at the foot of a page: it needs room for a few lines below.
-        if y - 90 < bottomMargin {
+        // A heading never stays alone at the foot of a page: it goes with the block below it,
+        // as long as both fit on one page at all.
+        let needed = minimumHeight(at: index)
+        if y - needed < bottomMargin && needed < pageSize.height - margin - bottomMargin {
             endPage()
             beginPage()
+        } else {
+            y -= 6
         }
-        place(text(title, size: 14, weight: .semibold), gap: 6)
+        place(headingText(title), gap: 6)
     case .body(let string):
-        place(text(string, size: 11.5, alignment: .justified, lineSpacing: 3.5), gap: 12)
+        place(bodyText(string), gap: 12)
     case .bullet(let string):
         let dot = text("•", size: 11.5, color: accent)
-        let line = text(string, size: 11.5, lineSpacing: 3.5)
+        let line = bulletText(string)
         let needed = height(line, width: contentWidth - 18)
         if y - needed < bottomMargin {
             endPage()
