@@ -21,7 +21,9 @@ final class SettingsWindowController: NSWindowController {
         let tabs = NSTabViewController()
         tabs.tabStyle = .toolbar
         tabs.addTabViewItem(Self.pane(GeneralSettings(), title: String(localized: "Allgemein"), symbol: "gearshape"))
-        tabs.addTabViewItem(Self.pane(EditorSettings(), title: String(localized: "Editor"), symbol: "character.cursor.ibeam"))
+        tabs.addTabViewItem(Self.pane(FileSettings(), title: String(localized: "Dateien"), symbol: "doc"))
+        tabs.addTabViewItem(Self.pane(AppearanceSettings(), title: String(localized: "SettingsAppearance", defaultValue: "Darstellung"), symbol: "eyeglasses"))
+        tabs.addTabViewItem(Self.pane(EditingSettings(), title: String(localized: "SettingsEditing", defaultValue: "Bearbeiten"), symbol: "character.cursor.ibeam"))
         tabs.addTabViewItem(Self.pane(WritingSettings(), title: String(localized: "Schreiben"), symbol: "pencil.line"))
 
         let window = NSWindow(contentViewController: tabs)
@@ -49,13 +51,6 @@ final class SettingsWindowController: NSWindowController {
 private struct GeneralSettings: View {
     @AppStorage(Preferences.startupAction) private var startupAction = StartupAction.restoreSession.rawValue
     @AppStorage(Preferences.opensDocumentsInTabs) private var opensInTabs = true
-    @AppStorage(Preferences.defaultEncoding) private var encoding = Int(String.Encoding.utf8.rawValue)
-    @AppStorage(Preferences.writesUTF8BOM) private var writesBOM = false
-    @AppStorage(Preferences.defaultLineEnding) private var lineEnding = LineEnding.lf.rawValue
-    @AppStorage(Preferences.autosave) private var autosave = AutosaveMode.off.rawValue
-    @AppStorage(Preferences.historyLength) private var historyLength = 20
-    @AppStorage(Preferences.trimsTrailingWhitespace) private var trimsTrailingWhitespace = false
-    @AppStorage(Preferences.endsWithLineBreak) private var endsWithLineBreak = false
 
     var body: some View {
         Form {
@@ -78,6 +73,31 @@ private struct GeneralSettings: View {
             }
             .pickerStyle(.radioGroup)
 
+            Section {
+                DefaultAppSettingsRows()
+            } footer: {
+                Text("Für Text und Code: reiner Text, Markdown, JSON, YAML, Quelltexte und mehr. Mit „Anpassen …“ lässt sich jedes Format einzeln festlegen, auch HTML, CSV und Protokolle.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
+    }
+}
+
+/// Saving, and the format of new files.
+private struct FileSettings: View {
+    @AppStorage(Preferences.defaultEncoding) private var encoding = Int(String.Encoding.utf8.rawValue)
+    @AppStorage(Preferences.writesUTF8BOM) private var writesBOM = false
+    @AppStorage(Preferences.defaultLineEnding) private var lineEnding = LineEnding.lf.rawValue
+    @AppStorage(Preferences.autosave) private var autosave = AutosaveMode.off.rawValue
+    @AppStorage(Preferences.historyLength) private var historyLength = 20
+    @AppStorage(Preferences.trimsTrailingWhitespace) private var trimsTrailingWhitespace = false
+    @AppStorage(Preferences.endsWithLineBreak) private var endsWithLineBreak = false
+
+    var body: some View {
+        Form {
             Section {
                 Picker("Automatisch sichern:", selection: $autosave) {
                     ForEach(AutosaveMode.allCases, id: \.rawValue) { mode in
@@ -107,14 +127,6 @@ private struct GeneralSettings: View {
             }
 
             Section {
-                DefaultAppSettingsRows()
-            } footer: {
-                Text("Für Text und Code: reiner Text, Markdown, JSON, YAML, Quelltexte und mehr. Mit „Anpassen …“ lässt sich jedes Format einzeln festlegen, auch HTML, CSV und Protokolle.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
                 Picker("Zeichenkodierung:", selection: $encoding) {
                     ForEach(TextEncoding.all, id: \.rawValue) { encoding in
                         Text(TextEncoding.name(of: encoding)).tag(Int(encoding.rawValue))
@@ -136,6 +148,133 @@ private struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
+        .scrollDisabled(true)
+    }
+}
+
+/// How the text looks: font, what is shown, and what is highlighted.
+private struct AppearanceSettings: View {
+    @AppStorage(Preferences.fontName) private var fontName = ""
+    @AppStorage(Preferences.fontSize) private var fontSize = 13.0
+    @AppStorage(Preferences.lineHeight) private var lineHeight = 1.2
+    @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
+    @AppStorage(Preferences.changeMarks) private var changeMarks = ChangeMarkStyle.single.rawValue
+    @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
+    @AppStorage(Preferences.stylesMarkdown) private var stylesMarkdown = true
+    @AppStorage(Preferences.highlightsOccurrences) private var highlightsOccurrences = true
+    @AppStorage(Preferences.showsLineNumbers) private var showsLineNumbers = true
+    @AppStorage(Preferences.wrapsLines) private var wrapsLines = true
+    @AppStorage(Preferences.showsInvisibles) private var showsInvisibles = false
+
+    var body: some View {
+        Form {
+            LabeledContent {
+                HStack {
+                    // SF Mono is hidden from the font panel; this is the way back to it.
+                    Button("Standard") { fontName = "" }
+                        .disabled(fontName.isEmpty)
+                    Button("Auswählen …") { FontPicker.shared.show() }
+                }
+            } label: {
+                Text("Schrift")
+                Text(fontDescription)
+            }
+            Stepper(value: $lineHeight, in: 1.0...2.0, step: 0.1) {
+                // Shown as extra space over what the font needs: +0 % to +100 %.
+                LabeledContent("Zeilenhöhe:", value: String(localized: "+\(Int(((lineHeight - 1) * 100).rounded())) %"))
+            }
+
+            Section {
+                Toggle("Zeilennummern", isOn: $showsLineNumbers)
+                Toggle("Zeilen umbrechen", isOn: $wrapsLines)
+                Toggle("Unsichtbare Zeichen", isOn: $showsInvisibles)
+            } header: {
+                Text("Für neue Fenster")
+            } footer: {
+                Text("Im Menü Darstellung lässt sich das für jedes Fenster einzeln umschalten.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Syntax hervorheben", isOn: $highlightsSyntax)
+                Toggle("Markdown gestaltet darstellen", isOn: $stylesMarkdown)
+                Toggle("Aktuelle Zeile hervorheben", isOn: $highlightsCurrentLine)
+                Toggle("Vorkommen des ausgewählten Worts hervorheben", isOn: $highlightsOccurrences)
+            }
+
+            Section {
+                Picker("Änderungen im Lineal:", selection: $changeMarks) {
+                    ForEach(ChangeMarkStyle.allCases, id: \.rawValue) { style in
+                        Text(style.title).tag(style.rawValue)
+                    }
+                }
+            } footer: {
+                Text("Neben den Zeilennummern ein schmaler Balken an jeder Zeile, die seit dem letzten Sichern neu oder geändert ist, und ein kleiner Keil, wo Zeilen gelöscht wurden.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
+    }
+
+    private var fontDescription: String {
+        let font = Preferences.font
+        let name = fontName.isEmpty ? String(localized: "SF Mono (Systemschrift)") : (font.displayName ?? font.fontName)
+        return "\(name), \(Int(fontSize)) pt"
+    }
+}
+
+/// How the text behaves when typing and moving through it.
+private struct EditingSettings: View {
+    @AppStorage(Preferences.navigationMovesCaret) private var navigationMovesCaret = true
+    @AppStorage(Preferences.tabWidth) private var tabWidth = 4
+    @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
+    @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
+    @AppStorage(Preferences.autoIndents) private var autoIndents = true
+    @AppStorage(Preferences.closesBrackets) private var closesBrackets = true
+
+    var body: some View {
+        Form {
+            Section {
+                Stepper(value: $tabWidth, in: 1...16) {
+                    LabeledContent("Tabbreite:", value: String(localized: "\(tabWidth) Zeichen"))
+                }
+                Toggle("Mit Leerzeichen statt Tabs einrücken", isOn: $indentsWithSpaces)
+                Toggle("Einrückung der vorigen Zeile übernehmen", isOn: $autoIndents)
+            } header: {
+                Text("Einrückung")
+            } footer: {
+                Text("Gilt für neue Dokumente und Sprachen ohne eigene Vorgabe. Vorhandene Dateien behalten ihre Einrückung; unter Format → Einrückung lässt sie sich für jedes Dokument ändern.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("Klammern und Anführungszeichen automatisch schließen", isOn: $closesBrackets)
+            }
+
+            Section {
+                Toggle("Bild ↑/↓, Pos1 und Ende bewegen die Einfügemarke", isOn: $navigationMovesCaret)
+            } footer: {
+                Text("Wie in den meisten Code-Editoren: Bild ↑/↓ blättert mit der Einfügemarke, Pos1 und Ende gehen an Anfang und Ende der Zeile, mit ⌘ an Anfang und Ende des Dokuments. Pos1 und ⌘← springen zuerst hinter die Einrückung. Ausgeschaltet gilt das Verhalten von macOS: Diese Tasten blättern nur.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                Stepper(value: $wrapColumn, in: 20...200, step: 1) {
+                    LabeledContent("Absätze umbrechen bei:", value: String(localized: "\(wrapColumn) Zeichen"))
+                }
+            } footer: {
+                Text("Für Text → Absätze → Umbrechen. Mit „Umbrechen bei Spalte …“ lässt sich jedes Mal eine andere Breite wählen.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
     }
 }
 
@@ -176,120 +315,6 @@ private struct WritingSettings: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-    }
-}
-
-private struct EditorSettings: View {
-    @AppStorage(Preferences.fontName) private var fontName = ""
-    @AppStorage(Preferences.fontSize) private var fontSize = 13.0
-    @AppStorage(Preferences.lineHeight) private var lineHeight = 1.2
-    @AppStorage(Preferences.navigationMovesCaret) private var navigationMovesCaret = true
-    @AppStorage(Preferences.tabWidth) private var tabWidth = 4
-    @AppStorage(Preferences.wrapColumn) private var wrapColumn = 80
-    @AppStorage(Preferences.indentsWithSpaces) private var indentsWithSpaces = true
-    @AppStorage(Preferences.autoIndents) private var autoIndents = true
-    @AppStorage(Preferences.closesBrackets) private var closesBrackets = true
-    @AppStorage(Preferences.highlightsCurrentLine) private var highlightsCurrentLine = true
-    @AppStorage(Preferences.changeMarks) private var changeMarks = ChangeMarkStyle.single.rawValue
-    @AppStorage(Preferences.highlightsSyntax) private var highlightsSyntax = true
-    @AppStorage(Preferences.stylesMarkdown) private var stylesMarkdown = true
-    @AppStorage(Preferences.highlightsOccurrences) private var highlightsOccurrences = true
-    @AppStorage(Preferences.showsLineNumbers) private var showsLineNumbers = true
-    @AppStorage(Preferences.wrapsLines) private var wrapsLines = true
-    @AppStorage(Preferences.showsInvisibles) private var showsInvisibles = false
-
-    var body: some View {
-        Form {
-            LabeledContent {
-                HStack {
-                    // SF Mono is hidden from the font panel; this is the way back to it.
-                    Button("Standard") { fontName = "" }
-                        .disabled(fontName.isEmpty)
-                    Button("Auswählen …") { FontPicker.shared.show() }
-                }
-            } label: {
-                Text("Schrift")
-                Text(fontDescription)
-            }
-            Stepper(value: $lineHeight, in: 1.0...2.0, step: 0.1) {
-                // Shown as extra space over what the font needs: +0 % to +100 %.
-                LabeledContent("Zeilenhöhe:", value: String(localized: "+\(Int(((lineHeight - 1) * 100).rounded())) %"))
-            }
-
-            Section {
-                Stepper(value: $tabWidth, in: 1...16) {
-                    LabeledContent("Tabbreite:", value: String(localized: "\(tabWidth) Zeichen"))
-                }
-                Toggle("Mit Leerzeichen statt Tabs einrücken", isOn: $indentsWithSpaces)
-                Toggle("Einrückung der vorigen Zeile übernehmen", isOn: $autoIndents)
-            } header: {
-                Text("Einrückung")
-            } footer: {
-                Text("Gilt für neue Dokumente und Sprachen ohne eigene Vorgabe. Vorhandene Dateien behalten ihre Einrückung; unter Format → Einrückung lässt sie sich für jedes Dokument ändern.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                Toggle("Klammern und Anführungszeichen automatisch schließen", isOn: $closesBrackets)
-            }
-
-            Section {
-                Toggle("Bild ↑/↓, Pos1 und Ende bewegen die Einfügemarke", isOn: $navigationMovesCaret)
-            } footer: {
-                Text("Wie in den meisten Code-Editoren: Bild ↑/↓ blättert mit der Einfügemarke, Pos1 und Ende gehen an Anfang und Ende der Zeile, mit ⌘ an Anfang und Ende des Dokuments. Pos1 und ⌘← springen zuerst hinter die Einrückung. Ausgeschaltet gilt das Verhalten von macOS: Diese Tasten blättern nur.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                Stepper(value: $wrapColumn, in: 20...200, step: 1) {
-                    LabeledContent("Absätze umbrechen bei:", value: String(localized: "\(wrapColumn) Zeichen"))
-                }
-            } footer: {
-                Text("Für Text → Absätze → Umbrechen. Mit „Umbrechen bei Spalte …“ lässt sich jedes Mal eine andere Breite wählen.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                Toggle("Zeilennummern", isOn: $showsLineNumbers)
-                Toggle("Zeilen umbrechen", isOn: $wrapsLines)
-                Toggle("Unsichtbare Zeichen", isOn: $showsInvisibles)
-            } header: {
-                Text("Für neue Fenster")
-            } footer: {
-                Text("Im Menü Darstellung lässt sich das für jedes Fenster einzeln umschalten.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section {
-                Toggle("Syntax hervorheben", isOn: $highlightsSyntax)
-                Toggle("Markdown gestaltet darstellen", isOn: $stylesMarkdown)
-                Toggle("Aktuelle Zeile hervorheben", isOn: $highlightsCurrentLine)
-                Toggle("Vorkommen des ausgewählten Worts hervorheben", isOn: $highlightsOccurrences)
-            }
-
-            Section {
-                Picker("Änderungen im Lineal:", selection: $changeMarks) {
-                    ForEach(ChangeMarkStyle.allCases, id: \.rawValue) { style in
-                        Text(style.title).tag(style.rawValue)
-                    }
-                }
-            } footer: {
-                Text("Neben den Zeilennummern ein schmaler Balken an jeder Zeile, die seit dem letzten Sichern neu oder geändert ist, und ein kleiner Keil, wo Zeilen gelöscht wurden.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-
-    private var fontDescription: String {
-        let font = Preferences.font
-        let name = fontName.isEmpty ? String(localized: "SF Mono (Systemschrift)") : (font.displayName ?? font.fontName)
-        return "\(name), \(Int(fontSize)) pt"
     }
 }
 

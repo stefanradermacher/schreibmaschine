@@ -58,13 +58,13 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 Die Schreibmaschine schreibt eine Datei nur, wenn du sie mit ⌘S sicherst, es sei denn, du schaltest das automatische Sichern ein (siehe unten). Zeichenkodierung und Zeilenenden erkennt sie beim Öffnen und behält sie beim Sichern bei. Beides steht in der Statusleiste und lässt sich dort per Klick ändern. Die gängigen Kodierungen stehen direkt im Menü, alle übrigen, die macOS kennt, unter „Weitere Kodierungen“, nach Schriftraum geordnet. Erscheinen Umlaute falsch, liest „Ablage → Erneut öffnen mit Kodierung“ die Datei in einer anderen Kodierung.
 
-Auf Wunsch räumt die Schreibmaschine beim Sichern auf: Unter „Einstellungen → Allgemein → Beim Sichern“ entfernt sie Leerzeichen und Tabs am Zeilenende und beendet die Datei mit einem Zeilenumbruch. Die Zeile mit der Einfügemarke bleibt dabei unberührt, ebenso zwei Leerzeichen am Ende einer Markdown-Zeile, die dort einen Zeilenumbruch bedeuten. Das Aufräumen ist eine Änderung wie jede andere und lässt sich mit ⌘Z zurücknehmen.
+Auf Wunsch räumt die Schreibmaschine beim Sichern auf: Unter „Einstellungen → Dateien → Beim Sichern“ entfernt sie Leerzeichen und Tabs am Zeilenende und beendet die Datei mit einem Zeilenumbruch. Die Zeile mit der Einfügemarke bleibt dabei unberührt, ebenso zwei Leerzeichen am Ende einer Markdown-Zeile, die dort einen Zeilenumbruch bedeuten. Das Aufräumen ist eine Änderung wie jede andere und lässt sich mit ⌘Z zurücknehmen.
 
 Ändert ein anderes Programm eine offene Datei, etwa git oder ein zweiter Editor, lädt die Schreibmaschine sie von selbst neu, solange du nichts Ungesichertes darin hast; Einfügemarke und Scrollposition bleiben, wo sie waren. Hast du ungesicherte Änderungen, fragt eine Leiste unter der Titelleiste: „Neu laden“ übernimmt die Datei, „Behalten“ bleibt bei deinem Text, den ⌘S dann über die Datei schreibt, und „Vergleichen“ stellt beides nebeneinander: Unterschiede aus der Datei übernimmst du in deinen Text und sicherst das Ergebnis. Wird eine offene Datei gelöscht oder verschoben, bleibt dein Text erhalten und gilt als ungesichert; „Sichern unter …“ legt ihn wieder ab.
 
 ## Automatisch sichern
 
-Unter „Einstellungen → Allgemein → Automatisch sichern“ schreibt die Schreibmaschine geänderte Dateien auch ohne ⌘S. „Beim Verlassen“ sichert, sobald Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder du ein Dokument schließt; ein geändertes Dokument wird dann beim Schließen gesichert statt nachgefragt. „Beim Verlassen und in Schreibpausen“ sichert zusätzlich, wenn du 15 Sekunden nichts tippst. Das ist praktisch, wenn ein anderes Programm die Datei liest, etwa ein Compiler, ein Webserver oder git.
+Unter „Einstellungen → Dateien → Automatisch sichern“ schreibt die Schreibmaschine geänderte Dateien auch ohne ⌘S. „Beim Verlassen“ sichert, sobald Fenster oder Tab den Fokus verlieren, die Schreibmaschine in den Hintergrund geht oder du ein Dokument schließt; ein geändertes Dokument wird dann beim Schließen gesichert statt nachgefragt. „Beim Verlassen und in Schreibpausen“ sichert zusätzlich, wenn du 15 Sekunden nichts tippst. Das ist praktisch, wenn ein anderes Programm die Datei liest, etwa ein Compiler, ein Webserver oder git.
 
 Nie automatisch gesichert werden unbenannte Dokumente, die bleiben in der Sitzung. Auch eine Datei, die ein anderes Programm geändert, gelöscht oder schreibgeschützt hat, bleibt unangetastet, ebenso Text mit Zeichen, die die Kodierung der Datei nicht kennt; hier entscheidest du mit ⌘S. Die Marken im Lineal zeigen weiterhin, was sich seit deinem letzten ⌘S geändert hat, nicht seit dem letzten automatischen Sichern.
 
@@ -72,7 +72,7 @@ Nie automatisch gesichert werden unbenannte Dokumente, die bleiben in der Sitzun
 
 Jedes Mal, wenn du eine Datei öffnest oder sicherst, von Hand oder automatisch, hebt die Schreibmaschine diesen Stand in ihrem eigenen Bereich auf dem Mac auf. „Ablage → Zurück zu“ führt sie auf: oben „Zuletzt gesichert“ und „Zuletzt geöffnet“, darunter die früheren Fassungen mit Datum und Uhrzeit. Eine Fassung zu wählen ersetzt den Text wie eine gewöhnliche Bearbeitung, ⌘Z holt deinen Text also zurück. Hältst du ⌥ gedrückt, wird aus jedem Eintrag ein Vergleich: Die Fassung erscheint neben deinem Text, und du übernimmst nur, was du brauchst.
 
-Wie viele Fassungen je Datei bleiben, legt „Einstellungen → Allgemein → Frühere Fassungen aufbewahren“ fest, voreingestellt 20; älter als 14 Tage wird keine. Gleiche Stände werden nur einmal gespeichert, Dateien über 10 MB gar nicht. „Verlauf löschen …“ am Ende des Menüs entfernt die Fassungen der Datei, die Datei selbst bleibt, wie sie ist. Benennst du eine offene Datei um oder verschiebst sie, nimmt sie ihre Fassungen mit.
+Wie viele Fassungen je Datei bleiben, legt „Einstellungen → Dateien → Frühere Fassungen aufbewahren“ fest, voreingestellt 20; älter als 14 Tage wird keine. Gleiche Stände werden nur einmal gespeichert, Dateien über 10 MB gar nicht. „Verlauf löschen …“ am Ende des Menüs entfernt die Fassungen der Datei, die Datei selbst bleibt, wie sie ist. Benennst du eine offene Datei um oder verschiebst sie, nimmt sie ihre Fassungen mit.
 
 # Die Sitzung
 
@@ -102,7 +102,7 @@ Für jede Datei merkt sich die Schreibmaschine Auswahl, sichtbaren Ausschnitt, U
 
 ↩ und ⇧↩ springen zum nächsten und vorigen Treffer, ⌘G und ⇧⌘G auch bei geschlossener Leiste. Eine Auswahl wird beim Öffnen zum Suchbegriff, ⌘E übernimmt sie ohne die Leiste zu öffnen. Die letzten 20 Begriffe stehen im Menü der Lupe im Suchfeld, ↓ öffnet es ebenfalls. Esc schließt die Leiste.
 
-Auch ohne Suchleiste zeigt die Schreibmaschine, wo ein Wort noch vorkommt: Wählst du ein ganzes Wort aus, etwa mit einem Doppelklick, bekommen seine anderen Vorkommen einen leichten Rahmen, und am rechten Rand stehen kleine Striche für das ganze Dokument. ⌃G wählt dann das nächste Vorkommen dazu aus. Abschalten lässt sich das in den Einstellungen unter „Editor“.
+Auch ohne Suchleiste zeigt die Schreibmaschine, wo ein Wort noch vorkommt: Wählst du ein ganzes Wort aus, etwa mit einem Doppelklick, bekommen seine anderen Vorkommen einen leichten Rahmen, und am rechten Rand stehen kleine Striche für das ganze Dokument. ⌃G wählt dann das nächste Vorkommen dazu aus. Abschalten lässt sich das in den Einstellungen unter „Darstellung“.
 
 ## Schalter
 
@@ -219,7 +219,7 @@ Ob eine Datei mit Tabs oder Leerzeichen eingerückt ist und wie breit, erkennt d
 
 ⌘/ setzt oder entfernt Kommentarzeichen vor den Zeilen der Auswahl. ⌥⌘/ schließt die Auswahl, ohne Auswahl die Zeile, in einen Blockkommentar wie /* … */ oder <!-- … --> ein; steht die Einfügemarke in einem Blockkommentar, nimmt es ihn wieder heraus. Sprachen ohne Blockkommentare bekommen Zeilenkommentare. Die Klammer neben der Einfügemarke und ihr Gegenstück werden hervorgehoben, ⇧⌘M springt zum Gegenstück.
 
-Klammern und Anführungszeichen schließen sich von selbst: Auf `(` folgt gleich `)`, die Einfügemarke steht dazwischen. Tippst du die schließende Klammer selbst, springt die Einfügemarke nur darüber, und ⌫ zwischen einem leeren Paar löscht beide Zeichen. Vor einem Wort kommt kein Gegenstück dazu, ebenso wenig bei einem Apostroph in einem Wort. Ist Text ausgewählt, setzt eine Klammer oder ein Anführungszeichen die Zeichen um die Auswahl; in Markdown gilt das auch für `*`, `_` und `~`. Welche Zeichen sich schließen, legt die Sprachdefinition fest, in reinem Text sind es die Klammern und `"`. Abschalten lässt es sich in den Einstellungen unter „Editor“.
+Klammern und Anführungszeichen schließen sich von selbst: Auf `(` folgt gleich `)`, die Einfügemarke steht dazwischen. Tippst du die schließende Klammer selbst, springt die Einfügemarke nur darüber, und ⌫ zwischen einem leeren Paar löscht beide Zeichen. Vor einem Wort kommt kein Gegenstück dazu, ebenso wenig bei einem Apostroph in einem Wort. Ist Text ausgewählt, setzt eine Klammer oder ein Anführungszeichen die Zeichen um die Auswahl; in Markdown gilt das auch für `*`, `_` und `~`. Welche Zeichen sich schließen, legt die Sprachdefinition fest, in reinem Text sind es die Klammern und `"`. Abschalten lässt es sich in den Einstellungen unter „Bearbeiten“.
 
 ## Faltung
 
@@ -284,11 +284,11 @@ Ein Ergebnis zu ersetzen ist ein Schritt, den ⌘Z zurücknimmt. Endet ein Skrip
 
 # Darstellung und Einstellungen
 
-Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. Neben den Zeilennummern zeigt ein schmaler Balken, welche Zeilen seit dem letzten Sichern mit ⌘S neu oder geändert sind, und ein kleiner Keil, wo Zeilen gelöscht wurden; nach ⌘S verschwinden die Marken. Ob und in welchen Farben sie erscheinen, legt „Einstellungen → Editor → Änderungen im Lineal“ fest. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
+Zeilennummern (⌥⌘L), Zeilenumbruch (⌃⌘W) und unsichtbare Zeichen (⌥⌘I) gelten für jedes Fenster einzeln. Neben den Zeilennummern zeigt ein schmaler Balken, welche Zeilen seit dem letzten Sichern mit ⌘S neu oder geändert sind, und ein kleiner Keil, wo Zeilen gelöscht wurden; nach ⌘S verschwinden die Marken. Ob und in welchen Farben sie erscheinen, legt „Einstellungen → Darstellung → Änderungen im Lineal“ fest. ⌘+ und ⌘- ändern die Schriftgröße, ⌘0 stellt sie zurück.
 
 ## Blättern und springen
 
-Bild ↑ und Bild ↓ blättern um eine Fensterhöhe und nehmen die Einfügemarke mit. Pos1 und Ende gehen an Anfang und Ende der Zeile, ⌘Pos1 und ⌘Ende (wie ⌘↑ und ⌘↓) an Anfang und Ende des Dokuments; mit ⇧ wird jeweils ausgewählt. Pos1 und ⌘← springen zuerst hinter die Einrückung, ein zweites Mal an den echten Zeilenanfang. Wer das Verhalten von macOS bevorzugt, bei dem diese Tasten nur blättern, schaltet es in den Einstellungen unter Editor aus.
+Bild ↑ und Bild ↓ blättern um eine Fensterhöhe und nehmen die Einfügemarke mit. Pos1 und Ende gehen an Anfang und Ende der Zeile, ⌘Pos1 und ⌘Ende (wie ⌘↑ und ⌘↓) an Anfang und Ende des Dokuments; mit ⇧ wird jeweils ausgewählt. Pos1 und ⌘← springen zuerst hinter die Einrückung, ein zweites Mal an den echten Zeilenanfang. Wer das Verhalten von macOS bevorzugt, bei dem diese Tasten nur blättern, schaltet es in den Einstellungen unter Bearbeiten aus.
 
 ## Die Statusleiste
 
@@ -296,8 +296,10 @@ Unten im Fenster stehen Zeile und Spalte, die Größe der Auswahl, Sprache, Einr
 
 ## Einstellungen
 
-- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster, automatisches Sichern und wie viele frühere Fassungen bleiben, die Standard-App für Text und Code, Kodierung und Zeilenenden für neue Dokumente
-- Editor: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Tabbreite, Einrückung, Umbruchspalte, Vorgaben für neue Fenster, Syntaxhervorhebung, Hervorhebung der aktuellen Zeile und Änderungen im Lineal
+- Allgemein: was beim Start ohne Datei geschieht, Tabs oder Fenster und die Standard-App für Text und Code
+- Dateien: automatisches Sichern, wie viele frühere Fassungen bleiben, Aufräumen beim Sichern, Kodierung und Zeilenenden für neue Dokumente
+- Darstellung: Schrift, Zeilenhöhe (von +0 % bis +100 % über das, was die Schrift braucht, voreingestellt +20 %), Vorgaben für neue Fenster, Hervorhebung von Syntax, Markdown, aktueller Zeile und Vorkommen des ausgewählten Worts, Änderungen im Lineal
+- Bearbeiten: Tabbreite und Einrückung, Klammern automatisch schließen, Bild ↑/↓, Pos1 und Ende, Umbruchspalte
 - Schreiben: Schreibmaschinen-Modus, Fokus-Modus und die Breite der Textspalte im ablenkungsfreien Modus
 
 Soll die Schreibmaschine Textdateien per Doppelklick öffnen, legt „Allgemein → Standard-App → Als Standard festlegen“ sie dafür fest: für reinen Text, Markdown, JSON, YAML, XML, CSS, JavaScript, Swift, Python, PHP, Shell-Skripte, SQL, Lua, TOML und INI sowie Diff. macOS fragt dabei für jedes Format einzeln nach. „Anpassen …“ zeigt alle Formate mit der App, die sie gerade öffnet, und legt jedes einzeln fest, auch HTML, CSV und Protokolle, die sonst meist in Browser, Tabellenkalkulation und Konsole bleiben. „Zurücksetzen“ gibt die Formate der App zurück, die sie vorher hatten. Nach einigen Tagen fragt die Schreibmaschine auch selbst einmal in einem Balken unter der Titelleiste nach, höchstens zweimal.
