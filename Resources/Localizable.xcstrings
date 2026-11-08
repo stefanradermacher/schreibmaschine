@@ -5192,6 +5192,16 @@
           }
         }
       }
+    },
+    "Inspektor ausblenden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Inspector"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

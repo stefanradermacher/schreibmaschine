@@ -117,11 +117,15 @@ final class InspectorView: NSView, NSTableViewDataSource, NSTableViewDelegate, N
         ])
 
         let header = NSView()
+        let close = NSButton(image: NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localized: "Schließen"))!,
+                             target: self, action: #selector(hideInspector(_:)))
+        close.isBordered = false
+        close.toolTip = String(localized: "Inspektor ausblenden")
         let separator = NSBox()
         separator.boxType = .separator
         let edge = NSBox()
         edge.boxType = .separator
-        for view in [header, tabs, separator, infoScroll, outlineView, edge] {
+        for view in [header, tabs, close, separator, infoScroll, outlineView, edge] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
@@ -136,6 +140,8 @@ final class InspectorView: NSView, NSTableViewDataSource, NSTableViewDelegate, N
             header.heightAnchor.constraint(equalToConstant: 34),
             tabs.centerXAnchor.constraint(equalTo: header.centerXAnchor),
             tabs.centerYAnchor.constraint(equalTo: header.centerYAnchor),
+            close.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -8),
+            close.centerYAnchor.constraint(equalTo: header.centerYAnchor),
             separator.topAnchor.constraint(equalTo: header.bottomAnchor),
             separator.leadingAnchor.constraint(equalTo: edge.trailingAnchor),
             separator.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -153,6 +159,10 @@ final class InspectorView: NSView, NSTableViewDataSource, NSTableViewDelegate, N
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    @objc private func hideInspector(_ sender: Any?) {
+        UserDefaults.standard.set(false, forKey: Preferences.showsInspector)
+    }
 
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
