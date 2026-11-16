@@ -269,7 +269,7 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] Bundle-ID auf developer.apple.com unter „Identifiers“ registriert
 - [x] App-Eintrag in App Store Connect angelegt (Name, primäre Sprache, Bundle-ID, SKU), deutscher und englischer Name eingetragen
 - [x] Support- und Datenschutzseite online
-- [ ] Drei Verbrauchsartikel angelegt
+- [x] Drei Verbrauchsartikel angelegt
 - [x] Quellcode: GitHub-Repo seit 22.10.2026 öffentlich (github.com/stefanradermacher/schreibmaschine)
 - [x] Screenshots aufgenommen, Vorschau und Inspektor am 16.11.2026 erneuert
 - [x] Build-Nummer höher als beim letzten Upload (78, zuletzt hochgeladen 76)
