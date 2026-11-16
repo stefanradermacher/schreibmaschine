@@ -1,6 +1,6 @@
 # App-Store-Unterlagen
 
-Vorbereitete Texte und Angaben für den Eintrag in App Store Connect. Zeichenzahlen sind Apples Obergrenzen. Stand: Meilenstein 9, Version 1.0.
+Vorbereitete Texte und Angaben für den Eintrag in App Store Connect. Zeichenzahlen sind Apples Obergrenzen. Stand: Version 1.0, Build 78, zur Veröffentlichung im November 2026.
 
 ## Grunddaten
 
@@ -23,17 +23,21 @@ Die englischen Fassungen, USA und UK, heißen „Schreibmaschine – Text Editor
 
 ## Werbetext (170)
 
-Texteditor für Text und Code: Suchleiste, Textbefehle, Markdown-Vorschau, Vergleichen und eine Sitzung, die nichts vergisst. Kostenlos und werbefrei.
+Texteditor für Text, Code und Markdown: gestaltet und mit Vorschau, mit Suchleiste, Textbefehlen, Gliederung und einer Sitzung, die nichts vergisst. Kostenlos, werbefrei.
 
 ## Beschreibung (4000)
 
-Die Schreibmaschine ist ein Texteditor für den Mac: für einfachen Text, den man oft umformt, und genauso für Code. Kein IDE-Ersatz, sondern ein Werkzeug zum Schreiben. Keine Anmeldung, keine Werbung.
+Die Schreibmaschine ist ein Texteditor für den Mac: für einfachen Text, den man oft umformt, für Notizen in Markdown und genauso für Code. Kein IDE-Ersatz, sondern ein Werkzeug zum Schreiben. Keine Anmeldung, keine Werbung.
 
 Schreiben und umformen
 • Menü „Text“ mit Befehlen für Zeilen, Absätze, Leerraum, Schreibweise, Spalten und Kodierungen: Zeilen sortieren und verbinden, Dubletten entfernen, Absätze umbrechen, Markdown-Tabellen und JSON formatieren und vieles mehr
 • Ohne Auswahl wirkt jeder Befehl auf das, was sinnvoll ist: das Dokument, die Zeile, den Absatz oder das Wort
 • Befehlspalette: jeder Befehl mit ein paar Buchstaben erreichbar
-• Zeilen duplizieren, verschieben und löschen per Tastatur, Auswahl schrittweise erweitern
+
+Markdown
+• Gestaltet direkt im Text: Überschriften, Fett, Kursiv, Code, Links und Zitate, die Zeichen bleiben dabei sichtbar
+• Listen und Zitate setzen sich beim Zeilenumbruch fort, Fett, Kursiv und Links per Tastenkürzel
+• Vorschau neben dem Text, die beim Tippen mitläuft
 
 Suchen und ersetzen
 • Suchleiste im Fenster statt eines eigenen Fensters, mit Trefferzahl und allen Treffern hervorgehoben
@@ -42,18 +46,27 @@ Suchen und ersetzen
 
 Für Code
 • Syntaxhervorhebung für Swift, PHP, JavaScript, Python, Markdown, JSON, YAML, HTML, CSS, SQL, Lua und weitere Sprachen; eigene Sprachen als kleine YAML-Dateien
+• Gliederung: Mit ⇧⌘O springst du zu jeder Überschrift, Klasse und Funktion
+• Klammern und Anführungszeichen schließen sich selbst, Vorkommen des ausgewählten Worts sind hervorgehoben
 • Einrückung, passende Klammern, Zeilen- und Blockkommentare, Code-Faltung
 • Mehrere Einfügemarken und Blockauswahl, Lesezeichen, geteilte Ansicht
 
 Zum Schreiben
-• Markdown-Vorschau neben dem Text
 • Schreibmaschinen-Modus, der die aktuelle Zeile in der Mitte hält, Fokus-Modus und ablenkungsfreier Vollbildmodus
-• Die Statusleiste zählt Wörter, Zeichen, Zeilen und Absätze
+
+Inspektor
+• Eine Seitenleiste mit allem über Datei und Text, von der Kodierung bis zur Lesedauer
+• Zeigt das Zeichen an der Einfügemarke mit Unicode-Namen, so fallen geschützte Leerzeichen und ähnliche Buchstaben auf
+• Die Gliederung zum Filtern und Springen
 
 Vergleichen
 • Zwei Texte nebeneinander, Zeile für Zeile ausgerichtet: ein Dokument mit seiner gesicherten Fassung, der Zwischenablage, einem anderen Dokument oder einer Datei
 • Unterschiede mit einem Klick übernehmen, das Ergebnis als Unified Diff weitergeben
 • Das Lineal zeigt, welche Zeilen seit dem letzten Sichern neu oder geändert sind
+
+Drucken
+• Mit Zeilennummern, Syntaxfarben, Kopf- und Fußzeile in wählbarer Schriftgröße
+• Markdown wahlweise wie im Editor oder fertig gesetzt wie in der Vorschau
 
 Eigene Skripte
 • Eigene Befehle als Skripte in jeder Sprache, die auf dem Mac läuft; sie bekommen die Auswahl oder das Dokument und geben Text zurück
@@ -68,7 +81,7 @@ Für jede Datei
 • Erkennt Zeichenkodierung und Zeilenenden und behält sie beim Sichern bei
 • Ändert ein anderes Programm die Datei, lädt die Schreibmaschine sie neu oder fragt nach, wenn du selbst etwas geändert hast
 • Auch große Dateien mit vielen Megabyte öffnen in einem Augenblick
-• Tabs oder Fenster, schneller Wechsel zwischen allen offenen Dokumenten
+• Tabs oder Fenster, schneller Wechsel zwischen allen offenen Dokumenten, Dateien einfach aufs Fenster ziehen
 
 Ehrlich und offen
 • Kostenlos und quelloffen unter der Apache-Lizenz 2.0
@@ -94,52 +107,65 @@ Für die Sprachen „Englisch (USA)“ und „Englisch (UK)“ in App Store Conn
 
 **Werbetext (170):**
 
-A text editor for text and code: find bar, text commands, Markdown preview, comparing and a session that forgets nothing. Free and ad-free.
+A text editor for text, code, and Markdown: formatted and with a preview, a find bar, text commands, an outline, and a session that forgets nothing. Free and ad-free.
 
 **Beschreibung (4000):**
 
-Schreibmaschine is a text editor for the Mac: for plain text that you often reshape, and just as much for code. Not an IDE, but a tool for writing. No sign-in, no ads.
+Schreibmaschine is a text editor for the Mac: for plain text that you often reshape, for notes in Markdown, and just as much for code. Not an IDE, but a tool for writing. No sign-in, no ads.
 
 Writing and reshaping
-• A Text menu with commands for lines, paragraphs, white space, case, columns and encodings: sort and join lines, remove duplicates, wrap paragraphs, format Markdown tables and JSON and much more
-• Without a selection, every command works on what makes sense: the document, the line, the paragraph or the word
+• A Text menu with commands for lines, paragraphs, white space, case, columns, and encodings: sort and join lines, remove duplicates, wrap paragraphs, format Markdown tables and JSON, and much more
+• Without a selection, every command works on what makes sense: the document, the line, the paragraph, or the word
 • Command palette: every command within reach of a few letters
-• Duplicate, move and delete lines by keyboard, expand the selection step by step
+
+Markdown
+• Formatted right in the text: headings, bold, italic, code, links, and quotes, with the marks still visible
+• Lists and quotes continue on a new line; bold, italic, and links have keyboard shortcuts
+• A preview beside the text that follows as you type
 
 Find and replace
 • A find bar in the window instead of a window of its own, with the match count and all matches highlighted
-• Match case, whole words, regular expressions with a preview when replacing, search in the selection
-• Find and replace in all open documents, go to line and column
+• Match case, whole words, regular expressions with a preview when replacing, and search in the selection
+• Find and replace in all open documents, and go to line and column
 
 For code
-• Syntax highlighting for Swift, PHP, JavaScript, Python, Markdown, JSON, YAML, HTML, CSS, SQL, Lua and more; your own languages as small YAML files
-• Indentation, matching brackets, line and block comments, code folding
-• Multiple insertion points and block selection, bookmarks, split view
+• Syntax highlighting for Swift, PHP, JavaScript, Python, Markdown, JSON, YAML, HTML, CSS, SQL, Lua, and more; your own languages as small YAML files
+• Outline: jump to any heading, class, or function with ⇧⌘O
+• Brackets and quotation marks close themselves, and occurrences of the selected word are highlighted
+• Indentation, matching brackets, line and block comments, and code folding
+• Multiple insertion points and block selection, bookmarks, and split view
 
 For writing
-• Markdown preview beside the text
-• Typewriter mode that keeps the current line in the middle, focus mode and a distraction-free full screen mode
-• The status bar counts words, characters, lines and paragraphs
+• Typewriter mode that keeps the current line in the middle, focus mode, and a distraction-free full screen mode
+
+Inspector
+• A sidebar with everything about the file and the text, from the encoding to the reading time
+• Shows the character at the insertion point with its Unicode name, so no-break spaces and look-alike letters stand out
+• The outline, to filter and jump
 
 Compare
-• Two texts side by side, aligned line by line: a document with its saved version, the clipboard, another document or a file
-• Take over a difference with a click, pass the result on as a unified diff
+• Two texts side by side, aligned line by line: a document with its saved version, the clipboard, another document, or a file
+• Take over a difference with a click, and pass the result on as a unified diff
 • The ruler shows which lines are new or changed since the last save
+
+Printing
+• With line numbers, syntax colors, and header and footer, in a font size of your choice
+• Markdown either as in the editor or typeset as in the preview
 
 Scripts of your own
 • Commands of your own as scripts in any language that runs on the Mac; they get the selection or the document and give back text
 
 Nothing gets lost
-• Its own session brings back windows, tabs and unsaved texts, even after a crash
+• Its own session brings back windows, tabs, and unsaved texts, even after a crash
 • No questions when quitting; unsaved texts are kept
 • Open a file from the Finder and you get exactly that file, not the old session
-• Remembers position, selection and view for every file
+• Remembers position, selection, and view for every file
 
 For every file
 • Recognizes text encoding and line endings and keeps them when saving
 • If another program changes the file, Schreibmaschine reloads it, or asks if you have changed something yourself
 • Even large files of many megabytes open in an instant
-• Tabs or windows, quick switching between all open documents
+• Tabs or windows, quick switching between all open documents, and files simply dragged onto the window
 
 Honest and open
 • Free and open source under the Apache License 2.0
@@ -185,6 +211,7 @@ Berechtigungen:
 - `com.apple.security.network.client` braucht allein die Markdown-Vorschau: Sie zeigt das HTML in einer WKWebView, deren Hilfsprozesse in einer sandboxierten App ohne diese Berechtigung nicht starten. Eine Content-Security-Policy verbietet der Seite jeden Netzzugriff; Links öffnen im Browser.
 - `com.apple.security.files.user-selected.read-write` zum Öffnen und Sichern der Dateien, die der Nutzer wählt.
 - `com.apple.security.files.bookmarks.app-scope`, damit die Sitzung beim nächsten Start die zuletzt offenen Dateien wieder öffnen kann, nur Dateien, die der Nutzer selbst geöffnet hat.
+- `com.apple.security.print` für „Ablage → Drucken …“; ohne sie verweigert macOS in der Sandbox den Druckdialog.
 
 Eigene Skripte: Das Menü „Skripte“ zeigt ausführbare Dateien aus dem Ordner, den macOS für die Skripte der App vorsieht (`~/Library/Application Scripts/com.stefanradermacher.schreibmaschine`), und führt sie über `NSUserUnixTask` aus, nur auf Befehl des Nutzers. Die App selbst bringt keine Skripte mit; „Beispielskripte installieren …“ schreibt drei kleine Shell-Beispiele erst dann in den Ordner, wenn der Nutzer ihn in einem Öffnen-Dialog bestätigt.
 
@@ -194,7 +221,7 @@ Zum Testen eignet sich jede beliebige Textdatei; das Handbuch öffnet „Hilfe �
 
 **English** (für das Feld „Notizen“ unter „Informationen zur App-Prüfung“; die Prüfer arbeiten meist mit englischer Oberfläche):
 
-Schreibmaschine is a text editor. There is no sign-in, no account and no demo credentials. The app changes files only when the user explicitly saves them (⌘S); it keeps unsaved texts in its container so that nothing is lost on quitting.
+Schreibmaschine is a text editor. There is no sign-in, no account, and no demo credentials. The app changes files only when the user explicitly saves them (⌘S); it keeps unsaved texts in its container so that nothing is lost on quitting.
 
 The three in-app purchases are voluntary tips for further development. They do not unlock any features; everything is available without a purchase. They can be found under “Schreibmaschine → About Schreibmaschine” and “Help → Support Schreibmaschine…”.
 
@@ -202,6 +229,7 @@ Entitlements:
 - `com.apple.security.network.client` is needed only by the Markdown preview: it shows the HTML in a WKWebView, whose helper processes do not start in a sandboxed app without this entitlement. A content security policy forbids the page any network access; links open in the browser.
 - `com.apple.security.files.user-selected.read-write` to open and save the files the user chooses.
 - `com.apple.security.files.bookmarks.app-scope` so that the session can reopen the files that were last open on the next launch, only files the user opened.
+- `com.apple.security.print` for “File → Print…”; without it, macOS refuses the print panel in the sandbox.
 
 Scripts of your own: the Scripts menu lists executable files from the folder macOS provides for the app's scripts (`~/Library/Application Scripts/com.stefanradermacher.schreibmaschine`) and runs them through `NSUserUnixTask`, only when the user chooses one. The app itself ships no scripts; “Install Example Scripts…” writes three small shell examples into the folder only after the user confirms it in an open panel.
 
@@ -217,14 +245,17 @@ In `docs/screenshots/` (deutsch) und `docs/screenshots/en/`, 2880 × 1800 Pixel 
 |---|---|
 | 1-code.png | Swift (`TextDiff.swift`) mit Syntaxhervorhebung, Zeilennummern und Lesezeichen |
 | 2-suche.png | Suchleiste mit allen Treffern im Text und Marken in der Leiste rechts |
-| 3-vorschau.png | Markdown-Notiz mit Vorschau daneben |
+| 3-vorschau.png | Markdown-Notiz, im Editor gestaltet, mit Vorschau daneben |
 | 4-vergleich.png | Vergleich mit der gesicherten Fassung, Unterschiede farbig |
 | 5-geteilt.png | Geteilte Ansicht mit zwei Stellen derselben Datei |
+| 6-inspektor.png | Inspektor mit der Gliederung von `TextDiff.swift` |
 | trinkgeld.png | Fenster „Schreibmaschine unterstützen“ mit Preisen, Prüfbild für die In-App-Käufe, 1280 × 800 wie bei Leser und Motiv; aufgenommen aus Xcode mit `Config/Schreibmaschine.storekit`, die das Schema beim Ausführen lädt |
 
-Für den englischen Eintrag derselbe Satz mit englischer Oberfläche in `docs/screenshots/en/` (`1-code.png`, `2-search.png`, `3-preview.png`, `4-compare.png`, `5-split.png`). Screenshots hängen in App Store Connect an der jeweiligen Lokalisierung: Der deutsche Satz gehört zu „Deutsch“, der englische zu „Englisch“.
+Für den englischen Eintrag derselbe Satz mit englischer Oberfläche in `docs/screenshots/en/` (`1-code.png`, `2-search.png`, `3-preview.png`, `4-compare.png`, `5-split.png`, `6-inspector.png`). Screenshots hängen in App Store Connect an der jeweiligen Lokalisierung: Der deutsche Satz gehört zu „Deutsch“, der englische zu „Englisch“.
 
-Das Handbuch zeigt dieselben Bilder: Code, Suche, Vorschau, Vergleich und geteilte Ansicht.
+Das Handbuch zeigt dieselben Bilder: Code, Suche, Vorschau, Vergleich, geteilte Ansicht und Inspektor.
+
+Aufgenommen mit Schrift 15 pt über die Argumente des Debug-Builds, etwa `EXTRA="-fontSize 15 -inspectorTab outline -showsInspector YES" ACTIVATE=1 .build/shoot.sh …`; Vorschau und Inspektor neu am 16.11.2026, die übrigen vom 22.10.2026 zeigen noch den aktuellen Stand.
 
 ## TestFlight
 
@@ -240,8 +271,8 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] Support- und Datenschutzseite online
 - [ ] Drei Verbrauchsartikel angelegt
 - [x] Quellcode: GitHub-Repo seit 22.10.2026 öffentlich (github.com/stefanradermacher/schreibmaschine)
-- [x] Screenshots aufgenommen
-- [ ] Build-Nummer höher als beim letzten Upload
+- [x] Screenshots aufgenommen, Vorschau und Inspektor am 16.11.2026 erneuert
+- [x] Build-Nummer höher als beim letzten Upload (78, zuletzt hochgeladen 76)
 - [ ] Archiv erstellt, validiert und hochgeladen
 
 ## Einreichen

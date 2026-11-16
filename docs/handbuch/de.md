@@ -56,10 +56,12 @@ Mit ⌃⌘S erscheint links eine Liste aller offenen Dokumente, bei mehreren Fen
 
 ## Der Inspektor
 
-„Darstellung → Inspektor“ (⌥⌘0) blendet rechts eine Seitenleiste mit zwei Tabs ein, für alle Fenster zugleich; ihre Breite lässt sich am Rand ziehen.
+„Darstellung → Inspektor“ (⌥⌘0) blendet rechts eine Seitenleiste mit zwei Tabs ein, für alle Fenster zugleich; ihre Breite lässt sich am Rand ziehen, das X oben rechts blendet sie wieder aus.
 
 - **Informationen:** Name, Ort, Größe und Datum der Datei, mit einem Knopf, der sie im Finder zeigt; Sprache, Kodierung, Zeilenenden und Einrückung des Textes; Zeilen, Wörter, Zeichen und Bytes, ab 50 Wörtern auch die Lesedauer. Ist Text ausgewählt, stehen die Zahlen für die Auswahl darunter. Zuletzt das Zeichen an der Einfügemarke, groß, mit Unicode-Codepunkt, Namen und den Bytes in der Kodierung der Datei. So lassen sich geschützte Leerzeichen, Zeichen ohne Breite oder ähnlich aussehende Buchstaben erkennen, und es zeigt sich gleich, ob ein Zeichen in der Kodierung überhaupt vorkommt.
 - **Gliederung:** dieselben Einträge wie bei „Gehe zu Symbol“, nach Ebene eingerückt. Der Eintrag, in dem die Einfügemarke steht, ist ausgewählt; ein Klick oder die Pfeiltasten springen zu einem anderen, das Feld darüber filtert die Liste.
+
+![Der Inspektor mit der Gliederung einer Swift-Datei](docs/screenshots/6-inspektor.png)
 
 ## Sichern, Kodierung und Zeilenenden
 
@@ -214,7 +216,7 @@ Ein ↩ in einem Listenpunkt beginnt den nächsten, mit derselben Einrückung, b
 
 In einer Markdown-Datei zeigt „Darstellung → Markdown-Vorschau“ (⌥⌘P) rechts neben dem Text, wie er gesetzt aussieht: Überschriften, Hervorhebungen, Listen und Aufgabenlisten, Zitate, Codeblöcke, Tabellen und Links. Die Vorschau folgt dem Tippen nach einem kurzen Augenblick und scrollt mit, ausgerichtet an den Überschriften. Links öffnen sich im Browser. Die Vorschau lädt nichts aus dem Internet; Bilder neben der Datei zeigt sie nur, wenn die Schreibmaschine sie lesen darf, sonst steht an ihrer Stelle ihre Beschreibung.
 
-![Eine Markdown-Notiz mit Vorschau](docs/screenshots/3-vorschau.png)
+![Eine Markdown-Notiz, gestaltet und mit Vorschau](docs/screenshots/3-vorschau.png)
 
 # Code
 

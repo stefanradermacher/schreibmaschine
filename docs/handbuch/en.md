@@ -45,10 +45,12 @@ New documents open as a tab in the front window or in a window of their own, as 
 
 ## The inspector
 
-“View → Inspector” (⌥⌘0) shows a sidebar on the right with two tabs, for all windows at once; drag its edge to change its width.
+“View → Inspector” (⌥⌘0) shows a sidebar on the right with two tabs, for all windows at once; drag its edge to change its width, and the X at the top right hides it again.
 
 - **Information:** name, location, size, and dates of the file, with a button that shows it in the Finder; the language, encoding, line endings, and indentation of the text; lines, words, characters, and bytes, and from 50 words on the reading time. With text selected, the numbers for the selection follow. Last comes the character at the insertion point, large, with its Unicode code point, name, and the bytes in the file's encoding. This makes no-break spaces, zero-width characters, or look-alike letters easy to spot, and shows right away whether a character exists in the encoding at all.
 - **Outline:** the same entries as in “Go to Symbol”, indented by level. The entry the insertion point is in is selected; a click or the arrow keys go to another one, and the field above filters the list.
+
+![The inspector with the outline of a Swift file](docs/screenshots/en/6-inspector.png)
 
 ## Saving, encoding, and line endings
 
@@ -203,7 +205,7 @@ In Markdown files, Schreibmaschine shows the markup right in the text: headings 
 
 In a Markdown file, “View → Markdown Preview” (⌥⌘P) shows beside the text how it looks when set: headings, emphasis, lists and task lists, quotes, code blocks, tables, and links. The preview follows your typing after a short moment and scrolls along, aligned at the headings. Links open in the browser. The preview loads nothing from the internet; it shows images next to the file only if Schreibmaschine may read them, otherwise their description stands in their place.
 
-![A Markdown note with its preview](docs/screenshots/en/3-preview.png)
+![A formatted Markdown note with its preview](docs/screenshots/en/3-preview.png)
 
 # Code
 
