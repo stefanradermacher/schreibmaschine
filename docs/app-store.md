@@ -273,7 +273,7 @@ Für externe Tester prüft Apple den ersten Build kurz. Unter „TestFlight → 
 - [x] Quellcode: GitHub-Repo seit 22.10.2026 öffentlich (github.com/stefanradermacher/schreibmaschine)
 - [x] Screenshots aufgenommen, Vorschau und Inspektor am 16.11.2026 erneuert
 - [x] Build-Nummer höher als beim letzten Upload (78, zuletzt hochgeladen 76)
-- [ ] Archiv erstellt, validiert und hochgeladen
+- [x] Archiv erstellt, validiert und hochgeladen (Build 78), am 16.11.2026 zur Prüfung eingereicht
 
 ## Einreichen
 
